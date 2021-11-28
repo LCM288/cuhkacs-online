@@ -1,10 +1,10 @@
 import React from "react";
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 import { render, screen } from "@testing-library/react";
-import App from "./App";
+import Home from "pages/home";
 
 test("renders learn react link", () => {
-  render(<App />);
+  render(<Home />);
   const linkElement = screen.getByText(/learn react/i);
   expect(linkElement).toBeInTheDocument();
 });
