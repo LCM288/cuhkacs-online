@@ -1,25 +1,42 @@
-import React from "react";
-import logo from "static/logo.svg";
-import "static/home.css";
+import React, { useMemo, useContext } from "react";
+import {
+  getAuth,
+  signInWithPopup,
+  OAuthProvider,
+  signOut,
+} from "firebase/auth";
+import { Button } from "react-bulma-components";
+import { UserContext } from "app";
 
 const Home = (): React.ReactElement => {
+  const user = useContext(UserContext);
+  const provider = useMemo(() => {
+    const newProvider = new OAuthProvider("microsoft.com");
+    newProvider.setCustomParameters({
+      prompt: "select_account",
+      domain_hint: "link.cuhk.edu.hk",
+      tenant: "link.cuhk.edu.hk",
+    });
+    return newProvider;
+  }, []);
+
+  const auth = useMemo(() => getAuth(), []);
+
+  if (user) {
+    return (
+      <>
+        <div>{JSON.stringify(user)}</div>
+        <Button color="link" onClick={() => signOut(auth)}>
+          Sign Out
+        </Button>
+      </>
+    );
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Button color="link" onClick={() => signInWithPopup(auth, provider)}>
+      Sign In
+    </Button>
   );
 };
 

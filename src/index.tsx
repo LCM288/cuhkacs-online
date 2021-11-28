@@ -3,16 +3,11 @@ import ReactDOM from "react-dom";
 import "static/index.css";
 import "bulma/bulma.sass";
 import reportWebVitals from "reportWebVitals";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "pages/home";
+import App from "app";
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-      </Routes>
-    </BrowserRouter>
+    <App />
   </React.StrictMode>,
   document.getElementById("root")
 );
