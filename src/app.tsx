@@ -1,21 +1,20 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
-import { User, getAuth, onAuthStateChanged } from "firebase/auth";
-import {} from "utils/firebase";
+import { User, onAuthStateChanged } from "firebase/auth";
+import { auth } from "utils/firebase";
 import Home from "pages/home";
 import NotFound from "pages/notFound";
 
 export const UserContext = React.createContext<User | null>(null);
 
 const App = (): React.ReactElement => {
-  const auth = useMemo(() => getAuth(), []);
   const [user, setUser] = useState<User | null>(auth.currentUser);
 
   useEffect(() => {
     onAuthStateChanged(auth, (newUser) => {
       setUser(newUser);
     });
-  }, [auth]);
+  }, []);
 
   return (
     <UserContext.Provider value={user}>

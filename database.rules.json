@@ -1,6 +1,103 @@
 {
   "rules": {
     ".read": false,
-    ".write": false
+    ".write": false,
+    "members": {
+      ".read": "auth !== null && auth.token !== null && auth.token.email.endsWith('@link.cuhk.edu.hk') && root.child('executives').child(auth.token.email.replace('@link.cuhk.edu.hk', '')).exists()",
+      ".write": "auth !== null && auth.token !== null && auth.token.email.endsWith('@link.cuhk.edu.hk') && root.child('executives').child(auth.token.email.replace('@link.cuhk.edu.hk', '')).exists()",
+      "$sid": {
+        ".read": "auth !== null && auth.token !== null && auth.token.email.endsWith('@link.cuhk.edu.hk') && auth.token.email.replace('@link.cuhk.edu.hk', '') === $sid",
+        ".write": "auth !== null && auth.token !== null && auth.token.email.endsWith('@link.cuhk.edu.hk') && auth.token.email.replace('@link.cuhk.edu.hk', '') === $sid && data.child('memberStatus').child('since').val() !== null",
+        ".validate": "newData.hasChildren(['sid', 'name', 'studentStatus', 'createdAt', 'updatedAt'])",
+        "sid": {
+          ".validate": "newData.val() === $sid"
+        },
+        "name": {
+          ".validate": "newData.hasChildren(['eng'])",
+          "chi": {
+            ".validate": "newData.isString()"
+          },
+          "eng": {
+            ".validate": "newData.isString()"
+          },
+          "$other": {
+            ".validate": false
+          }
+        },
+        "gender": {
+          ".validate": "newData.isString() && newData.val().matches(/^((fe)?male|others)$/)"
+        },
+        "dob": {
+          ".validate": "newData.isString() && newData.val().matches(/^\\d{4}-\\d{2}-\\d{2}$/)"
+        },
+        "email": {
+          ".validate": "newData.isString() && newData.val().contains('@')"
+        },
+        "phone": {
+          ".validate": "newData.isString() && newData.val().matches(/^\\+?\\d+(-\\d+)*$/)"
+        },
+        "studentStatus": {
+          ".validate": "newData.hasChildren(['college', 'major', 'entryDate', 'gradDate'])",
+          "college": {
+            ".validate": "newData.isString() && newData.val().matches(/^(CC|NA|UC|SC|WYS|WS|SH|MC|CW|NO)$/)"
+          },
+          "major": {
+            ".validate": "newData.isString() && newData.val().matches(/^\\w+$/)"
+          },
+          "entryDate": {
+            ".validate": "newData.isString() && newData.val().matches(/^\\d{4}-\\d{2}-\\d{2}$/)"
+          },
+          "gradDate": {
+            ".validate": "newData.isString() && newData.val().matches(/^\\d{4}-\\d{2}-\\d{2}$/)"
+          },
+          "$other": {
+            ".validate": false
+          }
+        },
+        "memberStatus": {
+          ".validate": "auth !== null && auth.token !== null && auth.token.email.endsWith('@link.cuhk.edu.hk') && root.child('executives').child(auth.token.email.replace('@link.cuhk.edu.hk', '')).exists()",
+          "since": {
+            ".validate": "newData.isNumber()"
+          },
+          "until": {
+            ".validate": "newData.isNumber()"
+          },
+          "$other": {
+            ".validate": false
+          }
+        },
+        "createdAt": {
+          ".validate": "(!data.exists() && newData.isNumber() && newData.val() > now - 1000 && newData.val() < now + 1000) || data.val() === newData.val()"
+        },
+        "updatedAt": {
+          ".validate": "newData.isNumber() && newData.val() > now - 1000 && newData.val() < now + 1000"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "executives": {
+      ".read": "auth !== null && auth.token !== null && auth.token.email.endsWith('@link.cuhk.edu.hk') && root.child('executives').child(auth.token.email.replace('@link.cuhk.edu.hk', '')).exists()",
+      ".write": "auth !== null && auth.token !== null && auth.token.email.endsWith('@link.cuhk.edu.hk') && root.child('executives').child(auth.token.email.replace('@link.cuhk.edu.hk', '')).exists()",
+      "$sid": {
+        ".validate": "newData.hasChildren(['sid', 'displayName', 'displayName', 'createdAt', 'updatedAt'])",
+        "sid": {
+          ".validate": "newData.val() === $sid"
+        },
+        "displayName": {
+          ".validate": "newData.isString() && auth !== null && auth.token !== null && auth.token.email.endsWith('@link.cuhk.edu.hk') && auth.token.email.replace('@link.cuhk.edu.hk', '') === $sid"
+        },
+        "createdAt": {
+          ".validate": "(!data.exists() && newData.isNumber() && newData.val() > now - 1000 && newData.val() < now + 1000) || data.val() === newData.val()"
+        },
+        "updatedAt": {
+          ".validate": "newData.isNumber() && newData.val() > now - 1000 && newData.val() < now + 1000"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    }
   }
 }

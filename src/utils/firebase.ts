@@ -1,11 +1,8 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { getAuth, connectAuthEmulator } from "firebase/auth";
+import { getDatabase, connectDatabaseEmulator } from "firebase/database";
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyCh9I9xgFFoXhdfRz9XF-Bq-OceWPe3xD0",
   authDomain: "outstanding-ion-332805.firebaseapp.com",
@@ -18,6 +15,21 @@ const firebaseConfig = {
   measurementId: "G-K9P59EBQNR",
 };
 
-// Initialize Firebase
 export const app = initializeApp(firebaseConfig);
 export const analytics = getAnalytics(app);
+export const auth = (() => {
+  const authLocal = getAuth(app);
+  if (location.hostname === "localhost") {
+    // Point to the RTDB emulator running on localhost.
+    connectAuthEmulator(authLocal, "http://localhost:9099");
+  }
+  return authLocal;
+})();
+export const database = (() => {
+  const db = getDatabase(app);
+  if (location.hostname === "localhost") {
+    // Point to the RTDB emulator running on localhost.
+    connectDatabaseEmulator(db, "localhost", 9000);
+  }
+  return db;
+})();

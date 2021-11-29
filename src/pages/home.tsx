@@ -1,10 +1,6 @@
-import React, { useMemo, useContext } from "react";
-import {
-  getAuth,
-  signInWithPopup,
-  OAuthProvider,
-  signOut,
-} from "firebase/auth";
+import React, { useMemo, useContext, useCallback } from "react";
+import { signInWithPopup, OAuthProvider, signOut } from "firebase/auth";
+import { auth } from "utils/firebase";
 import { Button } from "react-bulma-components";
 import { UserContext } from "app";
 
@@ -19,8 +15,9 @@ const Home = (): React.ReactElement => {
     });
     return newProvider;
   }, []);
-
-  const auth = useMemo(() => getAuth(), []);
+  const signIn = useCallback(() => {
+    signInWithPopup(auth, provider).catch((error) => console.error(error));
+  }, [provider]);
 
   if (user) {
     return (
@@ -34,7 +31,7 @@ const Home = (): React.ReactElement => {
   }
 
   return (
-    <Button color="link" onClick={() => signInWithPopup(auth, provider)}>
+    <Button color="link" onClick={signIn}>
       Sign In
     </Button>
   );
