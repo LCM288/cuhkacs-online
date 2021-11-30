@@ -10,7 +10,7 @@
         ".write": "auth !== null && auth.token !== null && auth.token.email.endsWith('@link.cuhk.edu.hk') && auth.token.email.replace('@link.cuhk.edu.hk', '') === $sid && data.child('memberStatus').child('since').val() !== null",
         ".validate": "newData.hasChildren(['sid', 'name', 'studentStatus', 'createdAt', 'updatedAt'])",
         "sid": {
-          ".validate": "newData.val() === $sid"
+          ".validate": "newData.isString() && newData.val() === $sid"
         },
         "name": {
           ".validate": "newData.hasChildren(['eng'])",
@@ -55,7 +55,7 @@
           }
         },
         "memberStatus": {
-          ".validate": "auth !== null && auth.token !== null && auth.token.email.endsWith('@link.cuhk.edu.hk') && root.child('executives').child(auth.token.email.replace('@link.cuhk.edu.hk', '')).exists()",
+          ".validate": "newData.hasChildren(['since', 'until']) && auth !== null && auth.token !== null && auth.token.email.endsWith('@link.cuhk.edu.hk') && root.child('executives').child(auth.token.email.replace('@link.cuhk.edu.hk', '')).exists()",
           "since": {
             ".validate": "newData.isNumber()"
           },
@@ -81,7 +81,8 @@
       ".read": "auth !== null && auth.token !== null && auth.token.email.endsWith('@link.cuhk.edu.hk') && root.child('executives').child(auth.token.email.replace('@link.cuhk.edu.hk', '')).exists()",
       ".write": "auth !== null && auth.token !== null && auth.token.email.endsWith('@link.cuhk.edu.hk') && root.child('executives').child(auth.token.email.replace('@link.cuhk.edu.hk', '')).exists()",
       "$sid": {
-        ".validate": "newData.hasChildren(['sid', 'displayName', 'displayName', 'createdAt', 'updatedAt'])",
+        ".read": "auth !== null && auth.token !== null && auth.token.email.endsWith('@link.cuhk.edu.hk') && auth.token.email.replace('@link.cuhk.edu.hk', '') === $sid",
+        ".validate": "newData.hasChildren(['sid', 'displayName', 'createdAt', 'updatedAt'])",
         "sid": {
           ".validate": "newData.val() === $sid"
         },
@@ -98,6 +99,37 @@
           ".validate": false
         }
       }
+    },
+    "publicMessages": {
+      ".read": "auth !== null && auth.token !== null && auth.token.email.endsWith('@link.cuhk.edu.hk') && root.child('executives').child(auth.token.email.replace('@link.cuhk.edu.hk', '')).exists()",
+      ".write": "auth !== null && auth.token !== null && auth.token.email.endsWith('@link.cuhk.edu.hk') && root.child('executives').child(auth.token.email.replace('@link.cuhk.edu.hk', '')).exists()",
+      ".validate": "newData.hasChildren(['welcome', 'member', 'registered', 'expired', 'visitor'])",
+      "welcome": {
+        ".read": true,
+        ".validate": "newData.isString()"
+      },
+      "member": {
+        ".read": "auth !== null && auth.token !== null && auth.token.email.endsWith('@link.cuhk.edu.hk') && root.child('members').child(auth.token.email.replace('@link.cuhk.edu.hk', '')).exists()",
+        ".validate": "newData.isString()"
+      },
+      "expired": {
+        ".read": "auth !== null && auth.token !== null && auth.token.email.endsWith('@link.cuhk.edu.hk') && root.child('members').child(auth.token.email.replace('@link.cuhk.edu.hk', '')).exists()",
+        ".validate": "newData.isString()"
+      },
+      "registered": {
+        ".read": "auth !== null && auth.token !== null && auth.token.email.endsWith('@link.cuhk.edu.hk') && root.child('members').child(auth.token.email.replace('@link.cuhk.edu.hk', '')).exists()",
+        ".validate": "newData.isString()"
+      },
+      "visitor": {
+        ".read": true,
+        ".validate": "newData.isString()"
+      },
+      "$other": {
+        ".validate": false
+      }
+    },
+    "$other" : {
+      ".validate": false
     }
   }
 }

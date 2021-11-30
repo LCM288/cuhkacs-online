@@ -1,0 +1,62 @@
+import { useContext } from "react";
+import { UserContext } from "app";
+import { Member, Executive } from "types/db";
+
+export type UserStatus = {
+  sid: string;
+  member?: Member;
+  executive?: Executive;
+  // The following four are mutually exclusive.
+  isActive: boolean;
+  isExpired: boolean;
+  isRegistered: boolean;
+  isVisitor: boolean;
+};
+
+const useUserStatus = (): UserStatus | null => {
+  const user = useContext(UserContext);
+  if (!user?.email?.endsWith("@link.cuhk.edu.hk")) {
+    return null;
+  }
+  const sid = user.email.replace("@link.cuhk.edu.hk", "");
+  const executive = user.executive;
+  const member = user.member;
+  const now = new Date().valueOf();
+  if (!user.member) {
+    return {
+      sid,
+      executive,
+      member,
+      isActive: false,
+      isExpired: false,
+      isRegistered: false,
+      isVisitor: true,
+    };
+  }
+  if (!user.member.memberStatus || user.member.memberStatus.since > now) {
+    return {
+      sid,
+      executive,
+      member,
+      isActive: false,
+      isExpired: false,
+      isRegistered: true,
+      isVisitor: false,
+    };
+  }
+  const isActive =
+    user.member.memberStatus.until > now &&
+    now > user.member.memberStatus.since;
+  const isExpired = user.member.memberStatus.until < now;
+  return {
+    sid,
+    executive,
+    member,
+    isActive,
+    isExpired,
+    isRegistered: false,
+    isVisitor: false,
+  };
+};
+
+export default useUserStatus;

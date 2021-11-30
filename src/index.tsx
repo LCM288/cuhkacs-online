@@ -1,7 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "static/index.css";
+import "react-toastify/dist/ReactToastify.css";
 import "bulma/bulma.sass";
+import "static/toast-fix.css";
 import reportWebVitals from "reportWebVitals";
 import App from "app";
 

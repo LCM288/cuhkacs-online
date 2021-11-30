@@ -20,7 +20,6 @@ export const analytics = getAnalytics(app);
 export const auth = (() => {
   const authLocal = getAuth(app);
   if (location.hostname === "localhost") {
-    // Point to the RTDB emulator running on localhost.
     connectAuthEmulator(authLocal, "http://localhost:9099");
   }
   return authLocal;
