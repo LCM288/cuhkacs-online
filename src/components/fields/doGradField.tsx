@@ -39,7 +39,7 @@ const DOGradField = ({ doGrad, setDoGrad }: Props): React.ReactElement => {
   );
 
   const selectedTerm: DOGradOption | null = useMemo(() => {
-    if (doGrad && /^\d{4}-0(1|8)-01$/.test(doGrad)) {
+    if (doGrad) {
       const [year, month] = doGrad.split("-").map((s) => parseInt(s, 10));
       if (month === 1) {
         return {
@@ -47,12 +47,15 @@ const DOGradField = ({ doGrad, setDoGrad }: Props): React.ReactElement => {
           label: `${year - 1}-${year} Term 1`,
           month: `Dec ${year - 1}`,
         };
+      } else if (month === 7) {
+        return {
+          value: doGrad,
+          label: `${year - 1}-${year} Term 2`,
+          month: `Jul ${year}`,
+        };
+      } else {
+        return { value: doGrad, label: doGrad, month: "" };
       }
-      return {
-        value: doGrad,
-        label: `${year - 1}-${year} Term 2`,
-        month: `Jul ${year}`,
-      };
     }
     return null;
   }, [doGrad]);

@@ -69,7 +69,7 @@ const SelectField = <
           tabIndex={-1}
           autoComplete="off"
           className="hidden-input"
-          value={inputValue ?? undefined}
+          value={inputValue ?? ""}
           onChange={() => {}}
           required={required}
         />

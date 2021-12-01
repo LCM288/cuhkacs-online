@@ -41,12 +41,20 @@ const MajorField = ({ majorCode, setMajorCode }: Props): React.ReactElement => {
     []
   );
 
-  const selectedMajor = useMemo(
-    () => majorOptions.find(({ value }) => value === majorCode) ?? null,
+  const selectedMajor: MajorOption | null = useMemo(
+    () =>
+      majorCode
+        ? majorOptions.find(({ value }) => value === majorCode) ?? {
+            value: majorCode,
+            chineseLabel: "",
+            englishLabel: majorCode,
+            faculties: [],
+          }
+        : null,
     [majorOptions, majorCode]
   );
 
-  const facultyColor = useMemo<{
+  const facultyColors = useMemo<{
     [index: string]: { color: string; isLight: boolean };
   }>(
     () => ({
@@ -88,9 +96,9 @@ const MajorField = ({ majorCode, setMajorCode }: Props): React.ReactElement => {
             >
               <Tag
                 className={`ml-2 has-text-weight-medium py-1 ${
-                  facultyColor[faculty.value].isLight ? "is-light" : ""
+                  facultyColors[faculty.value].isLight ? "is-light" : ""
                 }`}
-                color={facultyColor[faculty.value].color}
+                color={facultyColors[faculty.value].color}
                 style={{
                   flexWrap: "wrap",
                   height: "unset",
@@ -106,7 +114,7 @@ const MajorField = ({ majorCode, setMajorCode }: Props): React.ReactElement => {
         </Level.Side>
       </Level>
     ),
-    [facultyColor]
+    [facultyColors]
   );
 
   const filterOption = useCallback(

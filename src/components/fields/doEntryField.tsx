@@ -38,7 +38,7 @@ const DOEntryField = ({ doEntry, setDoEntry }: Props): React.ReactElement => {
   );
 
   const selectedTerm: DOEntryOption | null = useMemo(() => {
-    if (doEntry && /^\d{4}-0(1|9)-01$/.test(doEntry)) {
+    if (doEntry) {
       const [year, month] = doEntry.split("-").map((s) => parseInt(s, 10));
       if (month === 1) {
         return {
@@ -46,12 +46,15 @@ const DOEntryField = ({ doEntry, setDoEntry }: Props): React.ReactElement => {
           label: `${year - 1}-${year} Term 2`,
           month: `Jan ${year}`,
         };
+      } else if (month === 9) {
+        return {
+          value: doEntry,
+          label: `${year}-${year + 1} Term 1`,
+          month: `Sept ${year}`,
+        };
+      } else {
+        return { value: doEntry, label: doEntry, month: "" };
       }
-      return {
-        value: doEntry,
-        label: `${year}-${year + 1} Term 1`,
-        month: `Sept ${year}`,
-      };
     }
     return null;
   }, [doEntry]);

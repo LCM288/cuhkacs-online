@@ -12,14 +12,6 @@ const GenderField = ({ gender, setGender }: Props): React.ReactElement => {
     label: string;
   }
 
-  const defaultOption = useMemo(
-    () => ({
-      value: "other",
-      label: "Other / Prefer not to say",
-    }),
-    []
-  );
-
   const genderOptions: GenderOption[] = useMemo(
     () => [
       {
@@ -30,14 +22,17 @@ const GenderField = ({ gender, setGender }: Props): React.ReactElement => {
         value: "female",
         label: "Female",
       },
-      defaultOption,
+      {
+        value: "other",
+        label: "Other / Prefer not to say",
+      },
     ],
-    [defaultOption]
+    []
   );
 
   const selectedGender = useMemo(
-    () => genderOptions.find(({ value }) => value === gender) ?? defaultOption,
-    [genderOptions, gender, defaultOption]
+    () => genderOptions.find(({ value }) => value === gender) ?? null,
+    [genderOptions, gender]
   );
 
   const onChange = useCallback(
@@ -52,7 +47,6 @@ const GenderField = ({ gender, setGender }: Props): React.ReactElement => {
       options={genderOptions}
       inputValue={gender}
       onChange={onChange}
-      defaultOption={defaultOption}
       required
     />
   );

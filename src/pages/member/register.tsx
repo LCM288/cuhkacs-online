@@ -17,6 +17,7 @@ import MajorField from "components/fields/majorField";
 import Loading from "components/loading";
 import { PreventDefaultForm } from "utils/domEventHelpers";
 import useUserStatus from "utils/useUserStatus";
+import PromptModal from "components/promptModal";
 
 const Register = (): React.ReactElement => {
   const userStatus = useUserStatus();
@@ -70,6 +71,29 @@ const Register = (): React.ReactElement => {
   useEffect(() => {
     document.title = `Member Registration`;
   });
+
+  const [shouldPromptReset, setShouldPromptReset] = useState(false);
+
+  const ResetPrompt = useCallback(
+    () =>
+      shouldPromptReset ? (
+        <PromptModal
+          message="Are you sure to reset all data?"
+          onConfirm={() => {
+            setData();
+            setShouldPromptReset(false);
+          }}
+          onCancel={() => setShouldPromptReset(false)}
+          confirmText="Reset"
+          cancelText="Back"
+          confirmColor="warning"
+          cancelColor="primary"
+        />
+      ) : (
+        <></>
+      ),
+    [shouldPromptReset, setData]
+  );
 
   if (!userStatus) {
     return <Navigate to="/" replace />;
@@ -135,7 +159,11 @@ const Register = (): React.ReactElement => {
               <DOEntryField doEntry={doEntry} setDoEntry={setDoEntry} />
               <DOGradField doGrad={doGrad} setDoGrad={setDoGrad} />
               <Button.Group>
-                <Button type="button" onClick={setData}>
+                <Button
+                  type="button"
+                  onClick={() => setShouldPromptReset(true)}
+                  color="warning"
+                >
                   Reset
                 </Button>
                 <Button color="primary" type="submit" disabled={isSubmitting}>
@@ -146,6 +174,7 @@ const Register = (): React.ReactElement => {
           </PreventDefaultForm>
         </Container>
       </Section>
+      <ResetPrompt />
       <Loading loading={isSubmitting} />
     </div>
   );
