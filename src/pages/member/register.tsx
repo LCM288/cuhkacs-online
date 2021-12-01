@@ -32,7 +32,7 @@ const Register = (): React.ReactElement => {
   const [doEntry, setDoEntry] = useState<string | null>(null);
   const [doGrad, setDoGrad] = useState<string | null>(null);
   const userLoaded = useRef(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting] = useState(false);
 
   const setData = useCallback(() => {
     const member = userStatus?.member;
@@ -54,10 +54,6 @@ const Register = (): React.ReactElement => {
       userLoaded.current = true;
     }
   }, [userStatus?.member, setData]);
-
-  const validDate = useCallback((date: string) => {
-    return /^\d{4}-\d{2}-\d{2}$/g.test(date) ? date : null;
-  }, []);
 
   const onSubmit = useCallback(() => {
     // Todo
