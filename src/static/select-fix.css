@@ -1,0 +1,5 @@
+.hidden-input {
+  position: absolute;
+  opacity: 0;
+  height: 0;
+}

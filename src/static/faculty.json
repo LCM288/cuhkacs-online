@@ -1,0 +1,54 @@
+{
+  "faculties": [
+    {
+      "code": "ART",
+      "englishName": "Faculty of Arts",
+      "chineseName": "文學院"
+    },
+    {
+      "code": "BAF",
+      "englishName": "Faculty of Business Administration",
+      "chineseName": "工商管理學院"
+    },
+    {
+      "code": "EDU",
+      "englishName": "Faculty of Education",
+      "chineseName": "教育學院"
+    },
+    {
+      "code": "ENF",
+      "englishName": "Faculty of Engineering",
+      "chineseName": "工程學院"
+    },
+    {
+      "code": "SLAW",
+      "englishName": "Faculty of Law",
+      "chineseName": "法律學院"
+    },
+    {
+      "code": "MED",
+      "englishName": "Faculty of Medicine",
+      "chineseName": "醫學院"
+    },
+    {
+      "code": "SCF",
+      "englishName": "Faculty of Science",
+      "chineseName": "理學院"
+    },
+    {
+      "code": "SSF",
+      "englishName": "Faculty of Social Science",
+      "chineseName": "社會科學院"
+    },
+    {
+      "code": "DDP",
+      "englishName": "Double Degree Programmes",
+      "chineseName": "雙學位課程"
+    },
+    {
+      "code": "IDM",
+      "englishName": "Interdisciplinary Major Programmes",
+      "chineseName": "跨學科主修課程"
+    }
+  ]
+}

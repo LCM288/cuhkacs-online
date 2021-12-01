@@ -1,0 +1,11 @@
+.modal.modal-ovrflowing {
+  overflow: auto;
+}
+
+.modal.modal-ovrflowing > .modal-background {
+  position: fixed;
+}
+
+.modal.modal-ovrflowing > .modal-content {
+  overflow: visible;
+}

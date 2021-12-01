@@ -4,6 +4,7 @@ import { Member, Executive } from "types/db";
 
 export type UserStatus = {
   sid: string;
+  displayName: string | null;
   member?: Member;
   executive?: Executive;
   // The following four are mutually exclusive.
@@ -19,12 +20,14 @@ const useUserStatus = (): UserStatus | null => {
     return null;
   }
   const sid = user.email.replace("@link.cuhk.edu.hk", "");
+  const displayName = user.displayName;
   const executive = user.executive;
   const member = user.member;
   const now = new Date().valueOf();
   if (!user.member) {
     return {
       sid,
+      displayName,
       executive,
       member,
       isActive: false,
@@ -36,6 +39,7 @@ const useUserStatus = (): UserStatus | null => {
   if (!user.member.memberStatus || user.member.memberStatus.since > now) {
     return {
       sid,
+      displayName,
       executive,
       member,
       isActive: false,
@@ -50,6 +54,7 @@ const useUserStatus = (): UserStatus | null => {
   const isExpired = user.member.memberStatus.until < now;
   return {
     sid,
+    displayName,
     executive,
     member,
     isActive,

@@ -1,0 +1,520 @@
+{
+  "majors": [
+    {
+      "code": "ANTHN",
+      "englishName": "Anthropology",
+      "chineseName": "人類學",
+      "faculties": ["ART"]
+    },
+    {
+      "code": "BMBLN",
+      "englishName": "Bimodal Bilingual Studies (2-year programme)",
+      "chineseName": "雙渠道雙語研究（兩年制課程）",
+      "faculties": ["ART"]
+    },
+    {
+      "code": "CHESB",
+      "englishName": "Chinese Studies",
+      "chineseName": "中國研究",
+      "faculties": ["ART"]
+    },
+    {
+      "code": "CHLLN",
+      "englishName": "Chinese Language and Literature",
+      "chineseName": "中國語言及文學",
+      "faculties": ["ART"]
+    },
+    {
+      "code": "CULSN",
+      "englishName": "Cultural Studies",
+      "chineseName": "文化研究",
+      "faculties": ["ART"]
+    },
+    {
+      "code": "CUMTN",
+      "englishName": "Cultural Management",
+      "chineseName": "文化管理",
+      "faculties": ["ART"]
+    },
+    {
+      "code": "ENGEN",
+      "englishName": "English",
+      "chineseName": "英文",
+      "faculties": ["ART"]
+    },
+    {
+      "code": "FAASN",
+      "englishName": "Fine Arts",
+      "chineseName": "藝術",
+      "faculties": ["ART"]
+    },
+    {
+      "code": "HISTN",
+      "englishName": "History",
+      "chineseName": "歷史",
+      "faculties": ["ART"]
+    },
+    {
+      "code": "JASPN",
+      "englishName": "Japanese Studies",
+      "chineseName": "日本研究",
+      "faculties": ["ART"]
+    },
+    {
+      "code": "LINGN",
+      "englishName": "Linguistics",
+      "chineseName": "語言學",
+      "faculties": ["ART"]
+    },
+    {
+      "code": "MUSCN",
+      "englishName": "Music",
+      "chineseName": "音樂",
+      "faculties": ["ART"]
+    },
+    {
+      "code": "PHILN",
+      "englishName": "Philosophy",
+      "chineseName": "哲學",
+      "faculties": ["ART"]
+    },
+    {
+      "code": "RELSN",
+      "englishName": "Religious Studies",
+      "chineseName": "宗教研究",
+      "faculties": ["ART"]
+    },
+    {
+      "code": "THEON",
+      "englishName": "Theology",
+      "chineseName": "神學",
+      "faculties": ["ART"]
+    },
+    {
+      "code": "TRANN",
+      "englishName": "Translation",
+      "chineseName": "翻譯",
+      "faculties": ["ART"]
+    },
+    {
+      "code": "HTMGN",
+      "englishName": "Hotel and Tourism Management",
+      "chineseName": "酒店及旅遊管理學",
+      "faculties": ["BAF"]
+    },
+    {
+      "code": "HTMGB",
+      "englishName": "Hospitality and Real Estate",
+      "chineseName": "酒店旅遊及房地產",
+      "faculties": ["BAF"]
+    },
+    {
+      "code": "IBBAB",
+      "englishName": "Integrated BBA Programme",
+      "chineseName": "工商管理學士綜合課程",
+      "faculties": ["BAF"]
+    },
+    {
+      "code": "IBBAC",
+      "englishName": "Integrated BBA Programme",
+      "chineseName": "工商管理學士綜合課程",
+      "faculties": ["BAF"]
+    },
+    {
+      "code": "IFAAB",
+      "englishName": "Insurance, Financial and Actuarial Analysis",
+      "chineseName": "保險、金融與精算學",
+      "faculties": ["BAF"]
+    },
+    {
+      "code": "PACCN",
+      "englishName": "Professional Accountancy",
+      "chineseName": "專業會計學",
+      "faculties": ["BAF"]
+    },
+    {
+      "code": "QFINN",
+      "englishName": "Quantitative Finance",
+      "chineseName": "計量金融學",
+      "faculties": ["BAF"]
+    },
+    {
+      "code": "BECEN",
+      "englishName": "Early Childhood Education",
+      "chineseName": "幼兒教育",
+      "faculties": ["EDU"]
+    },
+    {
+      "code": "BMEDN",
+      "englishName": "Mathematics and Mathematics Education",
+      "chineseName": "數學及數學教育",
+      "faculties": ["EDU"]
+    },
+    {
+      "code": "CHEDN",
+      "englishName": "Early Childhood Education (2-year programme)",
+      "chineseName": "幼兒教育（兩年制課程）",
+      "faculties": ["EDU"]
+    },
+    {
+      "code": "ESHEN",
+      "englishName": "Exercise Science and Health Education (2-year programme)",
+      "chineseName": "運動科學與健康教育（兩年制課程）",
+      "faculties": ["EDU"]
+    },
+    {
+      "code": "LSEDN",
+      "englishName": "Liberal Studies",
+      "chineseName": "通識教育",
+      "faculties": ["EDU"]
+    },
+    {
+      "code": "PESHN",
+      "englishName": "Physical Education, Exercise Science and Health",
+      "chineseName": "健康與體育運動科學",
+      "faculties": ["EDU"]
+    },
+    {
+      "code": "AISTN",
+      "englishName": "Artificial Intelligence: Systems and Technologies",
+      "chineseName": "人工智能：系統與科技",
+      "faculties": ["ENF"]
+    },
+    {
+      "code": "BERGN",
+      "englishName": "Engineering",
+      "chineseName": "工程學",
+      "faculties": ["ENF"]
+    },
+    {
+      "code": "BMEGN",
+      "englishName": "Biomedical Engineering",
+      "chineseName": "生物醫學工程學",
+      "faculties": ["ENF"]
+    },
+    {
+      "code": "CENGN",
+      "englishName": "Computer Engineering",
+      "chineseName": "計算機工程學",
+      "faculties": ["ENF"]
+    },
+    {
+      "code": "CSCIN",
+      "englishName": "Computer Science",
+      "chineseName": "計算機科學",
+      "faculties": ["ENF"]
+    },
+    {
+      "code": "EEENN",
+      "englishName": "Energy and Environmental Engineering",
+      "chineseName": "能源與環境工程學",
+      "faculties": ["ENF"]
+    },
+    {
+      "code": "ELEGN",
+      "englishName": "Electronic Engineering",
+      "chineseName": "電子工程學",
+      "faculties": ["ENF"]
+    },
+    {
+      "code": "FTECN",
+      "englishName": "Financial Technology",
+      "chineseName": "金融科技學",
+      "faculties": ["ENF"]
+    },
+    {
+      "code": "IERGN",
+      "englishName": "Information Engineering",
+      "chineseName": "信息工程學",
+      "faculties": ["ENF"]
+    },
+    {
+      "code": "MAEGN",
+      "englishName": "Mechanical and Automation Engineering",
+      "chineseName": "機械與自動化工程學",
+      "faculties": ["ENF"]
+    },
+    {
+      "code": "SEEMN",
+      "englishName": "Systems Engineering and Engineering Management",
+      "chineseName": "系統工程與工程管理學",
+      "faculties": ["ENF"]
+    },
+    {
+      "code": "LAWSN",
+      "englishName": "LLB",
+      "chineseName": "法學士課程",
+      "faculties": ["SLAW"]
+    },
+    {
+      "code": "BCMEN",
+      "englishName": "Chinese Medicine",
+      "chineseName": "中醫學",
+      "faculties": ["MED"]
+    },
+    {
+      "code": "BMSCN",
+      "englishName": "Biomedical Sciences",
+      "chineseName": "生物醫學",
+      "faculties": ["MED"]
+    },
+    {
+      "code": "BSCGN",
+      "englishName": "Gerontology (2-year programme)",
+      "chineseName": "老年學（兩年制課程）",
+      "faculties": ["MED"]
+    },
+    {
+      "code": "CHPRN",
+      "englishName": "Community Health Practice (2-year programme)",
+      "chineseName": "社區健康（兩年制課程）",
+      "faculties": ["MED"]
+    },
+    {
+      "code": "MEDUN",
+      "englishName": "M.B., Ch.B.",
+      "chineseName": "內外全科醫學士課程",
+      "faculties": ["MED"]
+    },
+    {
+      "code": "NURSN",
+      "englishName": "Nursing",
+      "chineseName": "護理學",
+      "faculties": ["MED"]
+    },
+    {
+      "code": "PHARN",
+      "englishName": "Pharmacy",
+      "chineseName": "藥劑學",
+      "faculties": ["MED"]
+    },
+    {
+      "code": "PHPCN",
+      "englishName": "Public Health",
+      "chineseName": "公共衞生",
+      "faculties": ["MED"]
+    },
+    {
+      "code": "BCHEN",
+      "englishName": "Biochemistry",
+      "chineseName": "生物化學",
+      "faculties": ["SCF"]
+    },
+    {
+      "code": "BIOLN",
+      "englishName": "Biology",
+      "chineseName": "生物學",
+      "faculties": ["SCF"]
+    },
+    {
+      "code": "BSCIN",
+      "englishName": "Science",
+      "chineseName": "理學",
+      "faculties": ["SCF"]
+    },
+    {
+      "code": "CMBIN",
+      "englishName": "Cell and Molecular Biology",
+      "chineseName": "細胞及分子生物學",
+      "faculties": ["SCF"]
+    },
+    {
+      "code": "CHEMN",
+      "englishName": "Chemistry",
+      "chineseName": "化學",
+      "faculties": ["SCF"]
+    },
+    {
+      "code": "ENSCN",
+      "englishName": "Environmental Science",
+      "chineseName": "環境科學",
+      "faculties": ["SCF"]
+    },
+    {
+      "code": "ESSCN",
+      "englishName": "Earth System Science",
+      "chineseName": "地球系統科學",
+      "faculties": ["SCF"]
+    },
+    {
+      "code": "FNSCN",
+      "englishName": "Food and Nutritional Sciences",
+      "chineseName": "食品及營養科學",
+      "faculties": ["SCF"]
+    },
+    {
+      "code": "MATHN",
+      "englishName": "Mathematics",
+      "chineseName": "數學",
+      "faculties": ["SCF"]
+    },
+    {
+      "code": "MBTEN",
+      "englishName": "Molecular Biotechnology",
+      "chineseName": "分子生物技術學",
+      "faculties": ["SCF"]
+    },
+    {
+      "code": "NSCIN",
+      "englishName": "Natural Sciences (2-year programme)",
+      "chineseName": "自然科學（兩年制課程）",
+      "faculties": ["SCF"]
+    },
+    {
+      "code": "PHYSN",
+      "englishName": "Physics",
+      "chineseName": "物理",
+      "faculties": ["SCF"]
+    },
+    {
+      "code": "RMSCN",
+      "englishName": "Risk Management Science",
+      "chineseName": "風險管理科學",
+      "faculties": ["SCF"]
+    },
+    {
+      "code": "STATN",
+      "englishName": "Statistics",
+      "chineseName": "統計學",
+      "faculties": ["SCF"]
+    },
+    {
+      "code": "ARCHN",
+      "englishName": "Architectural Studies",
+      "chineseName": "建築學",
+      "faculties": ["SSF"]
+    },
+    {
+      "code": "BSSCN",
+      "englishName": "Social Science",
+      "chineseName": "社會科學",
+      "faculties": ["SSF"]
+    },
+    {
+      "code": "COMMN",
+      "englishName": "Journalism and Communication",
+      "chineseName": "新聞與傳播學",
+      "faculties": ["SSF"]
+    },
+    {
+      "code": "DSPSN",
+      "englishName": "Data Science and Policy Studies",
+      "chineseName": "數據科學與政策研究",
+      "faculties": ["SSF"]
+    },
+    {
+      "code": "ECONN",
+      "englishName": "Economics",
+      "chineseName": "經濟學",
+      "faculties": ["SSF"]
+    },
+    {
+      "code": "GCOMN",
+      "englishName": "Global Communication",
+      "chineseName": "全球傳播",
+      "faculties": ["SSF"]
+    },
+    {
+      "code": "GDRSN",
+      "englishName": "Gender Studies (2-year programme)",
+      "chineseName": "性別研究（兩年制課程）",
+      "faculties": ["SSF"]
+    },
+    {
+      "code": "GLBSN",
+      "englishName": "Global Studies (2-year programme)",
+      "chineseName": "全球研究（兩年制課程）",
+      "faculties": ["SSF"]
+    },
+    {
+      "code": "GLSDN",
+      "englishName": "Global Studies",
+      "chineseName": "全球研究",
+      "faculties": ["SSF"]
+    },
+    {
+      "code": "GPADN",
+      "englishName": "Government and Public Administration",
+      "chineseName": "政治與行政學",
+      "faculties": ["SSF"]
+    },
+    {
+      "code": "GRMDN",
+      "englishName": "Geography and Resource Management",
+      "chineseName": "地理與資源管理學",
+      "faculties": ["SSF"]
+    },
+    {
+      "code": "PSYCN",
+      "englishName": "Psychology",
+      "chineseName": "心理學",
+      "faculties": ["SSF"]
+    },
+    {
+      "code": "SOCIN",
+      "englishName": "Sociology",
+      "chineseName": "社會學",
+      "faculties": ["SSF"]
+    },
+    {
+      "code": "SOWKN",
+      "englishName": "Social Work",
+      "chineseName": "社會工作",
+      "faculties": ["SSF"]
+    },
+    {
+      "code": "URSPN",
+      "englishName": "Urban Studies",
+      "chineseName": "城市研究",
+      "faculties": ["SSF"]
+    },
+    {
+      "code": "BAJDN",
+      "englishName": "Double Degree Programme of Bachelor of Business Administration (Integrated BBA Programme) and Juris Doctor",
+      "chineseName": "工商管理學士（工商管理學士綜合課程）及法律博士雙學位",
+      "faculties": ["DDP", "BAF", "SLAW"]
+    },
+    {
+      "code": "CLEDN",
+      "englishName": "Chinese Language Studies and Chinese Language Education",
+      "chineseName": "中國語文研究及中國語文教育",
+      "faculties": ["DDP", "EDU"]
+    },
+    {
+      "code": "ELEDN",
+      "englishName": "English Studies and English Language Education",
+      "chineseName": "英國語文研究及英國語文教育",
+      "faculties": ["DDP", "EDU"]
+    },
+    {
+      "code": "GLEFN",
+      "englishName": "Global Economics and Finance",
+      "chineseName": "環球經濟與金融",
+      "faculties": ["IDM", "BAF", "SSF"]
+    },
+    {
+      "code": "QFRMN",
+      "englishName": "Quantitative Finance and Risk Management Science",
+      "chineseName": "計量金融學及風險管理科學",
+      "faculties": ["IDM", "BAF", "SCF"]
+    },
+    {
+      "code": "CCSSSN",
+      "englishName": "Contemporary China Studies (Stream: Social Science)",
+      "chineseName": "當代中國研究（範疇︰社會科學）",
+      "faculties": ["IDM", "SSF"]
+    },
+    {
+      "code": "CCSSAN",
+      "englishName": "Contemporary China Studies (Stream: Humanities)",
+      "chineseName": "當代中國研究（範疇︰人文學科）",
+      "faculties": ["IDM", "ART"]
+    },
+    {
+      "code": "MIEGN",
+      "englishName": "Mathematics and Information Engineering",
+      "chineseName": "數學與信息工程學",
+      "faculties": ["IDM", "ENF", "SCF"]
+    }
+  ]
+}

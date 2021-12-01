@@ -1,0 +1,54 @@
+{
+  "colleges": [
+    {
+      "code": "CC",
+      "englishName": "Chung Chi College",
+      "chineseName": "崇基學院"
+    },
+    {
+      "code": "UC",
+      "englishName": "United College",
+      "chineseName": "聯合書院"
+    },
+    {
+      "code": "NA",
+      "englishName": "New Asia College",
+      "chineseName": "新亞書院"
+    },
+    {
+      "code": "SC",
+      "englishName": "Shaw College",
+      "chineseName": "逸夫書院"
+    },
+    {
+      "code": "MC",
+      "englishName": "Morningside College",
+      "chineseName": "晨興書院"
+    },
+    {
+      "code": "SH",
+      "englishName": "S.H. Ho College",
+      "chineseName": "善衡書院"
+    },
+    {
+      "code": "CW",
+      "englishName": "CW Chu College",
+      "chineseName": "敬文書院"
+    },
+    {
+      "code": "WYS",
+      "englishName": "Wu Yee Sun College",
+      "chineseName": "伍宜孫書院"
+    },
+    {
+      "code": "WS",
+      "englishName": "Lee Woo Sing College",
+      "chineseName": "和聲書院"
+    },
+    {
+      "code": "No",
+      "englishName": "Graduate School",
+      "chineseName": "研究院"
+    }
+  ]
+}

@@ -10,7 +10,9 @@ import { toast } from "react-toastify";
 import Home from "pages/home";
 import MemberLayout from "pages/member/memberLayout";
 import MemberHome from "pages/member/memberHome";
+import Register from "pages/member/register";
 import NotFound from "pages/notFound";
+import Loading from "components/loading";
 
 export const UserContext = React.createContext<AppUser | null>(null);
 
@@ -31,6 +33,7 @@ const App = (): React.ReactElement => {
   const userRef = useRef<User | null>(user);
 
   const clipCount = useRef(0);
+  const [authFirstLoading, setAuthFirstLoading] = useState(true);
 
   const addClipCount = useCallback(() => {
     if (clipCount.current === 0) {
@@ -47,17 +50,24 @@ const App = (): React.ReactElement => {
   }, []);
 
   useEffect(() => {
-    onAuthStateChanged(auth, (newUser) => {
-      if (newUser) {
-        toast.success(
-          `You have successfully signed in as ${newUser.displayName ?? "user"}`
-        );
-      }
-      setUser(newUser);
-      userRef.current = newUser;
-      setLoginState(Boolean(newUser));
-    });
-  }, []);
+    if (authFirstLoading) {
+      onAuthStateChanged(auth, (newUser) => {
+        if (newUser) {
+          if (!authFirstLoading) {
+            toast.success(
+              `You have successfully signed in as ${
+                newUser.displayName ?? "user"
+              }`
+            );
+          }
+        }
+        setUser(newUser);
+        userRef.current = newUser;
+        setAuthFirstLoading(false);
+        setLoginState(Boolean(newUser));
+      });
+    }
+  }, [authFirstLoading]);
 
   useEffect(() => {
     if (loginState) {
@@ -109,6 +119,10 @@ const App = (): React.ReactElement => {
     }
   }, [loginState]);
 
+  if (authFirstLoading) {
+    return <Loading loading />;
+  }
+
   return (
     <>
       <UserContext.Provider value={user}>
@@ -124,6 +138,7 @@ const App = (): React.ReactElement => {
                 <Route index element={<Home />} />
                 <Route path="/member" element={<MemberLayout />}>
                   <Route index element={<MemberHome />} />
+                  <Route path="register" element={<Register />} />
                   <Route path="*" element={<NotFound />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
