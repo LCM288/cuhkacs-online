@@ -47,7 +47,7 @@ const DOGradField = ({ doGrad, setDoGrad }: Props): React.ReactElement => {
           label: `${year - 1}-${year} Term 1`,
           month: `Dec ${year - 1}`,
         };
-      } else if (month === 7) {
+      } else if (month === 8) {
         return {
           value: doGrad,
           label: `${year - 1}-${year} Term 2`,
