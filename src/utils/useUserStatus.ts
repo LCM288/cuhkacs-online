@@ -16,10 +16,10 @@ export type UserStatus = {
 
 const useUserStatus = (): UserStatus | null => {
   const user = useContext(UserContext);
-  if (!user?.email?.endsWith("@link.cuhk.edu.hk")) {
+  if (!user?.sid) {
     return null;
   }
-  const sid = user.email.replace("@link.cuhk.edu.hk", "");
+  const sid = user.sid;
   const displayName = user.displayName;
   const executive = user.executive;
   const member = user.member;

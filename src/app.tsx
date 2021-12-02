@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
-import { User, onAuthStateChanged, signOut } from "firebase/auth";
-import { ref, onValue, off, DataSnapshot } from "firebase/database";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import type { AppUser } from "types/appUser";
 import type { Member, Executive } from "types/db";
 import { ToastContainer } from "react-toastify";
-import { auth, database } from "utils/firebase";
+import { auth, useLazyGetAndListen } from "utils/firebase";
 import { toast } from "react-toastify";
 import Home from "pages/home";
 import MemberLayout from "pages/member/memberLayout";
@@ -29,8 +28,20 @@ const BulmaCloseBtn = ({
 
 const App = (): React.ReactElement => {
   const [user, setUser] = useState<AppUser | null>(auth.currentUser);
-  const [loginState, setLoginState] = useState<boolean>(Boolean(user));
-  const userRef = useRef<User | null>(user);
+  const {
+    loading: memberLoading,
+    data: memberData,
+    error: memberError,
+    getAndListen: getAndListenMember,
+    clear: clearListenMember,
+  } = useLazyGetAndListen<Member | null>();
+  const {
+    loading: executiveLoading,
+    data: executiveData,
+    error: executiveError,
+    getAndListen: getAndListenExecutive,
+    clear: clearListenExecutive,
+  } = useLazyGetAndListen<Executive | null>();
 
   const clipCount = useRef(0);
   const [authFirstLoading, setAuthFirstLoading] = useState(true);
@@ -53,71 +64,73 @@ const App = (): React.ReactElement => {
     if (authFirstLoading) {
       onAuthStateChanged(auth, (newUser) => {
         if (newUser) {
-          if (!authFirstLoading) {
-            toast.success(
-              `You have successfully signed in as ${
-                newUser.displayName ?? "user"
-              }`
-            );
+          if (!newUser.email?.endsWith("@link.cuhk.edu.hk")) {
+            signOut(auth);
+            toast.error(`Login error, cannot get sid`);
+          } else {
+            if (!authFirstLoading) {
+              toast.success(
+                `You have successfully signed in as ${
+                  newUser.displayName ?? "user"
+                }`
+              );
+            }
+            const sid = newUser.email.replace("@link.cuhk.edu.hk", "");
+            setUser({ ...newUser, sid });
+            getAndListenMember(`members/${sid}`);
+            getAndListenExecutive(`executives/${sid}`);
           }
+        } else {
+          setUser(null);
+          clearListenMember();
+          clearListenExecutive();
         }
-        setUser(newUser);
-        userRef.current = newUser;
         setAuthFirstLoading(false);
-        setLoginState(Boolean(newUser));
       });
     }
-  }, [authFirstLoading]);
+  }, [
+    authFirstLoading,
+    clearListenMember,
+    clearListenExecutive,
+    getAndListenMember,
+    getAndListenExecutive,
+  ]);
 
   useEffect(() => {
-    if (loginState) {
-      if (!userRef.current) {
-        console.error("Login state user mismatch");
-        signOut(auth);
-        return;
-      }
-      if (!userRef.current.email?.endsWith("@link.cuhk.edu.hk")) {
-        console.error(`Unknown user email ${userRef.current.email}`);
-        signOut(auth);
-        return;
-      }
-      const sid = userRef.current.email.replace("@link.cuhk.edu.hk", "");
-      const memberRef = ref(database, `members/${sid}`);
-      const memberQueryCallback = (snapshot: DataSnapshot) => {
-        setUser((prev) => {
-          if (!prev) {
-            return prev;
+    setUser((prevUser) =>
+      prevUser
+        ? {
+            ...prevUser,
+            member: memberData ?? undefined,
           }
-          const member = (snapshot.val() ?? undefined) as Member | undefined;
-          return {
-            ...prev,
-            member,
-          };
-        });
-      };
-      onValue(memberRef, memberQueryCallback);
-      const executiveRef = ref(database, `executives/${sid}`);
-      const executiveQueryCallback = (snapshot: DataSnapshot) => {
-        setUser((prev) => {
-          if (!prev) {
-            return prev;
+        : prevUser
+    );
+  }, [memberData]);
+
+  useEffect(() => {
+    setUser((prevUser) =>
+      prevUser
+        ? {
+            ...prevUser,
+            executive: executiveData ?? undefined,
           }
-          const executive = (snapshot.val() ?? undefined) as
-            | Executive
-            | undefined;
-          return {
-            ...prev,
-            executive,
-          };
-        });
-      };
-      onValue(executiveRef, executiveQueryCallback);
-      return () => {
-        off(memberRef, "value", memberQueryCallback);
-        off(executiveRef, "value", executiveQueryCallback);
-      };
+        : prevUser
+    );
+  }, [executiveData]);
+
+  useEffect(() => {
+    if (memberError) {
+      console.error(memberError);
+      toast.error(memberError.message);
     }
-  }, [loginState]);
+  }, [memberError]);
+
+  useEffect(() => {
+    if (executiveError) {
+      console.error(executiveError);
+      toast.error(executiveError.message);
+    }
+  }, [executiveError]);
 
   if (authFirstLoading) {
     return <Loading loading />;
@@ -132,6 +145,7 @@ const App = (): React.ReactElement => {
             remove: removeClipCount,
           }}
         >
+          <Loading loading={memberLoading || executiveLoading} />
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Outlet />}>
