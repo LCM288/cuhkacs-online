@@ -77,8 +77,9 @@ const App = (): React.ReactElement => {
             }
             const sid = newUser.email.replace("@link.cuhk.edu.hk", "");
             setUser({ ...newUser, sid });
-            getAndListenMember(`members/${sid}`);
-            getAndListenExecutive(`executives/${sid}`);
+            // Errors will be handled elsewhere
+            getAndListenMember(`members/${sid}`).catch(() => {});
+            getAndListenExecutive(`executives/${sid}`).catch(() => {});
           }
         } else {
           setUser(null);
@@ -132,10 +133,6 @@ const App = (): React.ReactElement => {
     }
   }, [executiveError]);
 
-  if (authFirstLoading) {
-    return <Loading loading />;
-  }
-
   return (
     <>
       <UserContext.Provider value={user}>
@@ -145,20 +142,24 @@ const App = (): React.ReactElement => {
             remove: removeClipCount,
           }}
         >
-          <Loading loading={memberLoading || executiveLoading} />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Outlet />}>
-                <Route index element={<Home />} />
-                <Route path="/member" element={<MemberLayout />}>
-                  <Route index element={<MemberHome />} />
-                  <Route path="register" element={<Register />} />
+          <Loading
+            loading={authFirstLoading || memberLoading || executiveLoading}
+          />
+          {!authFirstLoading && (
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Outlet />}>
+                  <Route index element={<Home />} />
+                  <Route path="/member" element={<MemberLayout />}>
+                    <Route index element={<MemberHome />} />
+                    <Route path="register" element={<Register />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Route>
                   <Route path="*" element={<NotFound />} />
                 </Route>
-                <Route path="*" element={<NotFound />} />
-              </Route>
-            </Routes>
-          </BrowserRouter>
+              </Routes>
+            </BrowserRouter>
+          )}
         </ClipCountContext.Provider>
       </UserContext.Provider>
       <ToastContainer closeButton={BulmaCloseBtn} />

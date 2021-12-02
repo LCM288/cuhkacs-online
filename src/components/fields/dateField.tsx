@@ -27,7 +27,10 @@ const DateField = ({
 
   return (
     <Field>
-      <Label>{label}</Label>
+      <Label>
+        {label}
+        {required && "*"}
+      </Label>
       <Control>
         <DayPickerInput
           component={(props: unknown) => (

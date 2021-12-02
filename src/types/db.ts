@@ -16,6 +16,7 @@ export type Member = {
   };
   memberStatus?: {
     since: number;
+    lastRenewed: number;
     until: number;
   };
   createdAt: number;

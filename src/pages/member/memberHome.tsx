@@ -1,13 +1,14 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useEffect } from "react";
 import { DateTime } from "luxon";
 import { Link, Navigate } from "react-router-dom";
 import { Button, Heading } from "react-bulma-components";
 import ReactMarkdown from "react-markdown";
 import IndexWrapper from "components/indexWrapper";
 import useUserStatus from "utils/useUserStatus";
-import { ref, onValue, DataSnapshot, off } from "firebase/database";
-import { database } from "utils/firebase";
+import { useGetAndListen } from "utils/firebase";
 import { appName } from "utils/const";
+import { toast } from "react-toastify";
+import { useSetTitle } from "utils/miscHooks";
 
 const MemberHome = (): React.ReactElement => {
   const userStatus = useUserStatus();
@@ -56,37 +57,36 @@ const MemberHome = (): React.ReactElement => {
     }
   }, [userStatus]);
 
-  const [customMessage, setCustomMessage] = useState<string | null>(null);
-  const [welcomeMessage, setWelcomeMessage] = useState<string | null>(null);
+  const {
+    data: customMessage,
+    error: customMessageError,
+    loading: customMessageLoading,
+  } = useGetAndListen<string>(`publicMessages/${customMessageKey}`);
+  const {
+    data: welcomeMessage,
+    error: welcomeMessageError,
+    loading: welcomeMessageLoading,
+  } = useGetAndListen<string>(`publicMessages/welcome`);
 
   useEffect(() => {
-    const customMessageRef = ref(
-      database,
-      `publicMessages/${customMessageKey}`
-    );
-    const customMessageCallback = (snapshot: DataSnapshot) => {
-      setCustomMessage(snapshot.val() ?? "");
-    };
-    onValue(customMessageRef, customMessageCallback);
-    return () => off(customMessageRef, "value", customMessageCallback);
-  }, [customMessageKey]);
+    if (customMessageError) {
+      console.error(customMessageError);
+      toast.info("Failed to get message.");
+    }
+  }, [customMessageError]);
 
   useEffect(() => {
-    const welcomeMessageRef = ref(database, `publicMessages/welcome`);
-    const welcomeMessageCallback = (snapshot: DataSnapshot) => {
-      setWelcomeMessage(snapshot.val() ?? "");
-    };
-    onValue(welcomeMessageRef, welcomeMessageCallback);
-    return () => off(welcomeMessageRef, "value", welcomeMessageCallback);
-  });
+    if (welcomeMessageError) {
+      console.error(welcomeMessageError);
+      toast.info("Failed to get message.");
+    }
+  }, [welcomeMessageError]);
 
-  useEffect(() => {
-    document.title = `Welcome to ${appName}`;
-  });
+  useSetTitle(`Welcome to ${appName}`);
 
   const isLoading = useMemo(
-    () => customMessage === null || welcomeMessage === null,
-    [customMessage, welcomeMessage]
+    () => customMessageLoading || welcomeMessageLoading,
+    [customMessageLoading, welcomeMessageLoading]
   );
 
   if (!userStatus) {

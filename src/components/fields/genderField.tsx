@@ -24,7 +24,7 @@ const GenderField = ({ gender, setGender }: Props): React.ReactElement => {
       },
       {
         value: "other",
-        label: "Other / Prefer not to say",
+        label: "Other",
       },
     ],
     []
@@ -47,7 +47,7 @@ const GenderField = ({ gender, setGender }: Props): React.ReactElement => {
       options={genderOptions}
       inputValue={gender}
       onChange={onChange}
-      required
+      isClearable
     />
   );
 };

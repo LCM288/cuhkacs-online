@@ -15,6 +15,7 @@ interface Props<SelectOption extends { value: string }> {
   defaultOption?: SelectOption;
   isLoading?: boolean;
   required?: boolean;
+  isClearable?: boolean;
 }
 
 const SelectField = <
@@ -30,10 +31,14 @@ const SelectField = <
   filterOption,
   isLoading = false,
   required = false,
+  isClearable = false,
 }: Props<SelectOption>): React.ReactElement => {
   return (
     <Field>
-      <Label>{label}</Label>
+      <Label>
+        {label}
+        {required && "*"}
+      </Label>
       <div>
         <ReactSelect
           instanceId={label}
@@ -44,6 +49,7 @@ const SelectField = <
           onChange={onChange}
           formatOptionLabel={formatOptionLabel}
           isLoading={isLoading}
+          isClearable={isClearable}
           styles={{
             input: (provided) => ({
               ...provided,

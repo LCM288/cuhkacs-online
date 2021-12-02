@@ -6,7 +6,7 @@ import React, {
   useMemo,
 } from "react";
 import { Button, Section, Container, Heading } from "react-bulma-components";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import DOEntryField from "components/fields/doEntryField";
 import TextField from "components/fields/textField";
 import CollegeField from "components/fields/collegeField";
@@ -18,9 +18,14 @@ import Loading from "components/loading";
 import { PreventDefaultForm } from "utils/domEventHelpers";
 import useUserStatus from "utils/useUserStatus";
 import PromptModal from "components/promptModal";
+import { database } from "utils/firebase";
+import { ref, update, serverTimestamp } from "firebase/database";
+import { toast } from "react-toastify";
+import { useSetTitle } from "utils/miscHooks";
 
 const Register = (): React.ReactElement => {
   const userStatus = useUserStatus();
+  const navigate = useNavigate();
 
   const [chineseName, setChineseName] = useState<string>("");
   const [gender, setGender] = useState<string | null>(null);
@@ -32,7 +37,7 @@ const Register = (): React.ReactElement => {
   const [doEntry, setDoEntry] = useState<string | null>(null);
   const [doGrad, setDoGrad] = useState<string | null>(null);
   const userLoaded = useRef(false);
-  const [isSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const setData = useCallback(() => {
     const member = userStatus?.member;
@@ -55,18 +60,71 @@ const Register = (): React.ReactElement => {
     }
   }, [userStatus?.member, setData]);
 
-  const onSubmit = useCallback(() => {
-    // Todo
-  }, []);
+  const onSubmit = useCallback(
+    (newMemberData: {
+      sid: string;
+      name: {
+        chi: string | null;
+        eng: string | null;
+      };
+      gender: string | null;
+      dob: string | null;
+      email: string | null;
+      phone: string | null;
+      studentStatus: {
+        college: string | null;
+        major: string | null;
+        entryDate: string | null;
+        gradDate: string | null;
+      };
+    }) => {
+      if (!newMemberData.name.eng) {
+        toast.error("English name is missing.");
+        return;
+      }
+      if (!newMemberData.studentStatus.college) {
+        toast.error("College is missing.");
+        return;
+      }
+      if (!newMemberData.studentStatus.major) {
+        toast.error("Major is missing.");
+        return;
+      }
+      if (!newMemberData.studentStatus.entryDate) {
+        toast.error("Date of entry is missing.");
+        return;
+      }
+      if (!newMemberData.studentStatus.gradDate) {
+        toast.error("Date of graduation is missing.");
+        return;
+      }
+      setIsSubmitting(true);
+      update(ref(database, `members/${newMemberData.sid}`), {
+        ...newMemberData,
+        ...(!userStatus?.member && { createdAt: serverTimestamp() }),
+        updatedAt: serverTimestamp(),
+      })
+        .then(() => {
+          toast.success("You registration has been saved.");
+          navigate("/member");
+        })
+        .catch((err) => {
+          console.error(err);
+          toast.error("Your registration is not saved due to error.");
+        })
+        .finally(() => {
+          setIsSubmitting(false);
+        });
+    },
+    [userStatus?.member, navigate]
+  );
 
   const submitButtonText = useMemo(
     () => (userStatus?.member ? "Update" : "Register"),
     [userStatus?.member]
   );
 
-  useEffect(() => {
-    document.title = `Member Registration`;
-  });
+  useSetTitle(`Member Registration`);
 
   const [shouldPromptReset, setShouldPromptReset] = useState(false);
 
@@ -100,21 +158,38 @@ const Register = (): React.ReactElement => {
         <Container>
           <Heading>Register</Heading>
           <PreventDefaultForm
-            onSubmit={
-              () => onSubmit()
-              // TODO
+            onSubmit={() =>
+              onSubmit({
+                sid: userStatus.sid,
+                name: {
+                  chi: chineseName || null,
+                  eng: userStatus.displayName,
+                },
+                gender: gender || null,
+                dob: dob || null,
+                email: email || null,
+                phone: phone || null,
+                studentStatus: {
+                  college: collegeCode,
+                  major: majorCode,
+                  entryDate: doEntry,
+                  gradDate: doGrad,
+                },
+              })
             }
           >
             <>
               <TextField
-                value={userStatus?.sid}
+                value={userStatus.sid}
                 pattern="^\d{10}$"
                 label="Student ID"
+                required
               />
               <TextField
-                value={userStatus?.displayName ?? ""}
+                value={userStatus.displayName ?? ""}
                 label="English Name"
                 placeholder="English Name as in CU Link Card"
+                required
               />
               <TextField
                 value={chineseName}
@@ -144,7 +219,7 @@ const Register = (): React.ReactElement => {
                 label="Phone Number"
                 placeholder="Phone Number"
                 type="tel"
-                pattern="(?:\+[0-9]{2,3}-[0-9]{1,15})|(?:[0-9]{8})"
+                pattern="\+?\d+(-\d+)*"
                 editable
               />
               <CollegeField

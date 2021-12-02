@@ -1,13 +1,15 @@
-import React, { useMemo, useCallback, useEffect, useState } from "react";
+import React, { useMemo, useCallback, useEffect } from "react";
 import { signInWithPopup, OAuthProvider } from "firebase/auth";
-import { ref, onValue, DataSnapshot, off } from "firebase/database";
-import { auth, database } from "utils/firebase";
+import { auth } from "utils/firebase";
 import { Heading, Button } from "react-bulma-components";
 import useUserStatus from "utils/useUserStatus";
 import { Navigate } from "react-router-dom";
 import IndexWrapper from "components/indexWrapper";
 import ReactMarkdown from "react-markdown";
 import { appName } from "utils/const";
+import { useGetAndListen } from "utils/firebase";
+import { toast } from "react-toastify";
+import { useSetTitle } from "utils/miscHooks";
 
 const Home = (): React.ReactElement => {
   const userStatus = useUserStatus();
@@ -24,20 +26,20 @@ const Home = (): React.ReactElement => {
     signInWithPopup(auth, provider).catch((error) => console.error(error));
   }, [provider]);
 
-  const [welcomeMessage, setWelcomeMessage] = useState<string | null>(null);
-  const loading = useMemo(() => welcomeMessage === null, [welcomeMessage]);
+  const {
+    data: welcomeMessage,
+    error: welcomeMessageError,
+    loading,
+  } = useGetAndListen<string>(`publicMessages/welcome`);
 
   useEffect(() => {
-    const welcomeMessageRef = ref(database, `publicMessages/welcome`);
-    const welcomeMessageCallback = (snapshot: DataSnapshot) => {
-      setWelcomeMessage(snapshot.val() ?? "");
-    };
-    onValue(welcomeMessageRef, welcomeMessageCallback);
-    return () => off(welcomeMessageRef, "value", welcomeMessageCallback);
-  });
-  useEffect(() => {
-    document.title = `Welcome to ${appName}`;
-  });
+    if (welcomeMessageError) {
+      console.error(welcomeMessageError);
+      toast.info("Failed to get message.");
+    }
+  }, [welcomeMessageError]);
+
+  useSetTitle(`Welcome to ${appName}`);
 
   if (userStatus) {
     return (

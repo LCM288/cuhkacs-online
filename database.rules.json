@@ -3,11 +3,11 @@
     ".read": false,
     ".write": false,
     "members": {
-      ".read": "auth !== null && auth.token !== null && auth.token.email.endsWith('@link.cuhk.edu.hk') && root.child('executives').child(auth.token.email.replace('@link.cuhk.edu.hk', '')).exists()",
-      ".write": "auth !== null && auth.token !== null && auth.token.email.endsWith('@link.cuhk.edu.hk') && root.child('executives').child(auth.token.email.replace('@link.cuhk.edu.hk', '')).exists()",
+      ".read": "auth.token.email.endsWith('@link.cuhk.edu.hk') && root.child('executives').child(auth.token.email.replace('@link.cuhk.edu.hk', '')).exists()",
+      ".write": "auth.token.email.endsWith('@link.cuhk.edu.hk') && root.child('executives').child(auth.token.email.replace('@link.cuhk.edu.hk', '')).exists()",
       "$sid": {
-        ".read": "auth !== null && auth.token !== null && auth.token.email.endsWith('@link.cuhk.edu.hk') && auth.token.email.replace('@link.cuhk.edu.hk', '') === $sid",
-        ".write": "auth !== null && auth.token !== null && auth.token.email.endsWith('@link.cuhk.edu.hk') && auth.token.email.replace('@link.cuhk.edu.hk', '') === $sid && data.child('memberStatus').child('since').val() !== null",
+        ".read": "auth.token.email.endsWith('@link.cuhk.edu.hk') && auth.token.email.replace('@link.cuhk.edu.hk', '') === $sid",
+        ".write": "auth.token.email.endsWith('@link.cuhk.edu.hk') && auth.token.email.replace('@link.cuhk.edu.hk', '') === $sid && (!data.child('memberStatus').child('since').exists() || data.child('memberStatus').child('until').val() < now)",
         ".validate": "newData.hasChildren(['sid', 'name', 'studentStatus', 'createdAt', 'updatedAt'])",
         "sid": {
           ".validate": "newData.isString() && newData.val() === $sid"
@@ -15,26 +15,26 @@
         "name": {
           ".validate": "newData.hasChildren(['eng'])",
           "chi": {
-            ".validate": "newData.isString()"
+            ".validate": "!newData.exists() || (newData.isString() && newData.val().length < 50)"
           },
           "eng": {
-            ".validate": "newData.isString()"
+            ".validate": "newData.isString() && newData.val().length < 100"
           },
           "$other": {
             ".validate": false
           }
         },
         "gender": {
-          ".validate": "newData.isString() && newData.val().matches(/^((fe)?male|others)$/)"
+          ".validate": "!newData.exists() || (newData.isString() && newData.val().matches(/^((fe)?male|other)$/))"
         },
         "dob": {
-          ".validate": "newData.isString() && newData.val().matches(/^\\d{4}-\\d{2}-\\d{2}$/)"
+          ".validate": "!newData.exists() || newData.isString() && newData.val().matches(/^\\d{4}-\\d{2}-\\d{2}$/)"
         },
         "email": {
-          ".validate": "newData.isString() && newData.val().contains('@')"
+          ".validate": "!newData.exists() || (newData.isString() && newData.val().contains('@') && newData.val().length < 256)"
         },
         "phone": {
-          ".validate": "newData.isString() && newData.val().matches(/^\\+?\\d+(-\\d+)*$/)"
+          ".validate": "!newData.exists() || (newData.isString() && newData.val().matches(/^\\+?\\d+(-\\d+)*$/) && newData.val().length < 256)"
         },
         "studentStatus": {
           ".validate": "newData.hasChildren(['college', 'major', 'entryDate', 'gradDate'])",
@@ -42,7 +42,7 @@
             ".validate": "newData.isString() && newData.val().matches(/^(CC|NA|UC|SC|WYS|WS|SH|MC|CW|NO)$/)"
           },
           "major": {
-            ".validate": "newData.isString() && newData.val().matches(/^\\w+$/)"
+            ".validate": "newData.isString() && newData.val().matches(/^\\w+$/) && newData.val().length < 256"
           },
           "entryDate": {
             ".validate": "newData.isString() && newData.val().matches(/^\\d{4}-\\d{2}-\\d{2}$/)"
@@ -55,12 +55,15 @@
           }
         },
         "memberStatus": {
-          ".validate": "newData.hasChildren(['since', 'until']) && auth !== null && auth.token !== null && auth.token.email.endsWith('@link.cuhk.edu.hk') && root.child('executives').child(auth.token.email.replace('@link.cuhk.edu.hk', '')).exists()",
+          ".validate": "newData.hasChildren(['since', 'lastRenewed', 'until']) && auth !== null && auth.token !== null && auth.token.email.endsWith('@link.cuhk.edu.hk') && root.child('executives').child(auth.token.email.replace('@link.cuhk.edu.hk', '')).exists()",
           "since": {
-            ".validate": "newData.isNumber()"
+            ".validate": "(!data.exists() && newData.isNumber() && newData.val() > now - 1000 && newData.val() < now + 1000) || data.val() === newData.val()"
+          },
+          "lastRenewed": {
+            ".validate": "((!data.exists() || newData.parent().child('until').val() > data.parent().child('until').val()) && newData.isNumber() && newData.val() > now - 1000 && newData.val() < now + 1000) || (newData.parent().child('until').val() <= data.parent().child('until').val() && data.val() === newData.val())"
           },
           "until": {
-            ".validate": "newData.isNumber()"
+            ".validate": "(newData.isNumber() && newData.val() > now) || data.val() === newData.val()"
           },
           "$other": {
             ".validate": false

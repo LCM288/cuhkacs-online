@@ -27,7 +27,10 @@ const TextField = ({
   return (
     <>
       <Field>
-        <Label>{label}</Label>
+        <Label>
+          {label}
+          {required && "*"}
+        </Label>
         <Control>
           <Input
             placeholder={placeholder}
