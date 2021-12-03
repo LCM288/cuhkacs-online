@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useMemo } from "react";
+import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth, connectAuthEmulator } from "firebase/auth";
@@ -114,8 +114,8 @@ export const useLazyGetServer = <T = unknown>(): {
   const [pathOrRef, setPathOrRef] = useState<string | DatabaseReference | null>(
     null
   );
-  const [res, setRes] = useState<(data: T) => void>(() => {});
-  const [rej, setRej] = useState<(err: Error) => void>(() => {});
+  const res = useRef<(data: T) => void>(() => {});
+  const rej = useRef<(err: Error) => void>(() => {});
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<T | undefined>(undefined);
   const [error, setError] = useState<Error | undefined>(undefined);
@@ -131,39 +131,37 @@ export const useLazyGetServer = <T = unknown>(): {
       setData(undefined);
       setError(undefined);
       return new Promise<T>((resolve, reject) => {
-        setRes(() => resolve);
-        setRej(() => reject);
+        res.current = resolve;
+        rej.current = reject;
       });
     },
     []
   );
   const clear = useCallback(() => {
-    if (rej) {
-      rej(new Error("Query Cleared"));
-    }
+    rej.current(new Error("Query Cleared"));
     setPathOrRef(null);
-    setRes(() => () => {});
-    setRej(() => () => {});
+    res.current = () => {};
+    rej.current = () => {};
     setLoading(false);
     setData(undefined);
     setError(undefined);
-  }, [rej]);
+  }, []);
   useEffect(() => {
     if (reference) {
       get(reference)
         .then((snapshot) => {
           const value = snapshot.val();
           setData(value);
-          res(value);
+          res.current(value);
           setLoading(false);
         })
         .catch((err) => {
           setError(err);
-          rej(err);
+          rej.current(err);
           setLoading(false);
         });
     }
-  }, [reference, res, rej]);
+  }, [reference]);
   return { loading, data, error, getServer, clear };
 };
 
@@ -181,8 +179,8 @@ export const useLazyGetAndListen = <T = unknown>(): {
     null
   );
   const [options, setOptions] = useState<ListenOptions>({});
-  const [res, setRes] = useState<(data: T) => void>(() => {});
-  const [rej, setRej] = useState<(err: Error) => void>(() => {});
+  const res = useRef<(data: T) => void>(() => {});
+  const rej = useRef<(err: Error) => void>(() => {});
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<T | undefined>(undefined);
   const [error, setError] = useState<Error | undefined>(undefined);
@@ -202,24 +200,22 @@ export const useLazyGetAndListen = <T = unknown>(): {
       setData(undefined);
       setError(undefined);
       return new Promise<T>((resolve, reject) => {
-        setRes(() => resolve);
-        setRej(() => reject);
+        res.current = resolve;
+        rej.current = reject;
       });
     },
     []
   );
   const clear = useCallback(() => {
-    if (rej) {
-      rej(new Error("Query Cleared"));
-    }
+    rej.current(new Error("Query Cleared"));
     setPathOrRef(null);
     setOptions({});
-    setRes(() => () => {});
-    setRej(() => () => {});
+    res.current = () => {};
+    rej.current = () => {};
     setLoading(false);
     setData(undefined);
     setError(undefined);
-  }, [rej]);
+  }, []);
   useEffect(() => {
     if (reference) {
       const unsubscribe = onValue(
@@ -227,19 +223,19 @@ export const useLazyGetAndListen = <T = unknown>(): {
         (snapshot) => {
           const value = snapshot.val();
           setData(value);
-          res(value);
+          res.current(value);
           setLoading(false);
         },
         (err) => {
           setError(err);
-          rej(err);
+          rej.current(err);
           setLoading(false);
         },
         options
       );
       return unsubscribe;
     }
-  }, [reference, options, res, rej]);
+  }, [reference, options]);
   return { loading, data, error, getAndListen, clear };
 };
 

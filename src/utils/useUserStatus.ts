@@ -5,8 +5,8 @@ import { Member, Executive } from "types/db";
 export type UserStatus = {
   sid: string;
   displayName: string | null;
-  member?: Member;
-  executive?: Executive;
+  member: Member | null;
+  executive: Executive | null;
   // The following four are mutually exclusive.
   isActive: boolean;
   isExpired: boolean;

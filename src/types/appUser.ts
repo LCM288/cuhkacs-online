@@ -1,8 +1,8 @@
-import { User } from "firebase/auth";
 import { Member, Executive } from "types/db";
 
-export type AppUser = User & {
-  sid?: string;
-  member?: Member;
-  executive?: Executive;
+export type AppUser = {
+  sid: string;
+  displayName: string;
+  member: Member | null;
+  executive: Executive | null;
 };

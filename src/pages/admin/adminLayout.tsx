@@ -1,12 +1,14 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Navbar, Button } from "react-bulma-components";
-import { Link, Outlet } from "react-router-dom";
+import { Navigate, Link, Outlet } from "react-router-dom";
 import { appName } from "utils/const";
 import { signOut } from "firebase/auth";
 import { auth } from "utils/firebase";
 import { toast } from "react-toastify";
+import useUserStatus from "utils/useUserStatus";
 
 const AdminLayout: React.FunctionComponent = () => {
+  const userStatus = useUserStatus();
   const navBarRef = useRef<HTMLDivElement | null>(null);
   const [isActive, setActive] = useState(false);
 
@@ -40,6 +42,10 @@ const AdminLayout: React.FunctionComponent = () => {
       toast.success("You have logged out successfully");
     });
   }, []);
+
+  if (!userStatus?.executive) {
+    return <Navigate to="/" replace />;
+  }
 
   return (
     <div>

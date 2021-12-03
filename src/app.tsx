@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged, signOut, User } from "firebase/auth";
 import type { AppUser } from "types/appUser";
 import type { Member, Executive } from "types/db";
 import { ToastContainer } from "react-toastify";
@@ -28,8 +28,14 @@ const BulmaCloseBtn = ({
   closeToast: () => void;
 }): React.ReactElement => <button onClick={closeToast} className="delete" />;
 
+const getSidOfUser = (user: User): string =>
+  user.email?.endsWith("@link.cuhk.edu.hk")
+    ? user.email.replace("@link.cuhk.edu.hk", "")
+    : "";
+
 const App = (): React.ReactElement => {
-  const [user, setUser] = useState<AppUser | null>(auth.currentUser);
+  const [authUser, setAuthUser] = useState<User | null>(auth.currentUser);
+  const [user, setUser] = useState<AppUser | null>(null);
   const {
     loading: memberLoading,
     data: memberData,
@@ -46,9 +52,18 @@ const App = (): React.ReactElement => {
   } = useLazyGetAndListen<Executive | null>();
 
   const clipCount = useRef(0);
+
   const [authFirstLoading, setAuthFirstLoading] = useState(true);
-  const [memberFirstLoading, setMemberFirstLoading] = useState(true);
-  const [executiveFirstLoading, setExecutiveFirstLoading] = useState(true);
+  const authFirstLoadingRef = useRef(true);
+
+  const authFirstLoadingFinishedCallbackRef = useRef(() => {
+    setAuthFirstLoading(false);
+    authFirstLoadingRef.current = false;
+  });
+  const getAndListenMemberRef = useRef(getAndListenMember);
+  const clearListenMemberRef = useRef(clearListenMember);
+  const getAndListenExecutiveRef = useRef(getAndListenExecutive);
+  const clearListenExecutiveRef = useRef(clearListenExecutive);
 
   const addClipCount = useCallback(() => {
     if (clipCount.current === 0) {
@@ -65,77 +80,37 @@ const App = (): React.ReactElement => {
   }, []);
 
   useEffect(() => {
-    if (authFirstLoading) {
-      onAuthStateChanged(auth, (newUser) => {
-        if (newUser) {
-          if (!newUser.email?.endsWith("@link.cuhk.edu.hk")) {
-            signOut(auth);
-            toast.error(`Login error, cannot get sid`);
-          } else {
-            if (!authFirstLoading) {
-              toast.success(
-                `You have successfully signed in as ${
-                  newUser.displayName ?? "user"
-                }`
-              );
-            } else {
-              setMemberFirstLoading(true);
-              setExecutiveFirstLoading(true);
-            }
-            const sid = newUser.email.replace("@link.cuhk.edu.hk", "");
-            setUser({
-              ...newUser,
-              sid,
-            });
-            // Errors will be handled elsewhere
-            getAndListenMember(`members/${sid}`)
-              .catch(() => {})
-              .finally(() => {
-                setMemberFirstLoading(false);
-              });
-            getAndListenExecutive(`executives/${sid}`)
-              .catch(() => {})
-              .finally(() => {
-                setExecutiveFirstLoading(false);
-              });
-          }
+    console.log("this should appears only once");
+    onAuthStateChanged(auth, (newUser) => {
+      if (newUser) {
+        if (!newUser.email?.endsWith("@link.cuhk.edu.hk")) {
+          signOut(auth);
+          toast.error(`Login error, cannot get sid`);
         } else {
-          setUser(null);
-          clearListenMember();
-          clearListenExecutive();
+          if (!authFirstLoadingRef.current) {
+            toast.success(
+              `You have successfully signed in as ${
+                newUser.displayName ?? "user"
+              }`
+            );
+          }
+          setAuthUser(newUser);
+          const sid = getSidOfUser(newUser);
+          // Errors will be handled elsewhere
+          getAndListenMemberRef.current(`members/${sid}`).catch(() => {});
+          getAndListenExecutiveRef.current(`executives/${sid}`).catch(() => {});
         }
-        setAuthFirstLoading(false);
-      });
-    }
-  }, [
-    authFirstLoading,
-    clearListenMember,
-    clearListenExecutive,
-    getAndListenMember,
-    getAndListenExecutive,
-  ]);
-
-  useEffect(() => {
-    setUser((prevUser) =>
-      prevUser
-        ? {
-            ...prevUser,
-            member: memberData ?? undefined,
-          }
-        : prevUser
-    );
-  }, [memberData]);
-
-  useEffect(() => {
-    setUser((prevUser) =>
-      prevUser
-        ? {
-            ...prevUser,
-            executive: executiveData ?? undefined,
-          }
-        : prevUser
-    );
-  }, [executiveData]);
+      } else {
+        setAuthUser(null);
+        setUser(null);
+        clearListenMemberRef.current();
+        clearListenExecutiveRef.current();
+        if (authFirstLoadingRef.current) {
+          authFirstLoadingFinishedCallbackRef.current();
+        }
+      }
+    });
+  }, []);
 
   useEffect(() => {
     if (memberError) {
@@ -151,6 +126,20 @@ const App = (): React.ReactElement => {
     }
   }, [executiveError]);
 
+  useEffect(() => {
+    if (authUser && memberData !== undefined && executiveData !== undefined) {
+      setUser({
+        sid: getSidOfUser(authUser),
+        displayName: executiveData?.displayName ?? authUser.displayName ?? "",
+        member: memberData,
+        executive: executiveData,
+      });
+      if (authFirstLoadingRef.current) {
+        authFirstLoadingFinishedCallbackRef.current();
+      }
+    }
+  }, [authUser, memberData, executiveData]);
+
   return (
     <>
       <UserContext.Provider value={user}>
@@ -163,7 +152,7 @@ const App = (): React.ReactElement => {
           <Loading
             loading={authFirstLoading || memberLoading || executiveLoading}
           />
-          {!authFirstLoading && !memberFirstLoading && !executiveFirstLoading && (
+          {!authFirstLoading && (
             <BrowserRouter>
               <Routes>
                 <Route path="/" element={<Outlet />}>
