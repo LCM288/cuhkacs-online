@@ -6,7 +6,7 @@ import { signOut } from "firebase/auth";
 import { auth } from "utils/firebase";
 import { toast } from "react-toastify";
 
-const MemberLayout: React.FunctionComponent = () => {
+const AdminLayout: React.FunctionComponent = () => {
   const navBarRef = useRef<HTMLDivElement | null>(null);
   const [isActive, setActive] = useState(false);
 
@@ -45,7 +45,7 @@ const MemberLayout: React.FunctionComponent = () => {
     <div>
       <div ref={navBarRef}>
         <Navbar
-          color="warning"
+          color="info"
           fixed="top"
           active={isActive}
           onClick={() => {
@@ -53,8 +53,8 @@ const MemberLayout: React.FunctionComponent = () => {
           }}
         >
           <Navbar.Brand>
-            <Link to="/member" className="navbar-item">
-              {appName}
+            <Link to="/admin" className="navbar-item">
+              {appName} Admin
             </Link>
             <Navbar.Burger
               onClick={toggleActive}
@@ -67,11 +67,7 @@ const MemberLayout: React.FunctionComponent = () => {
           </Navbar.Brand>
           <Navbar.Menu>
             <Navbar.Container align="right">
-              <Navbar.Item
-                backgroundColor="danger"
-                className="has-text-white"
-                onClick={signOutCallback}
-              >
+              <Navbar.Item backgroundColor="danger" onClick={signOutCallback}>
                 Logout
               </Navbar.Item>
             </Navbar.Container>
@@ -85,4 +81,4 @@ const MemberLayout: React.FunctionComponent = () => {
   );
 };
 
-export default MemberLayout;
+export default AdminLayout;

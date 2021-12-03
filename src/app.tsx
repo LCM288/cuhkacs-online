@@ -7,6 +7,8 @@ import { ToastContainer } from "react-toastify";
 import { auth, useLazyGetAndListen } from "utils/firebase";
 import { toast } from "react-toastify";
 import Home from "pages/home";
+import AdminLayout from "pages/admin/adminLayout";
+import AdminHome from "pages/admin/adminHome";
 import MemberLayout from "pages/member/memberLayout";
 import MemberHome from "pages/member/memberHome";
 import Register from "pages/member/register";
@@ -45,6 +47,8 @@ const App = (): React.ReactElement => {
 
   const clipCount = useRef(0);
   const [authFirstLoading, setAuthFirstLoading] = useState(true);
+  const [memberFirstLoading, setMemberFirstLoading] = useState(true);
+  const [executiveFirstLoading, setExecutiveFirstLoading] = useState(true);
 
   const addClipCount = useCallback(() => {
     if (clipCount.current === 0) {
@@ -74,12 +78,26 @@ const App = (): React.ReactElement => {
                   newUser.displayName ?? "user"
                 }`
               );
+            } else {
+              setMemberFirstLoading(true);
+              setExecutiveFirstLoading(true);
             }
             const sid = newUser.email.replace("@link.cuhk.edu.hk", "");
-            setUser({ ...newUser, sid });
+            setUser({
+              ...newUser,
+              sid,
+            });
             // Errors will be handled elsewhere
-            getAndListenMember(`members/${sid}`).catch(() => {});
-            getAndListenExecutive(`executives/${sid}`).catch(() => {});
+            getAndListenMember(`members/${sid}`)
+              .catch(() => {})
+              .finally(() => {
+                setMemberFirstLoading(false);
+              });
+            getAndListenExecutive(`executives/${sid}`)
+              .catch(() => {})
+              .finally(() => {
+                setExecutiveFirstLoading(false);
+              });
           }
         } else {
           setUser(null);
@@ -145,7 +163,7 @@ const App = (): React.ReactElement => {
           <Loading
             loading={authFirstLoading || memberLoading || executiveLoading}
           />
-          {!authFirstLoading && (
+          {!authFirstLoading && !memberFirstLoading && !executiveFirstLoading && (
             <BrowserRouter>
               <Routes>
                 <Route path="/" element={<Outlet />}>
@@ -153,6 +171,10 @@ const App = (): React.ReactElement => {
                   <Route path="/member" element={<MemberLayout />}>
                     <Route index element={<MemberHome />} />
                     <Route path="register" element={<Register />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Route>
+                  <Route path="/admin" element={<AdminLayout />}>
+                    <Route index element={<AdminHome />} />
                     <Route path="*" element={<NotFound />} />
                   </Route>
                   <Route path="*" element={<NotFound />} />

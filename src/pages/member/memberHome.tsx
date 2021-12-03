@@ -97,7 +97,7 @@ const MemberHome = (): React.ReactElement => {
     <IndexWrapper>
       <>
         {isLoading && <Heading className="p-5 mb-0">Loading...</Heading>}
-        {<Heading className="p-5 mb-0">{appName}</Heading>}
+        <Heading className="p-5 mb-0">{appName}</Heading>
         <div className="mb-5">{greeting}</div>
         {welcomeMessage && (
           <div className="mb-5">
