@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useRef,
-  useCallback,
-  useEffect,
-  useMemo,
-} from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { Button, Section, Container, Heading } from "react-bulma-components";
 import { Navigate, useNavigate } from "react-router-dom";
 import DOEntryField from "components/fields/doEntryField";
@@ -36,7 +30,7 @@ const Register = (): React.ReactElement => {
   const [majorCode, setMajorCode] = useState<string | null>(null);
   const [doEntry, setDoEntry] = useState<string | null>(null);
   const [doGrad, setDoGrad] = useState<string | null>(null);
-  const userLoaded = useRef(false);
+  const [userLoaded, setUserLoaded] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const setData = useCallback(() => {
@@ -54,11 +48,11 @@ const Register = (): React.ReactElement => {
   }, [userStatus?.sid, userStatus?.member]);
 
   useEffect(() => {
-    if (!userLoaded.current && userStatus?.member) {
+    if (!userLoaded && userStatus?.member) {
       setData();
-      userLoaded.current = true;
+      setUserLoaded(true);
     }
-  }, [userStatus?.member, setData]);
+  }, [userStatus?.member, setData, userLoaded]);
 
   const onSubmit = useCallback(
     (newMemberData: {
@@ -111,8 +105,6 @@ const Register = (): React.ReactElement => {
         .catch((err) => {
           console.error(err);
           toast.error("Your registration is not saved due to error.");
-        })
-        .finally(() => {
           setIsSubmitting(false);
         });
     },
