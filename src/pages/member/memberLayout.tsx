@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { Navbar } from "react-bulma-components";
+import { Button, Navbar } from "react-bulma-components";
 import { Link, Outlet } from "react-router-dom";
 import { appName } from "utils/const";
 import { signOut } from "firebase/auth";
@@ -67,13 +67,13 @@ const MemberLayout: React.FunctionComponent = () => {
           </Navbar.Brand>
           <Navbar.Menu>
             <Navbar.Container align="right">
-              <Navbar.Item
-                backgroundColor="danger"
-                className="has-text-white"
+              <Button
+                color="danger"
+                className="is-align-self-center"
                 onClick={signOutCallback}
               >
                 Logout
-              </Navbar.Item>
+              </Button>
             </Navbar.Container>
           </Navbar.Menu>
         </Navbar>

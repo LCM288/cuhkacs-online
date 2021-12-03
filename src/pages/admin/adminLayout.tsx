@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { Navbar } from "react-bulma-components";
+import { Navbar, Button } from "react-bulma-components";
 import { Link, Outlet } from "react-router-dom";
 import { appName } from "utils/const";
 import { signOut } from "firebase/auth";
@@ -66,10 +66,45 @@ const AdminLayout: React.FunctionComponent = () => {
             />
           </Navbar.Brand>
           <Navbar.Menu>
-            <Navbar.Container align="right">
-              <Navbar.Item backgroundColor="danger" onClick={signOutCallback}>
-                Logout
+            <Navbar.Container>
+              <Navbar.Item hoverable role="menu" tabIndex={0}>
+                <Navbar.Link>Members</Navbar.Link>
+                <Navbar.Dropdown>
+                  <Link to="/admin/members/import" className="navbar-item">
+                    Import Members
+                  </Link>
+                  <Link to="/admin/members" className="navbar-item">
+                    Member List
+                  </Link>
+                  <Link to="/admin/registrations" className="navbar-item">
+                    Registration List
+                  </Link>
+                </Navbar.Dropdown>
               </Navbar.Item>
+
+              <Navbar.Item hoverable role="menu" tabIndex={0}>
+                <Navbar.Link>Admins</Navbar.Link>
+                <Navbar.Dropdown>
+                  <Link to="/admin/admins" className="navbar-item">
+                    Admin List
+                  </Link>
+                  <Link to="/admin/messages" className="navbar-item">
+                    Change Messages
+                  </Link>
+                  <Link to="/admin/logs" className="navbar-item">
+                    Check Logs
+                  </Link>
+                </Navbar.Dropdown>
+              </Navbar.Item>
+            </Navbar.Container>
+            <Navbar.Container align="right">
+              <Button
+                color="danger"
+                className="is-align-self-center"
+                onClick={signOutCallback}
+              >
+                Logout
+              </Button>
             </Navbar.Container>
           </Navbar.Menu>
         </Navbar>
