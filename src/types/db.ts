@@ -29,3 +29,8 @@ export type Executive = {
   createdAt: number;
   updatedAt: number;
 };
+
+export type Message = {
+  message: string;
+  updatedAt: number;
+};

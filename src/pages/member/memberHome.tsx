@@ -9,6 +9,7 @@ import { useGetAndListen } from "utils/firebase";
 import { appName } from "utils/const";
 import { toast } from "react-toastify";
 import { useSetTitle } from "utils/miscHooks";
+import { Message } from "types/db";
 
 const MemberHome = (): React.ReactElement => {
   const userStatus = useUserStatus();
@@ -61,12 +62,12 @@ const MemberHome = (): React.ReactElement => {
     data: customMessage,
     error: customMessageError,
     loading: customMessageLoading,
-  } = useGetAndListen<string>(`publicMessages/${customMessageKey}`);
+  } = useGetAndListen<Message>(`publicMessages/${customMessageKey}`);
   const {
     data: welcomeMessage,
     error: welcomeMessageError,
     loading: welcomeMessageLoading,
-  } = useGetAndListen<string>(`publicMessages/welcome`);
+  } = useGetAndListen<Message>(`publicMessages/welcome`);
 
   useEffect(() => {
     if (customMessageError) {
@@ -101,12 +102,12 @@ const MemberHome = (): React.ReactElement => {
         <div className="mb-5">{greeting}</div>
         {welcomeMessage && (
           <div className="mb-5">
-            <ReactMarkdown>{welcomeMessage}</ReactMarkdown>
+            <ReactMarkdown>{welcomeMessage.message}</ReactMarkdown>
           </div>
         )}
         {customMessage && (
           <div className="mb-5">
-            <ReactMarkdown>{customMessage}</ReactMarkdown>
+            <ReactMarkdown>{customMessage.message}</ReactMarkdown>
           </div>
         )}
         <Button.Group className="is-justify-content-center">

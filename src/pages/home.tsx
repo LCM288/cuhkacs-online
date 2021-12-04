@@ -10,6 +10,7 @@ import { appName } from "utils/const";
 import { useGetAndListen } from "utils/firebase";
 import { toast } from "react-toastify";
 import { useSetTitle } from "utils/miscHooks";
+import { Message } from "types/db";
 
 const Home = (): React.ReactElement => {
   const userStatus = useUserStatus();
@@ -30,7 +31,7 @@ const Home = (): React.ReactElement => {
     data: welcomeMessage,
     error: welcomeMessageError,
     loading,
-  } = useGetAndListen<string>(`publicMessages/welcome`);
+  } = useGetAndListen<Message>(`publicMessages/welcome`);
 
   useEffect(() => {
     if (welcomeMessageError) {
@@ -53,7 +54,7 @@ const Home = (): React.ReactElement => {
         <Heading className="p-5 mb-0">{appName}</Heading>
         {welcomeMessage && (
           <div className="mb-5">
-            <ReactMarkdown>{welcomeMessage}</ReactMarkdown>
+            <ReactMarkdown>{welcomeMessage.message}</ReactMarkdown>
           </div>
         )}
         <Button
