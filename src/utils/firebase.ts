@@ -10,6 +10,7 @@ import {
   onValue,
   get,
   ListenOptions,
+  update,
 } from "firebase/database";
 
 const firebaseConfig = {
@@ -258,4 +259,33 @@ export const useLazyGetCache = <T = unknown>(): {
     [getAndListen]
   );
   return { loading, data, error, getCache, clear };
+};
+
+export const useUpdate = <T = unknown>(
+  pathOrRef: string | DatabaseReference
+): {
+  loading: boolean;
+  error: Error | undefined;
+  update: (value: Partial<T>) => Promise<void>;
+} => {
+  const [loading, setLoading] = useState(0);
+  const [error, setError] = useState<Error | undefined>();
+  const reference = useMemo(
+    () =>
+      typeof pathOrRef === "string" ? ref(database, pathOrRef) : pathOrRef,
+    [pathOrRef]
+  );
+  const updateFn = useCallback(
+    (value: Partial<T>) => {
+      setLoading((prev) => prev + 1);
+      return update(reference, value)
+        .catch((err) => {
+          setError(err);
+          throw err;
+        })
+        .finally(() => setLoading((prev) => prev - 1));
+    },
+    [reference]
+  );
+  return { loading: loading !== 0, error, update: updateFn };
 };

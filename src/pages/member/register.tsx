@@ -12,8 +12,8 @@ import Loading from "components/loading";
 import { PreventDefaultForm } from "utils/domEventHelpers";
 import useUserStatus from "utils/useUserStatus";
 import PromptModal from "components/promptModal";
-import { database } from "utils/firebase";
-import { ref, update, serverTimestamp } from "firebase/database";
+import { useUpdate } from "utils/firebase";
+import { serverTimestamp } from "firebase/database";
 import { toast } from "react-toastify";
 import { useSetTitle } from "utils/miscHooks";
 
@@ -31,7 +31,9 @@ const Register = (): React.ReactElement => {
   const [doEntry, setDoEntry] = useState<string | null>(null);
   const [doGrad, setDoGrad] = useState<string | null>(null);
   const [userLoaded, setUserLoaded] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { loading: isSubmitting, update: updateMember } = useUpdate(
+    `members/${userStatus?.sid}`
+  );
 
   const setData = useCallback(() => {
     const member = userStatus?.member;
@@ -92,8 +94,7 @@ const Register = (): React.ReactElement => {
         toast.error("Date of graduation is missing.");
         return;
       }
-      setIsSubmitting(true);
-      update(ref(database, `members/${newMemberData.sid}`), {
+      updateMember({
         ...newMemberData,
         ...(!userStatus?.member && { createdAt: serverTimestamp() }),
         updatedAt: serverTimestamp(),
@@ -105,10 +106,9 @@ const Register = (): React.ReactElement => {
         .catch((err) => {
           console.error(err);
           toast.error("Your registration is not saved due to error.");
-          setIsSubmitting(false);
         });
     },
-    [userStatus?.member, navigate]
+    [userStatus?.member, navigate, updateMember]
   );
 
   const submitButtonText = useMemo(
