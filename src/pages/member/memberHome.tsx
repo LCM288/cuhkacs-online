@@ -97,8 +97,9 @@ const MemberHome = (): React.ReactElement => {
   return (
     <IndexWrapper>
       <>
-        {isLoading && <Heading className="p-5 mb-0">Loading...</Heading>}
-        <Heading className="p-5 mb-0">{appName}</Heading>
+        <Heading className="p-5 mb-0">
+          {isLoading ? "Loading..." : appName}
+        </Heading>
         <div className="mb-5">{greeting}</div>
         {welcomeMessage && (
           <div className="mb-5">
