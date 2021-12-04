@@ -2,7 +2,7 @@ import React, { useMemo, useEffect } from "react";
 import { DateTime } from "luxon";
 import { Link, Navigate } from "react-router-dom";
 import { Button, Heading } from "react-bulma-components";
-import ReactMarkdown from "react-markdown";
+import Markdown from "components/markdown";
 import IndexWrapper from "components/indexWrapper";
 import useUserStatus from "utils/useUserStatus";
 import { useGetAndListen } from "utils/firebase";
@@ -102,12 +102,12 @@ const MemberHome = (): React.ReactElement => {
         <div className="mb-5">{greeting}</div>
         {welcomeMessage && (
           <div className="mb-5">
-            <ReactMarkdown>{welcomeMessage.message}</ReactMarkdown>
+            <Markdown>{welcomeMessage.message}</Markdown>
           </div>
         )}
         {customMessage && (
           <div className="mb-5">
-            <ReactMarkdown>{customMessage.message}</ReactMarkdown>
+            <Markdown>{customMessage.message}</Markdown>
           </div>
         )}
         <Button.Group className="is-justify-content-center">

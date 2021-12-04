@@ -5,7 +5,7 @@ import { Heading, Button } from "react-bulma-components";
 import useUserStatus from "utils/useUserStatus";
 import { Navigate } from "react-router-dom";
 import IndexWrapper from "components/indexWrapper";
-import ReactMarkdown from "react-markdown";
+import Markdown from "components/markdown";
 import { appName } from "utils/const";
 import { useGetAndListen } from "utils/firebase";
 import { toast } from "react-toastify";
@@ -54,7 +54,7 @@ const Home = (): React.ReactElement => {
         <Heading className="p-5 mb-0">{appName}</Heading>
         {welcomeMessage && (
           <div className="mb-5">
-            <ReactMarkdown>{welcomeMessage.message}</ReactMarkdown>
+            <Markdown>{welcomeMessage.message}</Markdown>
           </div>
         )}
         <Button

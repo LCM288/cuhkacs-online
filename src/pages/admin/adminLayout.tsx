@@ -95,7 +95,7 @@ const AdminLayout: React.FunctionComponent = () => {
                     Admin List
                   </Link>
                   <Link to="/admin/messages" className="navbar-item">
-                    Change Messages
+                    Edit Messages
                   </Link>
                 </Navbar.Dropdown>
               </Navbar.Item>

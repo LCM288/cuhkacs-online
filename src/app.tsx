@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import Home from "pages/home";
 import AdminLayout from "pages/admin/adminLayout";
 import AdminHome from "pages/admin/adminHome";
+import EditMessages from "pages/admin/editMessages";
 import MemberLayout from "pages/member/memberLayout";
 import MemberHome from "pages/member/memberHome";
 import Register from "pages/member/register";
@@ -80,7 +81,6 @@ const App = (): React.ReactElement => {
   }, []);
 
   useEffect(() => {
-    console.log("this should appears only once");
     onAuthStateChanged(auth, (newUser) => {
       if (newUser) {
         if (!newUser.email?.endsWith("@link.cuhk.edu.hk")) {
@@ -164,6 +164,7 @@ const App = (): React.ReactElement => {
                   </Route>
                   <Route path="/admin" element={<AdminLayout />}>
                     <Route index element={<AdminHome />} />
+                    <Route path="messages" element={<EditMessages />} />
                     <Route path="*" element={<NotFound />} />
                   </Route>
                   <Route path="*" element={<NotFound />} />
