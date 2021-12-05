@@ -121,6 +121,7 @@ const EditMessages = (): React.ReactElement => {
         id: "value",
         Cell: ({
           row,
+          cell,
           value,
           isExpanded,
         }: MessagesCellProps<Record<string, unknown>, string> & {
@@ -130,9 +131,9 @@ const EditMessages = (): React.ReactElement => {
             messageKey={row.values.key as MessageMeta["key"]}
             type={row.values.type as MessageMeta["type"]}
             setEditValue={(newValue: string) => {
-              row.setState({ editingValue: newValue });
+              cell.setState({ editingValue: newValue });
             }}
-            editingValue={(row.state.editingValue ?? value) as string}
+            editingValue={cell.state.editingValue as string}
             value={value}
             windowWidth={windowWidth}
             isExpanded={isExpanded}
@@ -157,13 +158,19 @@ const EditMessages = (): React.ReactElement => {
     [messagesData]
   );
 
-  const tableInstance = useMessagesTable({
-    columns: tableColumns,
-    data: tableData,
-    initialState: {
-      hiddenColumns: alwaysHiddenColumns,
-    },
-  });
+  const tableOption = useMemo(
+    () => ({
+      columns: tableColumns,
+      data: tableData,
+      initialState: {
+        hiddenColumns: alwaysHiddenColumns,
+      },
+      autoResetRowState: false,
+    }),
+    [alwaysHiddenColumns, tableColumns, tableData]
+  );
+
+  const tableInstance = useMessagesTable(tableOption);
 
   const {
     getTableProps,
@@ -189,18 +196,6 @@ const EditMessages = (): React.ReactElement => {
 
   // set title
   useSetTitle("Edit Messages");
-
-  // const [toyValue, setToyValue] = useState("");
-  // return (
-  //   <MessageEditCell
-  //     key={messagesMeta[0].key}
-  //     type={messagesMeta[0].type}
-  //     setEditValue={setToyValue}
-  //     editingValue={toyValue}
-  //     value={""}
-  //     windowWidth={windowWidth}
-  //   />
-  // );
 
   if (!userStatus?.executive) {
     return <Navigate to="/member" replace />;

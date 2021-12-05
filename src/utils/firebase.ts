@@ -44,8 +44,6 @@ export const database = (() => {
   return db;
 })();
 
-const EMPTY_OBJ = {};
-
 export const useGetServer = <T = unknown>(
   pathOrRef: string | DatabaseReference
 ): { loading: boolean; data: T | undefined; error: Error | undefined } => {
@@ -73,7 +71,7 @@ export const useGetServer = <T = unknown>(
 
 export const useGetAndListen = <T = unknown>(
   pathOrRef: string | DatabaseReference,
-  options: ListenOptions = EMPTY_OBJ
+  options?: ListenOptions
 ): { loading: boolean; data: T | undefined; error: Error | undefined } => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<T | undefined>(undefined);
@@ -94,7 +92,7 @@ export const useGetAndListen = <T = unknown>(
         setError(err);
         setLoading(false);
       },
-      options
+      options ?? {}
     );
     return unsubscribe;
   }, [reference, options]);
@@ -103,7 +101,7 @@ export const useGetAndListen = <T = unknown>(
 
 export const useGetCache = <T = unknown>(
   pathOrRef: string | DatabaseReference,
-  options: ListenOptions = EMPTY_OBJ
+  options?: ListenOptions
 ): { loading: boolean; data: T | undefined; error: Error | undefined } => {
   const getCacheOption = useMemo(
     () => ({ ...options, onlyOnce: true }),
@@ -214,7 +212,7 @@ export const useLazyGetAndListen = <T = unknown>(): {
     },
     []
   );
-  const [options, setOptions] = useState<ListenOptions>(EMPTY_OBJ);
+  const [options, setOptions] = useState<ListenOptions | undefined>();
   const res = useRef<(data: T) => void>(() => {});
   const rej = useRef<(err: Error) => void>(() => {});
   const [loading, setLoading] = useState(true);
@@ -228,7 +226,7 @@ export const useLazyGetAndListen = <T = unknown>(): {
   const getAndListen = useCallback(
     (
       pathOrRefParam: string | DatabaseReference,
-      optionsParam: ListenOptions = EMPTY_OBJ
+      optionsParam?: ListenOptions
     ) => {
       updatePathOrRef(pathOrRefParam);
       setOptions(optionsParam);
@@ -245,7 +243,7 @@ export const useLazyGetAndListen = <T = unknown>(): {
   const clear = useCallback(() => {
     rej.current(new Error("Query Cleared"));
     updatePathOrRef(null);
-    setOptions(EMPTY_OBJ);
+    setOptions(undefined);
     res.current = () => {};
     rej.current = () => {};
     setLoading(false);
@@ -267,7 +265,7 @@ export const useLazyGetAndListen = <T = unknown>(): {
           rej.current(err);
           setLoading(false);
         },
-        options
+        options ?? {}
       );
       return unsubscribe;
     }
@@ -294,10 +292,7 @@ export const useLazyGetCache = <T = unknown>(): {
   const { loading, data, error, getAndListen, clear } =
     useLazyGetAndListen<T>();
   const getCache = useCallback(
-    (
-      pathOrRef: string | DatabaseReference,
-      options: ListenOptions = EMPTY_OBJ
-    ) => {
+    (pathOrRef: string | DatabaseReference, options?: ListenOptions) => {
       return getAndListen(pathOrRef, { ...options, onlyOnce: true });
     },
     [getAndListen]

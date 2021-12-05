@@ -1,17 +1,15 @@
 import { useEffect } from "react";
 import { cloneDeep, compact } from "lodash";
 
-const EMPTY_LIST: string[] = [];
-
 const useHideColumn = (
   width: number,
   hideColumnOrder: string[][],
   tableColumns: { id: string; width: number }[],
   setHiddenColumns: (param: string[]) => void,
-  alwaysHiddenColumns: string[] = EMPTY_LIST
+  alwaysHiddenColumns?: string[]
 ): void => {
   useEffect(() => {
-    let newHideColumn: string[] = alwaysHiddenColumns;
+    let newHideColumn: string[] = alwaysHiddenColumns ?? [];
     let maxWidth =
       70 +
       tableColumns.map((column) => column.width).reduce((a, b) => a + b, 0);

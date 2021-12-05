@@ -46,8 +46,10 @@ const MessageEditCell = ({
     if (editingValue === oldValue.current && editingValue !== value) {
       setEditValue(value);
     }
-    oldValue.current = value;
-  }, [editingValue, value, setEditValue]);
+    if (!isSaving) {
+      oldValue.current = value;
+    }
+  }, [editingValue, value, setEditValue, messageKey, isSaving]);
 
   useEffect(() => {
     if (isExpanded) {
@@ -60,14 +62,17 @@ const MessageEditCell = ({
     setEditValue(value);
   }, [value, setEditValue, forceRerender]);
 
-  const updateValue = useCallback(() => {
-    updateMessage(editingValue)
-      .then(() => toast.success(`${messageKey} message updated successfully`))
-      .catch((err) => {
-        console.error(err);
-        toast.error(err.message);
-      });
-  }, [updateMessage, messageKey, editingValue]);
+  const updateValue = useCallback(
+    (newValue: string) => {
+      updateMessage(newValue)
+        .then(() => toast.success(`${messageKey} message updated successfully`))
+        .catch((err) => {
+          console.error(err);
+          toast.error(err.message);
+        });
+    },
+    [updateMessage, messageKey]
+  );
 
   const simpleMDEOption: SimpleMDEReactProps["options"] = useMemo(
     () => ({
@@ -112,7 +117,7 @@ const MessageEditCell = ({
     () => (
       <Button
         color="success"
-        onClick={updateValue}
+        onClick={() => updateValue(editingValue)}
         loading={isSaving}
         disabled={value === editingValue}
       >
@@ -172,7 +177,7 @@ const MessageEditCell = ({
                 <SimpleMDE
                   id={messageKey}
                   key={forceRerenderCount}
-                  value={editingValue as string | undefined}
+                  value={editingValue}
                   onChange={setEditValue}
                   options={simpleMDEOption}
                 />
