@@ -126,7 +126,6 @@ const Admins = (): React.ReactElement => {
   if (!userStatus?.executive) {
     return <Navigate to="/member" replace />;
   }
-  console.log(Table);
 
   return (
     <>
