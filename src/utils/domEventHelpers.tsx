@@ -1,5 +1,9 @@
 import React from "react";
 
+export const stopEvent = (event: React.SyntheticEvent): void => {
+  event.stopPropagation();
+};
+
 export const prevent = (event: React.SyntheticEvent): void => {
   event.preventDefault();
 };
@@ -13,7 +17,7 @@ export const StopClickDiv = ({
   children,
 }: {
   children: React.ReactElement;
-}): React.ReactElement => <div onClick={stop}>{children}</div>;
+}): React.ReactElement => <div onClick={stopEvent}>{children}</div>;
 
 export const PreventDefaultForm = ({
   children,

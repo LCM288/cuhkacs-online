@@ -1,10 +1,7 @@
 import React, { useMemo, useState, useEffect } from "react";
 import useResizeAware from "react-resize-aware";
 import useMessagesTable, { MessagesCellProps } from "utils/useMessagesTable";
-import { Table } from "react-bulma-components";
 import MessageEditCell from "components/tables/messageEditCell";
-import TableRow from "components/tables/tableRow";
-import TableHead from "components/tables/tableHead";
 import Loading from "components/loading";
 import useHideColumn from "utils/useHideColumn";
 import { useGetAndListen } from "utils/firebase";
@@ -13,6 +10,7 @@ import { toast } from "react-toastify";
 import { useSetTitle } from "utils/miscHooks";
 import useUserStatus from "utils/useUserStatus";
 import { Navigate } from "react-router-dom";
+import Table from "components/tables/table";
 
 type MessageKey = "welcome" | "member" | "expired" | "registered" | "visitor";
 
@@ -121,7 +119,6 @@ const EditMessages = (): React.ReactElement => {
         id: "value",
         Cell: ({
           row,
-          cell,
           value,
           isExpanded,
         }: MessagesCellProps<Record<string, unknown>, string> & {
@@ -131,9 +128,9 @@ const EditMessages = (): React.ReactElement => {
             messageKey={row.values.key as MessageMeta["key"]}
             type={row.values.type as MessageMeta["type"]}
             setEditValue={(newValue: string) => {
-              cell.setState({ editingValue: newValue });
+              row.setState({ editingValue: newValue });
             }}
-            editingValue={cell.state.editingValue as string}
+            editingValue={row.state.editingValue as string}
             value={value}
             windowWidth={windowWidth}
             isExpanded={isExpanded}
@@ -204,28 +201,20 @@ const EditMessages = (): React.ReactElement => {
   return (
     <>
       {resizeListener}
-      <Table {...getTableProps()}>
-        <TableHead
-          headerGroups={headerGroups}
-          tableColumns={tableColumns}
-          tableSortable={false}
-        />
-        <tbody {...getTableBodyProps()}>
-          {rows.map((row) => {
-            prepareRow(row);
-            return (
-              <TableRow
-                key={row.id}
-                row={row}
-                allColumns={allColumns.filter(
-                  (column) => !alwaysHiddenColumns.includes(column.id)
-                )}
-                visibleColumns={visibleColumns}
-              />
-            );
-          })}
-        </tbody>
-      </Table>
+      <Table
+        getTableProps={getTableProps}
+        headerGroups={headerGroups}
+        tableColumns={tableColumns}
+        getTableBodyProps={getTableBodyProps}
+        rows={rows}
+        prepareRow={prepareRow}
+        allColumns={allColumns}
+        visibleColumns={visibleColumns}
+        windowWidth={windowWidth}
+        alwaysHiddenColumns={alwaysHiddenColumns}
+        size="fullwidth"
+        striped
+      />
       <Loading loading={loading} />
     </>
   );

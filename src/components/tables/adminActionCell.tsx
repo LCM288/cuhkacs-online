@@ -101,16 +101,18 @@ const AdminActionCell = ({ adminData }: Props): React.ReactElement => {
             cancelText="Back"
           />
         )}
-        <Button color="info" onClick={promptEdit}>
-          Edit
-        </Button>
-        <Button
-          color="danger"
-          onClick={promptDelete}
-          disabled={adminData.sid === userStatus?.sid}
-        >
-          Delete
-        </Button>
+        <Button.Group>
+          <Button color="info" onClick={promptEdit}>
+            Edit
+          </Button>
+          <Button
+            color="danger"
+            onClick={promptDelete}
+            disabled={adminData.sid === userStatus?.sid}
+          >
+            Delete
+          </Button>
+        </Button.Group>
         {!openEditModal && <Loading loading={loading} />}
       </>
     </StopClickDiv>

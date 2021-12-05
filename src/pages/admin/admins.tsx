@@ -2,12 +2,10 @@ import React, { useMemo, useState, useEffect } from "react";
 import useResizeAware from "react-resize-aware";
 import useAdminTable from "utils/useAdminTable";
 import { CellProps } from "react-table";
-import { Table, Level } from "react-bulma-components";
+import { Level } from "react-bulma-components";
 import { toast } from "react-toastify";
 import AdminActionCell from "components/tables/adminActionCell";
 import AddAdmin from "components/addAdmin";
-import TableRow from "components/tables/tableRow";
-import TableHead from "components/tables/tableHead";
 import Loading from "components/loading";
 import useHideColumn from "utils/useHideColumn";
 import { useGetAndListen } from "utils/firebase";
@@ -15,6 +13,7 @@ import { Executive } from "types/db";
 import { useSetTitle } from "utils/miscHooks";
 import { Navigate } from "react-router-dom";
 import useUserStatus from "utils/useUserStatus";
+import Table from "components/tables/table";
 
 const Admins = (): React.ReactElement => {
   // auth
@@ -72,9 +71,9 @@ const Admins = (): React.ReactElement => {
           <AdminActionCell adminData={row.values as Executive} />
         ),
         disableSortBy: true,
-        minWidth: 170,
-        width: 170,
-        maxWidth: 170,
+        minWidth: 175,
+        width: 175,
+        maxWidth: 175,
       },
     ],
     []
@@ -88,11 +87,16 @@ const Admins = (): React.ReactElement => {
     return (row: Record<string, unknown>) => row.sid as string;
   }, []);
 
-  const tableInstance = useAdminTable({
-    columns: tableColumns,
-    data: tableData,
-    getRowId: tableGetRowId,
-  });
+  const tableOption = useMemo(
+    () => ({
+      columns: tableColumns,
+      data: tableData,
+      getRowId: tableGetRowId,
+    }),
+    [tableColumns, tableData, tableGetRowId]
+  );
+
+  const tableInstance = useAdminTable(tableOption);
 
   const {
     getTableProps,
@@ -112,7 +116,7 @@ const Admins = (): React.ReactElement => {
     [sizes.width]
   );
 
-  const hideColumnOrder = useMemo(() => [["pos"], ["nickname"]], []);
+  const hideColumnOrder = useMemo(() => [["title"], ["displayName"]], []);
 
   useHideColumn(windowWidth, hideColumnOrder, tableColumns, setHiddenColumns);
 
@@ -122,30 +126,25 @@ const Admins = (): React.ReactElement => {
   if (!userStatus?.executive) {
     return <Navigate to="/member" replace />;
   }
+  console.log(Table);
 
   return (
     <>
       {resizeListener}
-      <Table {...getTableProps()}>
-        <TableHead
-          headerGroups={headerGroups}
-          tableColumns={tableColumns}
-          tableSortable
-        />
-        <tbody {...getTableBodyProps()}>
-          {rows.map((row) => {
-            prepareRow(row);
-            return (
-              <TableRow
-                key={row.id}
-                row={row}
-                allColumns={allColumns}
-                visibleColumns={visibleColumns}
-              />
-            );
-          })}
-        </tbody>
-      </Table>
+      <Table
+        getTableProps={getTableProps}
+        headerGroups={headerGroups}
+        tableColumns={tableColumns}
+        getTableBodyProps={getTableBodyProps}
+        rows={rows}
+        prepareRow={prepareRow}
+        allColumns={allColumns}
+        visibleColumns={visibleColumns}
+        windowWidth={windowWidth}
+        tableSortable
+        size="fullwidth"
+        striped
+      />
       <Level className="is-mobile">
         <div />
         <Level.Side align="right">

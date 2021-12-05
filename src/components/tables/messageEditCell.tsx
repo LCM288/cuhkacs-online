@@ -58,9 +58,8 @@ const MessageEditCell = ({
   }, [isExpanded, forceRerender]);
 
   const resetValue = useCallback(() => {
-    forceRerender();
     setEditValue(value);
-  }, [value, setEditValue, forceRerender]);
+  }, [value, setEditValue]);
 
   const updateValue = useCallback(
     (newValue: string) => {

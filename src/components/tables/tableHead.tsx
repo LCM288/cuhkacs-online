@@ -15,7 +15,7 @@ type UnsortableHeaderGroup = HeaderGroup;
 interface Props {
   headerGroups: UnsortableHeaderGroup[] | SortableHeaderGroup[];
   tableColumns: { id: string; disableSortBy?: boolean }[];
-  tableSortable: boolean;
+  tableSortable?: boolean;
 }
 
 const TableHead = ({

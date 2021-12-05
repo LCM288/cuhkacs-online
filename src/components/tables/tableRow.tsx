@@ -10,12 +10,14 @@ interface Props {
   row: Row;
   allColumns: ColumnInstance[];
   visibleColumns: ColumnInstance[];
+  windowWidth: number;
 }
 
 const TableRow = ({
   row,
   allColumns,
   visibleColumns,
+  windowWidth,
 }: Props): React.ReactElement => {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -46,6 +48,7 @@ const TableRow = ({
                 <strong style={{ position: "sticky", left: 0 }}>
                   {cell.column.Header}:{" "}
                 </strong>
+                <br />
                 {cell.render("Cell", { isHidden: true, isExpanded })}
               </div>
             ))}
@@ -72,7 +75,11 @@ const TableRow = ({
     <>
       <tr {...row.getRowProps()} onClick={onRowClick} style={rowStyle}>
         {row.cells.map((cell) => (
-          <TableCell cell={cell} key={cell.column.id} />
+          <TableCell
+            cell={cell}
+            key={cell.column.id}
+            windowWidth={windowWidth}
+          />
         ))}
         {Boolean(hiddenColumns.length) && (
           <td style={{ width: 1 }}>

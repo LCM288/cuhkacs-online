@@ -3,13 +3,16 @@ import { Cell } from "react-table";
 
 interface Props {
   cell: Cell<Record<string, unknown>>;
+  windowWidth: number;
 }
 
-const TableCell = ({ cell }: Props): React.ReactElement => {
+const TableCell = ({ cell, windowWidth }: Props): React.ReactElement => {
   const dataCell = useRef<HTMLDivElement | null>(null);
   const [dataCellOverflow, setDataCellOverflow] = useState(false);
 
   useEffect(() => {
+    if (windowWidth) {
+    }
     if (!dataCell.current) {
       console.error("tableDataCell not mounted");
       return;
@@ -19,7 +22,7 @@ const TableCell = ({ cell }: Props): React.ReactElement => {
     if (overflow !== dataCellOverflow) {
       setDataCellOverflow(overflow);
     }
-  }, [dataCellOverflow, cell.value]);
+  }, [dataCellOverflow, cell.value, windowWidth]);
 
   return (
     <td
