@@ -9,6 +9,7 @@ interface Props {
   cancelText?: string;
   confirmColor?: Parameters<typeof Button>[0]["color"];
   cancelColor?: Parameters<typeof Button>[0]["color"];
+  disabled?: boolean;
 }
 
 const PromptModal = ({
@@ -19,6 +20,7 @@ const PromptModal = ({
   cancelText = "Cancel",
   confirmColor = "primary",
   cancelColor = "danger",
+  disabled = false,
 }: Props): React.ReactElement => (
   <Modal show closeOnEsc onClose={onCancel}>
     <Modal.Content className="has-background-white box">
@@ -29,7 +31,12 @@ const PromptModal = ({
       )) ||
         message}
       <div className="is-pulled-right buttons pt-4">
-        <Button type="button" color={confirmColor} onClick={onConfirm}>
+        <Button
+          type="button"
+          color={confirmColor}
+          onClick={onConfirm}
+          disabled={disabled}
+        >
           {confirmText}
         </Button>
         <Button color={cancelColor} onClick={onCancel}>

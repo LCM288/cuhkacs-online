@@ -11,6 +11,7 @@ import {
   get,
   ListenOptions,
   update,
+  remove,
   serverTimestamp,
 } from "firebase/database";
 
@@ -56,6 +57,7 @@ export const useGetServer = <T = unknown>(
     [pathOrRef]
   );
   useEffect(() => {
+    setLoading(true);
     get(reference)
       .then((snapshot) => {
         setData(snapshot.val());
@@ -82,6 +84,7 @@ export const useGetAndListen = <T = unknown>(
     [pathOrRef]
   );
   useEffect(() => {
+    setLoading(true);
     const unsubscribe = onValue(
       reference,
       (snapshot) => {
@@ -120,16 +123,6 @@ export const useLazyGetServer = <T = unknown>(): {
   const [pathOrRef, setPathOrRef] = useState<string | DatabaseReference | null>(
     null
   );
-  const dbReferenceRef = useRef<DatabaseReference | null>(null);
-  const updatePathOrRef = useCallback(
-    (newValue: string | DatabaseReference | null) => {
-      if (typeof newValue !== "string" && newValue !== null) {
-        dbReferenceRef.current = newValue;
-      }
-      setPathOrRef(newValue);
-    },
-    []
-  );
   const res = useRef<(data: T) => void>(() => {});
   const rej = useRef<(err: Error) => void>(() => {});
   const [loading, setLoading] = useState(false);
@@ -137,35 +130,33 @@ export const useLazyGetServer = <T = unknown>(): {
   const [error, setError] = useState<Error | undefined>(undefined);
   const reference = useMemo(
     () =>
-      typeof pathOrRef === "string"
-        ? ref(database, pathOrRef)
-        : dbReferenceRef.current,
+      typeof pathOrRef === "string" ? ref(database, pathOrRef) : pathOrRef,
     [pathOrRef]
   );
   const getServer = useCallback(
     (pathOrRefParam: string | DatabaseReference) => {
-      updatePathOrRef(pathOrRefParam);
-      setLoading(true);
-      setData(undefined);
-      setError(undefined);
+      setPathOrRef(pathOrRefParam);
       return new Promise<T>((resolve, reject) => {
         res.current = resolve;
         rej.current = reject;
       });
     },
-    [updatePathOrRef]
+    []
   );
   const clear = useCallback(() => {
     rej.current(new Error("Query Cleared"));
-    updatePathOrRef(null);
+    setPathOrRef(null);
     res.current = () => {};
     rej.current = () => {};
     setLoading(false);
     setData(undefined);
     setError(undefined);
-  }, [updatePathOrRef]);
+  }, []);
   useEffect(() => {
+    setData(undefined);
+    setError(undefined);
     if (reference) {
+      setLoading(true);
       get(reference)
         .then((snapshot) => {
           const value = snapshot.val();
@@ -202,16 +193,6 @@ export const useLazyGetAndListen = <T = unknown>(): {
   const [pathOrRef, setPathOrRef] = useState<string | DatabaseReference | null>(
     null
   );
-  const dbReferenceRef = useRef<DatabaseReference | null>(null);
-  const updatePathOrRef = useCallback(
-    (newValue: string | DatabaseReference | null) => {
-      if (typeof newValue !== "string" && newValue !== null) {
-        dbReferenceRef.current = newValue;
-      }
-      setPathOrRef(newValue);
-    },
-    []
-  );
   const [options, setOptions] = useState<ListenOptions | undefined>();
   const res = useRef<(data: T) => void>(() => {});
   const rej = useRef<(err: Error) => void>(() => {});
@@ -228,30 +209,30 @@ export const useLazyGetAndListen = <T = unknown>(): {
       pathOrRefParam: string | DatabaseReference,
       optionsParam?: ListenOptions
     ) => {
-      updatePathOrRef(pathOrRefParam);
+      setPathOrRef(pathOrRefParam);
       setOptions(optionsParam);
-      setLoading(true);
-      setData(undefined);
-      setError(undefined);
       return new Promise<T>((resolve, reject) => {
         res.current = resolve;
         rej.current = reject;
       });
     },
-    [updatePathOrRef]
+    []
   );
   const clear = useCallback(() => {
     rej.current(new Error("Query Cleared"));
-    updatePathOrRef(null);
+    setPathOrRef(null);
     setOptions(undefined);
     res.current = () => {};
     rej.current = () => {};
     setLoading(false);
     setData(undefined);
     setError(undefined);
-  }, [updatePathOrRef]);
+  }, []);
   useEffect(() => {
+    setData(undefined);
+    setError(undefined);
     if (reference) {
+      setLoading(true);
       const unsubscribe = onValue(
         reference,
         (snapshot) => {
@@ -302,7 +283,7 @@ export const useLazyGetCache = <T = unknown>(): {
 
 type Primitive = string | number | boolean | undefined | null;
 
-type UpdateType<T, K extends keyof T> = T extends Primitive
+export type UpdateType<T, K extends keyof T> = T extends Primitive
   ? T
   : T extends Array<infer U>
   ? Array<U>
@@ -339,4 +320,55 @@ export const useUpdate = <T = unknown, K extends keyof T = never>(
     [reference]
   );
   return { loading: loading !== 0, error, update: updateFn };
+};
+
+export const useSet = <T = unknown, K extends keyof T = never>(): {
+  loading: boolean;
+  error: Error | undefined;
+  set: (
+    pathOrRef: string | DatabaseReference,
+    value: UpdateType<T, K>
+  ) => Promise<void>;
+} => {
+  const [loading, setLoading] = useState(0);
+  const [error, setError] = useState<Error | undefined>();
+  const setFn = useCallback(
+    (
+      pathOrRef: string | DatabaseReference,
+      value: Partial<UpdateType<T, K>>
+    ) => {
+      const reference =
+        typeof pathOrRef === "string" ? ref(database, pathOrRef) : pathOrRef;
+      setLoading((prev) => prev + 1);
+      return update(reference, value)
+        .catch((err) => {
+          setError(err);
+          throw err;
+        })
+        .finally(() => setLoading((prev) => prev - 1));
+    },
+    []
+  );
+  return { loading: loading !== 0, error, set: setFn };
+};
+
+export const useRemove = (): {
+  loading: boolean;
+  error: Error | undefined;
+  remove: (pathOrRef: string | DatabaseReference) => Promise<void>;
+} => {
+  const [loading, setLoading] = useState(0);
+  const [error, setError] = useState<Error | undefined>();
+  const removeFn = useCallback((pathOrRef: string | DatabaseReference) => {
+    const reference =
+      typeof pathOrRef === "string" ? ref(database, pathOrRef) : pathOrRef;
+    setLoading((prev) => prev + 1);
+    return remove(reference)
+      .catch((err) => {
+        setError(err);
+        throw err;
+      })
+      .finally(() => setLoading((prev) => prev - 1));
+  }, []);
+  return { loading: loading !== 0, error, remove: removeFn };
 };

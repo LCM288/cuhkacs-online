@@ -10,6 +10,7 @@ import Home from "pages/home";
 import AdminLayout from "pages/admin/adminLayout";
 import AdminHome from "pages/admin/adminHome";
 import EditMessages from "pages/admin/editMessages";
+import Admins from "pages/admin/admins";
 import MemberLayout from "pages/member/memberLayout";
 import MemberHome from "pages/member/memberHome";
 import Register from "pages/member/register";
@@ -165,6 +166,7 @@ const App = (): React.ReactElement => {
                   <Route path="/admin" element={<AdminLayout />}>
                     <Route index element={<AdminHome />} />
                     <Route path="messages" element={<EditMessages />} />
+                    <Route path="admins" element={<Admins />} />
                     <Route path="*" element={<NotFound />} />
                   </Route>
                   <Route path="*" element={<NotFound />} />

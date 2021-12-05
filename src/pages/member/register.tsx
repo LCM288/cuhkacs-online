@@ -11,7 +11,7 @@ import MajorField from "components/fields/majorField";
 import Loading from "components/loading";
 import { PreventDefaultForm } from "utils/domEventHelpers";
 import useUserStatus from "utils/useUserStatus";
-import PromptModal from "components/promptModal";
+import PromptModal from "components/modals/promptModal";
 import { useUpdate } from "utils/firebase";
 import { serverTimestamp } from "firebase/database";
 import { toast } from "react-toastify";
@@ -133,7 +133,7 @@ const Register = (): React.ReactElement => {
           confirmText="Reset"
           cancelText="Back"
           confirmColor="warning"
-          cancelColor="primary"
+          cancelColor="info"
         />
       ) : (
         <></>

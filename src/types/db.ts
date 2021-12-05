@@ -26,6 +26,7 @@ export type Member = {
 export type Executive = {
   sid: string;
   displayName: string;
+  title: string;
   createdAt: number;
   updatedAt: number;
 };

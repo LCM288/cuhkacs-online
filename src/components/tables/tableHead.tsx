@@ -1,11 +1,16 @@
 import React, { useCallback } from "react";
 import { HeaderGroup, UseSortByColumnProps } from "react-table";
-import { MessagesHeaderGroup } from "utils/useMessagesTable";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faSort,
+  faSortUp,
+  faSortDown,
+} from "@fortawesome/free-solid-svg-icons";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type SortableHeaderGroup = HeaderGroup & UseSortByColumnProps<any>;
 
-type UnsortableHeaderGroup = HeaderGroup | MessagesHeaderGroup;
+type UnsortableHeaderGroup = HeaderGroup;
 
 interface Props {
   headerGroups: UnsortableHeaderGroup[] | SortableHeaderGroup[];
@@ -20,19 +25,28 @@ const TableHead = ({
 }: Props): React.ReactElement => {
   const getSortDirectionIndicatiorOf = useCallback(
     (column) => {
-      if (!tableSortable) {
+      const sortable =
+        tableSortable &&
+        !tableColumns.find((tableColumn) => tableColumn.id === column.id)
+          ?.disableSortBy;
+      if (!sortable) {
         return "";
       }
       const sortableColumn = column as SortableHeaderGroup;
-      if (sortableColumn.isSorted) {
-        if (sortableColumn.isSortedDesc) {
-          return " 🔽";
-        }
-        return " 🔼";
-      }
-      return "";
+      return (
+        <FontAwesomeIcon
+          className="ml-2"
+          icon={
+            sortableColumn.isSorted
+              ? sortableColumn.isSortedDesc
+                ? faSortUp
+                : faSortDown
+              : faSort
+          }
+        />
+      );
     },
-    [tableSortable]
+    [tableSortable, tableColumns]
   );
 
   return (
