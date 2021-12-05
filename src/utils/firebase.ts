@@ -11,6 +11,7 @@ import {
   get,
   ListenOptions,
   update,
+  set,
   remove,
   serverTimestamp,
 } from "firebase/database";
@@ -308,14 +309,17 @@ export const useUpdate = <T = unknown, K extends keyof T = never>(
     [pathOrRef]
   );
   const updateFn = useCallback(
-    (value: Partial<UpdateType<T, K>>) => {
+    async (value: Partial<UpdateType<T, K>>) => {
       setLoading((prev) => prev + 1);
-      return update(reference, value)
-        .catch((err) => {
-          setError(err);
-          throw err;
-        })
-        .finally(() => setLoading((prev) => prev - 1));
+      try {
+        await update(reference, value);
+      } catch (err) {
+        console.log(err);
+        setError(err as Error);
+        setLoading((prev) => prev - 1);
+        throw err;
+      }
+      setLoading((prev) => prev - 1);
     },
     [reference]
   );
@@ -333,19 +337,21 @@ export const useSet = <T = unknown, K extends keyof T = never>(): {
   const [loading, setLoading] = useState(0);
   const [error, setError] = useState<Error | undefined>();
   const setFn = useCallback(
-    (
+    async (
       pathOrRef: string | DatabaseReference,
       value: Partial<UpdateType<T, K>>
     ) => {
       const reference =
         typeof pathOrRef === "string" ? ref(database, pathOrRef) : pathOrRef;
       setLoading((prev) => prev + 1);
-      return update(reference, value)
-        .catch((err) => {
-          setError(err);
-          throw err;
-        })
-        .finally(() => setLoading((prev) => prev - 1));
+      try {
+        await set(reference, value);
+      } catch (err) {
+        setError(err as Error);
+        setLoading((prev) => prev - 1);
+        throw err;
+      }
+      setLoading((prev) => prev - 1);
     },
     []
   );
