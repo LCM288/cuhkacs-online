@@ -314,7 +314,6 @@ export const useUpdate = <T = unknown, K extends keyof T = never>(
       try {
         await update(reference, value);
       } catch (err) {
-        console.log(err);
         setError(err as Error);
         setLoading((prev) => prev - 1);
         throw err;
