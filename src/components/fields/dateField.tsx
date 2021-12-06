@@ -12,6 +12,7 @@ interface Props {
   setDateValue?: (value: string) => void;
   editable?: boolean;
   yearRange?: number[];
+  future?: boolean;
   required?: boolean;
 }
 
@@ -20,6 +21,7 @@ const DateField = ({
   dateValue,
   setDateValue = () => {},
   editable = false,
+  future = false,
   yearRange = [-30, 0],
   required = false,
 }: Props): React.ReactElement => {
@@ -60,6 +62,7 @@ const DateField = ({
           }}
           placeholder="YYYY-MM-DD"
           dayPickerProps={{
+            ...(future && { disabledDays: { before: new Date() } }),
             month: calMonth,
             captionElement: ({ date }: { date: Date }) => (
               <YearMonthForm

@@ -33,6 +33,7 @@ const ApproveModal = ({
               gradDate={gradDate}
               dateValue={memberUntil}
               setDateValue={setMemberUntil}
+              future
               editable
             />
             <div className="is-pulled-right buttons pt-4">

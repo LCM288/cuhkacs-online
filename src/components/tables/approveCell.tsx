@@ -38,6 +38,10 @@ const ApproveCell = ({
       const until = DateTime.fromISO(memberUntil, {
         zone: "Asia/Hong_Kong",
       }).valueOf();
+      if (until < DateTime.now().valueOf()) {
+        toast.error("Please specify a future date.");
+        return;
+      }
       approveMembership({
         memberStatus: {
           since: serverTimestamp(),
@@ -48,7 +52,6 @@ const ApproveCell = ({
       })
         .then(() => {
           toast.success(`${englishName} (sid: ${sid}) is now a member.`);
-          setOpenModal(false);
         })
         .catch((err) => {
           console.error(err);

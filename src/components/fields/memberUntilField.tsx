@@ -11,6 +11,7 @@ interface Props {
   dateValue: string | null;
   setDateValue: (value: string) => void;
   editable?: boolean;
+  future?: boolean;
 }
 
 const MemberUntilField = ({
@@ -19,6 +20,7 @@ const MemberUntilField = ({
   dateValue,
   setDateValue,
   editable = false,
+  future = false,
 }: Props): React.ReactElement => {
   const [untilGrad, setUntilGrad] = useState(dateValue === gradDate);
 
@@ -43,6 +45,7 @@ const MemberUntilField = ({
         editable={!untilGrad && editable}
         required
         yearRange={[-10, 10]}
+        future={future}
       />
       <Checkbox
         onChange={onCheckboxChange}
