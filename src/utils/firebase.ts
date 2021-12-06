@@ -14,6 +14,7 @@ import {
   set,
   remove,
   serverTimestamp,
+  Query,
 } from "firebase/database";
 
 const firebaseConfig = {
@@ -47,15 +48,17 @@ export const database = (() => {
 })();
 
 export const useGetServer = <T = unknown>(
-  pathOrRef: string | DatabaseReference
+  pathOrQuery: string | Query
 ): { loading: boolean; data: T | undefined; error: Error | undefined } => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<T | undefined>(undefined);
   const [error, setError] = useState<Error | undefined>(undefined);
   const reference = useMemo(
     () =>
-      typeof pathOrRef === "string" ? ref(database, pathOrRef) : pathOrRef,
-    [pathOrRef]
+      typeof pathOrQuery === "string"
+        ? ref(database, pathOrQuery)
+        : pathOrQuery,
+    [pathOrQuery]
   );
   useEffect(() => {
     setLoading(true);
@@ -73,7 +76,7 @@ export const useGetServer = <T = unknown>(
 };
 
 export const useGetAndListen = <T = unknown>(
-  pathOrRef: string | DatabaseReference,
+  pathOrQuery: string | Query,
   options?: ListenOptions
 ): { loading: boolean; data: T | undefined; error: Error | undefined } => {
   const [loading, setLoading] = useState(true);
@@ -81,8 +84,10 @@ export const useGetAndListen = <T = unknown>(
   const [error, setError] = useState<Error | undefined>(undefined);
   const reference = useMemo(
     () =>
-      typeof pathOrRef === "string" ? ref(database, pathOrRef) : pathOrRef,
-    [pathOrRef]
+      typeof pathOrQuery === "string"
+        ? ref(database, pathOrQuery)
+        : pathOrQuery,
+    [pathOrQuery]
   );
   useEffect(() => {
     setLoading(true);
@@ -104,26 +109,24 @@ export const useGetAndListen = <T = unknown>(
 };
 
 export const useGetCache = <T = unknown>(
-  pathOrRef: string | DatabaseReference,
+  pathOrQuery: string | Query,
   options?: ListenOptions
 ): { loading: boolean; data: T | undefined; error: Error | undefined } => {
   const getCacheOption = useMemo(
     () => ({ ...options, onlyOnce: true }),
     [options]
   );
-  return useGetAndListen(pathOrRef, getCacheOption);
+  return useGetAndListen(pathOrQuery, getCacheOption);
 };
 
 export const useLazyGetServer = <T = unknown>(): {
   loading: boolean;
   data: T | undefined;
   error: Error | undefined;
-  getServer: (pathOrRef: string | DatabaseReference) => Promise<T>;
+  getServer: (pathOrQuery: string | Query) => Promise<T>;
   clear: () => void;
 } => {
-  const [pathOrRef, setPathOrRef] = useState<string | DatabaseReference | null>(
-    null
-  );
+  const [pathOrQuery, setPathOrQuery] = useState<string | Query | null>(null);
   const res = useRef<(data: T) => void>(() => {});
   const rej = useRef<(err: Error) => void>(() => {});
   const [loading, setLoading] = useState(false);
@@ -131,22 +134,21 @@ export const useLazyGetServer = <T = unknown>(): {
   const [error, setError] = useState<Error | undefined>(undefined);
   const reference = useMemo(
     () =>
-      typeof pathOrRef === "string" ? ref(database, pathOrRef) : pathOrRef,
-    [pathOrRef]
+      typeof pathOrQuery === "string"
+        ? ref(database, pathOrQuery)
+        : pathOrQuery,
+    [pathOrQuery]
   );
-  const getServer = useCallback(
-    (pathOrRefParam: string | DatabaseReference) => {
-      setPathOrRef(pathOrRefParam);
-      return new Promise<T>((resolve, reject) => {
-        res.current = resolve;
-        rej.current = reject;
-      });
-    },
-    []
-  );
+  const getServer = useCallback((pathOrQueryParam: string | Query) => {
+    setPathOrQuery(pathOrQueryParam);
+    return new Promise<T>((resolve, reject) => {
+      res.current = resolve;
+      rej.current = reject;
+    });
+  }, []);
   const clear = useCallback(() => {
     rej.current(new Error("Query Cleared"));
-    setPathOrRef(null);
+    setPathOrQuery(null);
     res.current = () => {};
     rej.current = () => {};
     setLoading(false);
@@ -186,14 +188,12 @@ export const useLazyGetAndListen = <T = unknown>(): {
   data: T | undefined;
   error: Error | undefined;
   getAndListen: (
-    pathOrRef: string | DatabaseReference,
+    pathOrQuery: string | Query,
     options?: ListenOptions
   ) => Promise<T>;
   clear: () => void;
 } => {
-  const [pathOrRef, setPathOrRef] = useState<string | DatabaseReference | null>(
-    null
-  );
+  const [pathOrQuery, setPathOrQuery] = useState<string | Query | null>(null);
   const [options, setOptions] = useState<ListenOptions | undefined>();
   const res = useRef<(data: T) => void>(() => {});
   const rej = useRef<(err: Error) => void>(() => {});
@@ -202,15 +202,14 @@ export const useLazyGetAndListen = <T = unknown>(): {
   const [error, setError] = useState<Error | undefined>(undefined);
   const reference = useMemo(
     () =>
-      typeof pathOrRef === "string" ? ref(database, pathOrRef) : pathOrRef,
-    [pathOrRef]
+      typeof pathOrQuery === "string"
+        ? ref(database, pathOrQuery)
+        : pathOrQuery,
+    [pathOrQuery]
   );
   const getAndListen = useCallback(
-    (
-      pathOrRefParam: string | DatabaseReference,
-      optionsParam?: ListenOptions
-    ) => {
-      setPathOrRef(pathOrRefParam);
+    (pathOrQueryParam: string | Query, optionsParam?: ListenOptions) => {
+      setPathOrQuery(pathOrQueryParam);
       setOptions(optionsParam);
       return new Promise<T>((resolve, reject) => {
         res.current = resolve;
@@ -221,7 +220,7 @@ export const useLazyGetAndListen = <T = unknown>(): {
   );
   const clear = useCallback(() => {
     rej.current(new Error("Query Cleared"));
-    setPathOrRef(null);
+    setPathOrQuery(null);
     setOptions(undefined);
     res.current = () => {};
     rej.current = () => {};
@@ -266,7 +265,7 @@ export const useLazyGetCache = <T = unknown>(): {
   data: T | undefined;
   error: Error | undefined;
   getCache: (
-    pathOrRef: string | DatabaseReference,
+    pathOrQuery: string | Query,
     options?: ListenOptions
   ) => Promise<T>;
   clear: () => void;
@@ -274,8 +273,8 @@ export const useLazyGetCache = <T = unknown>(): {
   const { loading, data, error, getAndListen, clear } =
     useLazyGetAndListen<T>();
   const getCache = useCallback(
-    (pathOrRef: string | DatabaseReference, options?: ListenOptions) => {
-      return getAndListen(pathOrRef, { ...options, onlyOnce: true });
+    (pathOrQuery: string | Query, options?: ListenOptions) => {
+      return getAndListen(pathOrQuery, { ...options, onlyOnce: true });
     },
     [getAndListen]
   );
@@ -284,18 +283,18 @@ export const useLazyGetCache = <T = unknown>(): {
 
 type Primitive = string | number | boolean | undefined | null;
 
-export type UpdateType<T, K extends keyof T> = T extends Primitive
+export type UpdateType<T, K extends string> = T extends Primitive
   ? T
   : T extends Array<infer U>
   ? Array<U>
   : {
       [P in keyof T]: P extends K
         ? T[P] | ReturnType<typeof serverTimestamp>
-        : T[P];
+        : UpdateType<T[P], K>;
     };
 
-export const useUpdate = <T = unknown, K extends keyof T = never>(
-  pathOrRef: string | DatabaseReference
+export const useUpdate = <T = unknown, K extends string = never>(
+  pathOrQuery: string | DatabaseReference
 ): {
   loading: boolean;
   error: Error | undefined;
@@ -305,8 +304,10 @@ export const useUpdate = <T = unknown, K extends keyof T = never>(
   const [error, setError] = useState<Error | undefined>();
   const reference = useMemo(
     () =>
-      typeof pathOrRef === "string" ? ref(database, pathOrRef) : pathOrRef,
-    [pathOrRef]
+      typeof pathOrQuery === "string"
+        ? ref(database, pathOrQuery)
+        : pathOrQuery,
+    [pathOrQuery]
   );
   const updateFn = useCallback(
     async (value: Partial<UpdateType<T, K>>) => {
@@ -325,11 +326,11 @@ export const useUpdate = <T = unknown, K extends keyof T = never>(
   return { loading: loading !== 0, error, update: updateFn };
 };
 
-export const useSet = <T = unknown, K extends keyof T = never>(): {
+export const useSet = <T = unknown, K extends string = never>(): {
   loading: boolean;
   error: Error | undefined;
   set: (
-    pathOrRef: string | DatabaseReference,
+    pathOrQuery: string | DatabaseReference,
     value: UpdateType<T, K>
   ) => Promise<void>;
 } => {
@@ -337,11 +338,13 @@ export const useSet = <T = unknown, K extends keyof T = never>(): {
   const [error, setError] = useState<Error | undefined>();
   const setFn = useCallback(
     async (
-      pathOrRef: string | DatabaseReference,
+      pathOrQuery: string | DatabaseReference,
       value: Partial<UpdateType<T, K>>
     ) => {
       const reference =
-        typeof pathOrRef === "string" ? ref(database, pathOrRef) : pathOrRef;
+        typeof pathOrQuery === "string"
+          ? ref(database, pathOrQuery)
+          : pathOrQuery;
       setLoading((prev) => prev + 1);
       try {
         await set(reference, value);
@@ -360,13 +363,15 @@ export const useSet = <T = unknown, K extends keyof T = never>(): {
 export const useRemove = (): {
   loading: boolean;
   error: Error | undefined;
-  remove: (pathOrRef: string | DatabaseReference) => Promise<void>;
+  remove: (pathOrQuery: string | DatabaseReference) => Promise<void>;
 } => {
   const [loading, setLoading] = useState(0);
   const [error, setError] = useState<Error | undefined>();
-  const removeFn = useCallback((pathOrRef: string | DatabaseReference) => {
+  const removeFn = useCallback((pathOrQuery: string | DatabaseReference) => {
     const reference =
-      typeof pathOrRef === "string" ? ref(database, pathOrRef) : pathOrRef;
+      typeof pathOrQuery === "string"
+        ? ref(database, pathOrQuery)
+        : pathOrQuery;
     setLoading((prev) => prev + 1);
     return remove(reference)
       .catch((err) => {

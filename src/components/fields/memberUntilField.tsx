@@ -7,54 +7,49 @@ const { Checkbox } = Form;
 
 interface Props {
   label: string;
-  nullLabel: string | null;
+  gradDate: string;
   dateValue: string | null;
-  setDateValue: (value: string | null) => void;
+  setDateValue: (value: string) => void;
   editable?: boolean;
 }
 
 const MemberUntilField = ({
   label,
-  nullLabel = null,
+  gradDate,
   dateValue,
   setDateValue,
   editable = false,
 }: Props): React.ReactElement => {
-  const [isNull, setIsNull] = useState(dateValue === null);
-  const [stringValue, setStringValue] = useState((dateValue ?? "") as string);
+  const [untilGrad, setUntilGrad] = useState(dateValue === gradDate);
 
-  const onNullChange = useCallback(
+  const onCheckboxChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       if (event.target.checked) {
-        setDateValue(null);
-        setIsNull(true);
+        setDateValue(gradDate);
+        setUntilGrad(true);
       } else {
-        setIsNull(false);
+        setUntilGrad(false);
       }
     },
-    [setDateValue]
-  );
-
-  const setStringValueCallback = useCallback(
-    (string: string) => {
-      setDateValue(isNull ? null : string);
-      setStringValue(string);
-    },
-    [setDateValue, isNull]
+    [setDateValue, gradDate]
   );
 
   return (
     <>
       <DateField
         label={label}
-        dateValue={stringValue}
-        setDateValue={setStringValueCallback}
-        editable={!isNull && editable}
-        required={!isNull}
+        dateValue={dateValue}
+        setDateValue={setDateValue}
+        editable={!untilGrad && editable}
+        required
         yearRange={[-10, 10]}
       />
-      <Checkbox onChange={onNullChange} checked={isNull} disabled={!editable}>
-        {` ${nullLabel}`}
+      <Checkbox
+        onChange={onCheckboxChange}
+        checked={untilGrad}
+        disabled={!editable}
+      >
+        Until Gradutation
       </Checkbox>
     </>
   );
