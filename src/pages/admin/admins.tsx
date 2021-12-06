@@ -1,7 +1,5 @@
 import React, { useMemo, useState, useEffect } from "react";
 import useResizeAware from "react-resize-aware";
-import useAdminTable from "utils/useAdminTable";
-import { CellProps } from "react-table";
 import { Level } from "react-bulma-components";
 import { toast } from "react-toastify";
 import AdminActionCell from "components/tables/adminActionCell";
@@ -14,6 +12,7 @@ import { useSetTitle } from "utils/miscHooks";
 import { Navigate } from "react-router-dom";
 import useUserStatus from "utils/useUserStatus";
 import Table from "components/tables/table";
+import { useTable, useSortBy, CellProps } from "react-table";
 
 const Admins = (): React.ReactElement => {
   // auth
@@ -96,7 +95,7 @@ const Admins = (): React.ReactElement => {
     [tableColumns, tableData, tableGetRowId]
   );
 
-  const tableInstance = useAdminTable(tableOption);
+  const tableInstance = useTable(tableOption, useSortBy);
 
   const {
     getTableProps,

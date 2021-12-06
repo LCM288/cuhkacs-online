@@ -1,6 +1,5 @@
 import React, { useMemo, useState, useEffect } from "react";
 import useResizeAware from "react-resize-aware";
-import useMessagesTable, { MessagesCellProps } from "utils/useMessagesTable";
 import MessageEditCell from "components/tables/messageEditCell";
 import Loading from "components/loading";
 import useHideColumn from "utils/useHideColumn";
@@ -11,6 +10,13 @@ import { useSetTitle } from "utils/miscHooks";
 import useUserStatus from "utils/useUserStatus";
 import { Navigate } from "react-router-dom";
 import Table from "components/tables/table";
+import {
+  useTable,
+  useRowState,
+  CellProps,
+  Row,
+  UseRowStateRowProps,
+} from "react-table";
 
 type MessageKey = "welcome" | "member" | "expired" | "registered" | "visitor";
 
@@ -83,10 +89,7 @@ const EditMessages = (): React.ReactElement => {
         Header: "Key",
         accessor: "key",
         id: "key",
-        Cell: ({
-          row,
-          value,
-        }: MessagesCellProps<Record<string, unknown>, string>) => {
+        Cell: ({ row, value }: CellProps<Record<string, unknown>, string>) => {
           return (
             <div>
               <p>{value}</p>
@@ -121,7 +124,10 @@ const EditMessages = (): React.ReactElement => {
           row,
           value,
           isExpanded,
-        }: MessagesCellProps<Record<string, unknown>, string> & {
+        }: {
+          row: Row<Record<string, unknown>> &
+            UseRowStateRowProps<Record<string, unknown>>;
+          value: string;
           isExpanded?: boolean;
         }) => (
           <MessageEditCell
@@ -167,7 +173,7 @@ const EditMessages = (): React.ReactElement => {
     [alwaysHiddenColumns, tableColumns, tableData]
   );
 
-  const tableInstance = useMessagesTable(tableOption);
+  const tableInstance = useTable(tableOption, useRowState);
 
   const {
     getTableProps,
