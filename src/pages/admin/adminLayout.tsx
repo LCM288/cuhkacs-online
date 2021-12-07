@@ -74,7 +74,9 @@ const AdminLayout: React.FunctionComponent = () => {
           <Navbar.Menu>
             <Navbar.Container>
               <Navbar.Item hoverable role="menu" tabIndex={0}>
-                <Navbar.Link>Members</Navbar.Link>
+                <Link to="/admin/members" className="navbar-link">
+                  Members
+                </Link>
                 <Navbar.Dropdown>
                   <Link to="/admin/members/import" className="navbar-item">
                     Import Members
@@ -89,7 +91,9 @@ const AdminLayout: React.FunctionComponent = () => {
               </Navbar.Item>
 
               <Navbar.Item hoverable role="menu" tabIndex={0}>
-                <Navbar.Link>Admins</Navbar.Link>
+                <Link to="/admin/admins" className="navbar-link">
+                  Admins
+                </Link>
                 <Navbar.Dropdown>
                   <Link to="/admin/admins" className="navbar-item">
                     Admin List
