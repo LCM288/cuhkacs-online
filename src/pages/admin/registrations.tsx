@@ -6,7 +6,6 @@ import {
   useSortBy,
   usePagination,
   TableOptions,
-  CellProps,
   TableInstance,
   UseGlobalFiltersInstanceProps,
   UseGlobalFiltersState,
@@ -14,10 +13,10 @@ import {
   UsePaginationState,
 } from "react-table";
 import useAsyncDebounce from "utils/useAsyncDebounce";
-import { Form, Level } from "react-bulma-components";
+import { Form, Level, Button } from "react-bulma-components";
 import { toast } from "react-toastify";
 import ApproveCell from "components/tables/approveCell";
-// import EditPersonCell from "components/admin/members/editPersonCell";
+import EditMemberCell from "components/tables/editMemberCell";
 import PaginationControl from "components/tables/paginationControl";
 // import AddRegistration from "components/admin/registrations/addRegistration";
 import Loading from "components/loading";
@@ -29,6 +28,8 @@ import { useSetTitle } from "utils/miscHooks";
 import useUserStatus from "utils/useUserStatus";
 import { Navigate } from "react-router-dom";
 import Table from "components/tables/table";
+import { RegistrationListRow } from "types/tableRow";
+import { StopClickDiv } from "utils/domEventHelpers";
 
 const { Input, Field, Label, Control, Select } = Form;
 
@@ -146,15 +147,17 @@ const Registrations = (): React.ReactElement => {
         Header: "Action",
         accessor: () => "Registration",
         id: "action",
-        Cell: ({ row }: CellProps<Record<string, unknown>, string>) => (
-          <div className="buttons">
-            <ApproveCell
-              sid={row.values.sid}
-              englishName={row.values.englishName}
-              gradDate={row.values.expectedGraduationDate}
-            />
-            {/* <EditPersonCell {...cellPrpos} /> */}
-          </div>
+        Cell: ({ row }: { row: { values: RegistrationListRow } }) => (
+          <StopClickDiv>
+            <Button.Group>
+              <ApproveCell
+                sid={row.values.sid}
+                englishName={row.values.englishName}
+                gradDate={row.values.expectedGraduationDate}
+              />
+              <EditMemberCell row={row.values} type="Registration" />
+            </Button.Group>
+          </StopClickDiv>
         ),
         disableSortBy: true,
         minWidth: 200,

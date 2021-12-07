@@ -13,18 +13,12 @@ import Table from "components/tables/table";
 import {
   useTable,
   useRowState,
-  CellProps,
-  Row,
   UseRowStateRowProps,
+  TableOptions,
 } from "react-table";
+import { MessageKey, EditMessageListRow } from "types/tableRow";
 
-type MessageKey = "welcome" | "member" | "expired" | "registered" | "visitor";
-
-type MessageMeta = {
-  key: MessageKey;
-  desc: string;
-  type: "string" | "richtext";
-};
+type MessageMeta = Omit<EditMessageListRow, "value">;
 
 const messagesMeta: MessageMeta[] = [
   {
@@ -89,7 +83,13 @@ const EditMessages = (): React.ReactElement => {
         Header: "Key",
         accessor: "key",
         id: "key",
-        Cell: ({ row, value }: CellProps<Record<string, unknown>, string>) => {
+        Cell: ({
+          row,
+          value,
+        }: {
+          row: { values: EditMessageListRow };
+          value: string;
+        }) => {
           return (
             <div>
               <p>{value}</p>
@@ -125,14 +125,15 @@ const EditMessages = (): React.ReactElement => {
           value,
           isExpanded,
         }: {
-          row: Row<Record<string, unknown>> &
-            UseRowStateRowProps<Record<string, unknown>>;
+          row: { values: EditMessageListRow } & UseRowStateRowProps<
+            Record<string, unknown>
+          >;
           value: string;
           isExpanded?: boolean;
         }) => (
           <MessageEditCell
-            messageKey={row.values.key as MessageMeta["key"]}
-            type={row.values.type as MessageMeta["type"]}
+            messageKey={row.values.key}
+            type={row.values.type}
             setEditValue={(newValue: string) => {
               row.setState({ editingValue: newValue });
             }}
@@ -162,14 +163,15 @@ const EditMessages = (): React.ReactElement => {
   );
 
   const tableOption = useMemo(
-    () => ({
-      columns: tableColumns,
-      data: tableData,
-      initialState: {
-        hiddenColumns: alwaysHiddenColumns,
-      },
-      autoResetRowState: false,
-    }),
+    () =>
+      ({
+        columns: tableColumns,
+        data: tableData,
+        initialState: {
+          hiddenColumns: alwaysHiddenColumns,
+        },
+        autoResetRowState: false,
+      } as TableOptions<Record<string, unknown>>),
     [alwaysHiddenColumns, tableColumns, tableData]
   );
 

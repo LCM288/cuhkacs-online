@@ -2,7 +2,6 @@ import React, { useState, useCallback } from "react";
 import { Button } from "react-bulma-components";
 import ApproveModal from "components/modals/approveModal";
 import { toast } from "react-toastify";
-import { StopClickDiv } from "utils/domEventHelpers";
 import useClipped from "utils/useClipped";
 import { useUpdate } from "utils/firebase";
 import { Member } from "types/db";
@@ -70,26 +69,20 @@ const ApproveCell = ({
   }, []);
 
   return (
-    <StopClickDiv>
-      <>
-        {openModal && (
-          <ApproveModal
-            sid={sid}
-            englishName={englishName}
-            gradDate={gradDate}
-            onConfirm={approve}
-            onCancel={cancelApprove}
-          />
-        )}
-        <Button
-          color="success"
-          onClick={promptApprove}
-          loading={approveLoading}
-        >
-          Approve
-        </Button>
-      </>
-    </StopClickDiv>
+    <>
+      {openModal && (
+        <ApproveModal
+          sid={sid}
+          englishName={englishName}
+          gradDate={gradDate}
+          onConfirm={approve}
+          onCancel={cancelApprove}
+        />
+      )}
+      <Button color="success" onClick={promptApprove} loading={approveLoading}>
+        Approve
+      </Button>
+    </>
   );
 };
 

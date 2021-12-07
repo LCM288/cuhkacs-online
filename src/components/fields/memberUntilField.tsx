@@ -2,12 +2,13 @@
 import React, { useState, useCallback } from "react";
 import { Form } from "react-bulma-components";
 import DateField from "components/fields/dateField";
+import { toast } from "react-toastify";
 
 const { Checkbox } = Form;
 
 interface Props {
   label: string;
-  gradDate: string;
+  gradDate: string | null;
   dateValue: string | null;
   setDateValue: (value: string) => void;
   editable?: boolean;
@@ -27,6 +28,11 @@ const MemberUntilField = ({
   const onCheckboxChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       if (event.target.checked) {
+        if (!gradDate) {
+          console.error("No graduation date specified.");
+          toast.error("Some error has occurred.");
+          return;
+        }
         setDateValue(gradDate);
         setUntilGrad(true);
       } else {
@@ -50,7 +56,7 @@ const MemberUntilField = ({
       <Checkbox
         onChange={onCheckboxChange}
         checked={untilGrad}
-        disabled={!editable}
+        disabled={!editable || !gradDate}
       >
         Until Gradutation
       </Checkbox>

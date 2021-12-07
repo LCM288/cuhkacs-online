@@ -7,11 +7,12 @@ import { useUpdate } from "utils/firebase";
 import { serverTimestamp } from "firebase/database";
 import { Message } from "types/db";
 import { useForceRerender } from "utils/miscHooks";
+import { MessageKey } from "types/tableRow";
 
 const { Input, Field, Control } = Form;
 
 interface Props {
-  messageKey: string;
+  messageKey: MessageKey;
   type: "string" | "richtext";
   setEditValue: (newValue: string) => void;
   editingValue: string;

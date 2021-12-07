@@ -284,7 +284,9 @@ export const useLazyGetCache = <T = unknown>(): {
 type Primitive = string | number | boolean | undefined | null;
 
 export type UpdateType<T, K extends string> = T extends Primitive
-  ? T
+  ? T extends undefined
+    ? null
+    : T
   : T extends Array<infer U>
   ? Array<U>
   : {

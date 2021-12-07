@@ -9,7 +9,7 @@
       "$sid": {
         ".read": "auth.token.email.endsWith('@link.cuhk.edu.hk') && auth.token.email.replace('@link.cuhk.edu.hk', '') === $sid",
         ".write": "auth.token.email.endsWith('@link.cuhk.edu.hk') && auth.token.email.replace('@link.cuhk.edu.hk', '') === $sid && (!data.child('memberStatus').child('since').exists() || data.child('memberStatus').child('until').val() < now)",
-        ".validate": "newData.hasChildren(['sid', 'name', 'studentStatus', 'createdAt', 'updatedAt'])",
+        ".validate": "newData.hasChildren(['sid', 'name', 'studentStatus', 'createdAt', 'updatedAt']) && (newData.hasChildren(['memberStatus']) || !data.hasChildren(['memberStatus']))",
         "sid": {
           ".validate": "newData.isString() && newData.val() === $sid"
         },

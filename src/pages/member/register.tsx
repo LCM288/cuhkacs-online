@@ -16,6 +16,7 @@ import { useUpdate } from "utils/firebase";
 import { serverTimestamp } from "firebase/database";
 import { toast } from "react-toastify";
 import { useSetTitle } from "utils/miscHooks";
+import { Member } from "types/db";
 
 const Register = (): React.ReactElement => {
   const userStatus = useUserStatus();
@@ -31,9 +32,10 @@ const Register = (): React.ReactElement => {
   const [doEntry, setDoEntry] = useState<string | null>(null);
   const [doGrad, setDoGrad] = useState<string | null>(null);
   const [userLoaded, setUserLoaded] = useState(false);
-  const { loading: isSubmitting, update: updateMember } = useUpdate(
-    `members/${userStatus?.sid}`
-  );
+  const { loading: isSubmitting, update: updateMember } = useUpdate<
+    Member,
+    "createdAt" | "updatedAt"
+  >(`members/${userStatus?.sid}`);
 
   const setData = useCallback(() => {
     const member = userStatus?.member;
@@ -96,6 +98,16 @@ const Register = (): React.ReactElement => {
       }
       updateMember({
         ...newMemberData,
+        name: {
+          chi: newMemberData.name.chi,
+          eng: newMemberData.name.eng,
+        },
+        studentStatus: {
+          college: newMemberData.studentStatus.college,
+          major: newMemberData.studentStatus.major,
+          entryDate: newMemberData.studentStatus.entryDate,
+          gradDate: newMemberData.studentStatus.gradDate,
+        },
         ...(!userStatus?.member && { createdAt: serverTimestamp() }),
         updatedAt: serverTimestamp(),
       })
