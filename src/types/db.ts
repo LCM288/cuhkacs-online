@@ -1,3 +1,5 @@
+import type { CollegeCode } from "static/college.json";
+
 export type Member = {
   sid: string;
   name: {
@@ -9,7 +11,7 @@ export type Member = {
   email?: string;
   phone?: string;
   studentStatus: {
-    college: string;
+    college: CollegeCode;
     major: string;
     entryDate: string;
     gradDate: string;
@@ -30,6 +32,13 @@ export type Executive = {
   createdAt: number;
   updatedAt: number;
 };
+
+export type MessageKey =
+  | "welcome"
+  | "member"
+  | "expired"
+  | "registered"
+  | "visitor";
 
 export type Message = {
   message: string;

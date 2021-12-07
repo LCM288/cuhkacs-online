@@ -18,7 +18,7 @@ const ApproveModal = ({
   onConfirm,
   onCancel,
 }: Props): React.ReactElement => {
-  const [memberUntil, setMemberUntil] = useState<string | null>(null);
+  const [memberUntil, setMemberUntil] = useState<string | null>(gradDate);
 
   return (
     <Modal show closeOnEsc onClose={onCancel} className="modal-ovrflowing">

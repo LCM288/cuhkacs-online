@@ -32,7 +32,7 @@
           ".validate": "!newData.exists() || newData.isString() && newData.val().matches(/^\\d{4}-\\d{2}-\\d{2}$/)"
         },
         "email": {
-          ".validate": "!newData.exists() || (newData.isString() && newData.val().contains('@') && newData.val().length < 256)"
+          ".validate": "!newData.exists() || (newData.isString() && newData.val().matches(/^.+@.+$/) && newData.val().length < 256)"
         },
         "phone": {
           ".validate": "!newData.exists() || (newData.isString() && newData.val().matches(/^\\+?\\d+(-\\d+)*$/) && newData.val().length < 256)"
@@ -64,7 +64,7 @@
             ".validate": "((!data.exists() || newData.parent().child('until').val() > data.parent().child('until').val()) && newData.isNumber() && newData.val() > now - 1000 && newData.val() < now + 1000) || (newData.parent().child('until').val() <= data.parent().child('until').val() && data.val() === newData.val())"
           },
           "until": {
-            ".validate": "(newData.isNumber() && newData.val() > now) || data.val() === newData.val()"
+            ".validate": "newData.isNumber() || data.val() === newData.val()"
           },
           "$other": {
             ".validate": false

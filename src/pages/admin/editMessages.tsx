@@ -4,7 +4,7 @@ import MessageEditCell from "components/tables/messageEditCell";
 import Loading from "components/loading";
 import useHideColumn from "utils/useHideColumn";
 import { useGetAndListen } from "utils/firebase";
-import { Message } from "types/db";
+import { MessageKey, Message } from "types/db";
 import { toast } from "react-toastify";
 import { useSetTitle } from "utils/miscHooks";
 import useUserStatus from "utils/useUserStatus";
@@ -16,9 +16,16 @@ import {
   UseRowStateRowProps,
   TableOptions,
 } from "react-table";
-import { MessageKey, EditMessageListRow } from "types/tableRow";
 
-type MessageMeta = Omit<EditMessageListRow, "value">;
+type MessageMeta = {
+  key: MessageKey;
+  desc: string;
+  type: "string" | "richtext";
+};
+
+type EditMessageListRow = MessageMeta & {
+  value: string;
+};
 
 const messagesMeta: MessageMeta[] = [
   {

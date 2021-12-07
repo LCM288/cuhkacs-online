@@ -1,43 +1,67 @@
 import React, { useMemo, useState, useEffect, useCallback } from "react";
 import useResizeAware from "react-resize-aware";
 import {
-  useTable,
-  useGlobalFilter,
-  useSortBy,
-  usePagination,
+  Row,
   TableOptions,
   TableInstance,
+  UseFiltersInstanceProps,
   UseGlobalFiltersInstanceProps,
-  UseGlobalFiltersState,
   UsePaginationInstanceProps,
+  UseFiltersState,
+  UseGlobalFiltersState,
   UsePaginationState,
 } from "react-table";
 import useAsyncDebounce from "utils/useAsyncDebounce";
 import { Form, Level, Button } from "react-bulma-components";
+import Papa from "papaparse";
+import { DateTime } from "luxon";
 import { toast } from "react-toastify";
-import ApproveCell from "components/tables/approveCell";
-import EditMemberCell from "components/tables/editMemberCell";
 import PaginationControl from "components/tables/paginationControl";
-import AddRegistration from "components/addRegistration";
+import EditMemberCell from "components/tables/editMemberCell";
 import Loading from "components/loading";
 import useHideColumn from "utils/useHideColumn";
-import { ref, query, orderByChild, startAt, endAt } from "firebase/database";
-import { database, useGetAndListen } from "utils/firebase";
 import { Member } from "types/db";
-import { useSetTitle } from "utils/miscHooks";
-import useUserStatus from "utils/useUserStatus";
-import { Navigate } from "react-router-dom";
-import Table from "components/tables/table";
+import { database, useGetAndListen } from "utils/firebase";
+import { orderByChild, query, ref, startAfter } from "firebase/database";
+import {
+  useTable,
+  useFilters,
+  useGlobalFilter,
+  useSortBy,
+  usePagination,
+} from "react-table";
 import { StopClickDiv } from "utils/domEventHelpers";
-import { DateTime } from "luxon";
+import Table from "components/tables/table";
+import { useSetTitle } from "utils/miscHooks";
+import { Navigate } from "react-router-dom";
+import useUserStatus from "utils/useUserStatus";
 
 const { Input, Field, Label, Control, Select } = Form;
 
-const Registrations = (): React.ReactElement => {
+type MemberStatus = "Activated" | "PG Member" | "Expired" | "Registered";
+
+const getStatus = (member: Member): MemberStatus => {
+  if (!member.memberStatus) {
+    return "Registered";
+  }
+  if (DateTime.now().valueOf() > member.memberStatus.until) {
+    return "Expired";
+  }
+  if (member.studentStatus.college === "NO") {
+    return "PG Member";
+  }
+  return "Activated";
+};
+
+const Members = (): React.ReactElement => {
   // auth
   const userStatus = useUserStatus();
 
   // constant
+  const statusOptions = useMemo(
+    () => ["Activated", "PG Member", "Expired", "All"],
+    []
+  );
   const pageSizeOptions = useMemo(() => [1, 2, 5, 10, 20, 50], []);
 
   // data
@@ -46,8 +70,7 @@ const Registrations = (): React.ReactElement => {
       query(
         ref(database, "members"),
         orderByChild("memberStatus/since"),
-        startAt(null),
-        endAt(null)
+        startAfter(null)
       ),
     []
   );
@@ -64,6 +87,18 @@ const Registrations = (): React.ReactElement => {
   }, [error]);
 
   // table
+  const statusFilter = useCallback(
+    (
+      rows: Array<Row<Record<string, unknown>>>,
+      id: string,
+      filterValue: string
+    ) =>
+      filterValue === "All"
+        ? rows
+        : rows.filter((row) => row.values[id] === filterValue),
+    []
+  );
+
   const tableColumns = useMemo(
     () => [
       {
@@ -158,52 +193,80 @@ const Registrations = (): React.ReactElement => {
         maxWidth: 215,
       },
       {
-        Header: "Last Update",
+        Header: "Member Since",
         accessor: (row: Member) =>
-          DateTime.fromMillis(row.updatedAt, {
-            zone: "Asia/Hong_Kong",
-          }).toFormat("yyyy-MM-dd HH:mm:ss"),
-        id: "updatedAt",
-        width: 170,
-        minWidth: 170,
-        maxWidth: 170,
+          row.memberStatus?.since
+            ? DateTime.fromMillis(row.memberStatus.since, {
+                zone: "Asia/Hong_Kong",
+              }).toISODate()
+            : undefined,
+        id: "memberSince",
+        Cell: ({ value }: { value: string | undefined }) =>
+          value ?? <i>No Data</i>,
+        width: 165,
+        maxWidth: 165,
+      },
+      {
+        Header: "Member Until",
+        accessor: (row: Member) =>
+          row.memberStatus?.until
+            ? DateTime.fromMillis(row.memberStatus.until, {
+                zone: "Asia/Hong_Kong",
+              }).toISODate()
+            : undefined,
+        id: "memberUntil",
+        Cell: ({ value }: { value: string | undefined }) =>
+          value ?? <i>No Data</i>,
+        width: 165,
+        maxWidth: 165,
+      },
+      {
+        Header: "Status",
+        accessor: getStatus,
+        id: "status",
+        filter: statusFilter,
+        disableSortBy: true,
+        width: 100,
+        maxWidth: 100,
       },
       {
         Header: "Action",
-        accessor: () => "Registration",
+        accessor: () => "Member",
         id: "action",
         Cell: ({ row }: { row: { original: Member } }) => (
           <StopClickDiv>
-            <Button.Group>
-              <ApproveCell
-                sid={row.original.sid}
-                englishName={row.original.name.eng}
-                gradDate={row.original.studentStatus.gradDate}
-              />
-              <EditMemberCell member={row.original} type="Registration" />
-            </Button.Group>
+            <EditMemberCell member={row.original} type="Member" />
           </StopClickDiv>
         ),
         disableSortBy: true,
-        minWidth: 200,
-        width: 200,
-        maxWidth: 200,
+        minWidth: 85,
+        width: 85,
+        maxWidth: 85,
       },
     ],
-    []
+    [statusFilter]
   );
 
   const tableData = useMemo(() => {
     return data
       ? Object.values(data).sort(
-          // larger updatedAt comes first
-          (a, b) => b.updatedAt - a.updatedAt
+          // smaller since comes first
+          (a, b) => (a.memberStatus?.since ?? 0) - (b.memberStatus?.since ?? 0)
         )
       : [];
   }, [data]);
 
-  const tableGetRowId = useCallback(
-    (row: Record<string, unknown>) => row.sid,
+  const tableGetRowId = useMemo(() => {
+    return (row: Record<string, unknown>) => row.sid;
+  }, []);
+
+  const initialFilters = useMemo(
+    () => [
+      {
+        id: "status",
+        value: "Activated",
+      },
+    ],
     []
   );
 
@@ -215,21 +278,23 @@ const Registrations = (): React.ReactElement => {
         getRowId: tableGetRowId,
         autoResetFilters: false,
         autoResetGlobalFilter: false,
-        autoResetPage: false,
-        initialState: { pageSize: 10, pageIndex: 0 },
+        initialState: { filters: initialFilters, pageSize: 10, pageIndex: 0 },
       } as TableOptions<Record<string, unknown>>),
-    [tableColumns, tableData, tableGetRowId]
+    [initialFilters, tableColumns, tableData, tableGetRowId]
   );
 
   const tableInstance = useTable(
     tableOptions,
+    useFilters,
     useGlobalFilter,
     useSortBy,
     usePagination
   ) as TableInstance<Record<string, unknown>> &
+    UseFiltersInstanceProps<Record<string, unknown>> &
     UseGlobalFiltersInstanceProps<Record<string, unknown>> &
     UsePaginationInstanceProps<Record<string, unknown>> & {
-      state: UseGlobalFiltersState<Record<string, unknown>> &
+      state: UseFiltersState<Record<string, unknown>> &
+        UseGlobalFiltersState<Record<string, unknown>> &
         UsePaginationState<Record<string, unknown>>;
     };
 
@@ -237,10 +302,10 @@ const Registrations = (): React.ReactElement => {
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    rows,
     prepareRow,
-    state: { globalFilter, pageIndex, pageSize },
+    state: { globalFilter, filters, pageIndex, pageSize },
     setGlobalFilter,
+    setFilter,
     setHiddenColumns,
     allColumns,
     visibleColumns,
@@ -248,13 +313,106 @@ const Registrations = (): React.ReactElement => {
     pageCount,
     setPageSize,
     gotoPage,
+    rows,
   } = tableInstance;
 
   const [globalFilterInput, setGlobalFilterInput] = useState(globalFilter);
 
+  const [statusFilterInput, setStatusFilterInput] = useState(
+    filters.find(({ id }) => id === "status")?.value
+  );
+
   const onGlobalFilterChange = useAsyncDebounce((value) => {
     setGlobalFilter(value || undefined);
   }, 500);
+
+  const onStatusFilterChange = useAsyncDebounce((value) => {
+    setFilter("status", value || undefined);
+  }, 500);
+
+  // export files
+  const [isFileProcessing, setIsFileProcessing] = useState(false);
+
+  const onExport = useCallback((exportData: Member[]) => {
+    if (exportData.length) {
+      setIsFileProcessing(true);
+      const memberExport = exportData.map(
+        ({
+          sid,
+          name: { chi: chineseName, eng: englishName },
+          gender,
+          dob,
+          email,
+          phone,
+          studentStatus: { college, major, entryDate, gradDate },
+          memberStatus,
+        }) => ({
+          SID: sid,
+          "Chinese Name": chineseName ?? "No Data",
+          "English Name": englishName,
+          Gender: gender ?? "No Data",
+          "Date of Birth": dob ?? "No Data",
+          Email: email ?? "No Data",
+          Phone: phone ?? "No Data",
+          College: college,
+          Major: major,
+          "Date of Entry": entryDate,
+          "Expected Graduation Date": gradDate,
+          "Member Since": memberStatus?.since
+            ? DateTime.fromMillis(memberStatus.since, {
+                zone: "Asia/Hong_Kong",
+              }).toISODate()
+            : "No Data",
+        })
+      );
+      const csv = Papa.unparse(memberExport, {
+        quotes: [
+          true, // sid
+          true, // chinese name
+          true, // english name
+          true, // gender
+          false, // date of birth
+          true, // email
+          true, // phone
+          true, // college
+          true, // major
+          false, // date of entry
+          false, // expected graduation date
+          false, // member since
+        ],
+      });
+      const element = document.createElement("a");
+      const file = new Blob([csv], { type: "text/plain" });
+      element.href = URL.createObjectURL(file);
+      const time = DateTime.local();
+      element.download = `members-${time.toISO()}.csv`;
+      document.body.appendChild(element); // Required for this to work in FireFox
+      element.click();
+      document.body.removeChild(element);
+      setIsFileProcessing(false);
+    } else {
+      toast.error("No member data.");
+      setIsFileProcessing(false);
+    }
+  }, []);
+
+  const onExportAll = useCallback(() => {
+    if (tableData.length) {
+      onExport(tableData);
+    } else {
+      toast.error("No member data.");
+      setIsFileProcessing(false);
+    }
+  }, [tableData, onExport]);
+
+  const onExportFiltered = useCallback(() => {
+    if (rows.length) {
+      onExport(rows.map((row) => row.original as Member));
+    } else {
+      toast.error("No member data.");
+      setIsFileProcessing(false);
+    }
+  }, [rows, onExport]);
 
   // resize
   const [resizeListener, sizes] = useResizeAware();
@@ -268,10 +426,11 @@ const Registrations = (): React.ReactElement => {
       ["dateOfBirth"],
       ["gender"],
       ["email", "phone"],
-      ["updatedAt"],
       ["dateOfEntry", "expectedGraduationDate"],
+      ["memberSince", "memberUntil"],
       ["chineseName"],
       ["major", "college"],
+      ["status"],
       ["englishName"],
     ],
     []
@@ -289,6 +448,18 @@ const Registrations = (): React.ReactElement => {
   return (
     <>
       {resizeListener}
+      <Button.Group align="right">
+        <Button onClick={onExportAll} loading={isFileProcessing}>
+          Export All
+        </Button>
+        <Button
+          color="primary"
+          onClick={onExportFiltered}
+          loading={isFileProcessing}
+        >
+          Export Filtered
+        </Button>
+      </Button.Group>
       <PaginationControl
         gotoPage={gotoPage}
         pageIndex={pageIndex}
@@ -296,7 +467,22 @@ const Registrations = (): React.ReactElement => {
       />
       <Level className="is-mobile is-flex-wrap-wrap">
         <Level.Side align="left">
-          <Field>
+          <Field kind="addons">
+            <Control>
+              <Select
+                onChange={(
+                  event: React.ChangeEvent<HTMLSelectElement>
+                ): void => {
+                  setStatusFilterInput(event.target.value);
+                  onStatusFilterChange(event.target.value);
+                }}
+                value={statusFilterInput}
+              >
+                {statusOptions.map((statusOption) => (
+                  <option key={statusOption}>{statusOption}</option>
+                ))}
+              </Select>
+            </Control>
             <Control fullwidth>
               <Input
                 placeholder="Filter by keyword"
@@ -355,15 +541,9 @@ const Registrations = (): React.ReactElement => {
         pageIndex={pageIndex}
         pageCount={pageCount}
       />
-      <Level className="is-mobile">
-        <div />
-        <Level.Side align="right">
-          <AddRegistration />
-        </Level.Side>
-      </Level>
       <Loading loading={loading} />
     </>
   );
 };
 
-export default Registrations;
+export default Members;

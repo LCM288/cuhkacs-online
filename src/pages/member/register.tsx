@@ -17,6 +17,7 @@ import { serverTimestamp } from "firebase/database";
 import { toast } from "react-toastify";
 import { useSetTitle } from "utils/miscHooks";
 import { Member } from "types/db";
+import type { CollegeCode } from "static/college.json";
 
 const Register = (): React.ReactElement => {
   const userStatus = useUserStatus();
@@ -27,7 +28,7 @@ const Register = (): React.ReactElement => {
   const [dob, setDob] = useState<string | null>(null);
   const [email, setEmail] = useState(`${userStatus?.sid}@link.cuhk.edu.hk`);
   const [phone, setPhone] = useState<string>("");
-  const [collegeCode, setCollegeCode] = useState<string | null>(null);
+  const [collegeCode, setCollegeCode] = useState<CollegeCode | null>(null);
   const [majorCode, setMajorCode] = useState<string | null>(null);
   const [doEntry, setDoEntry] = useState<string | null>(null);
   const [doGrad, setDoGrad] = useState<string | null>(null);
@@ -70,7 +71,7 @@ const Register = (): React.ReactElement => {
       email: string | null;
       phone: string | null;
       studentStatus: {
-        college: string | null;
+        college: CollegeCode | null;
         major: string | null;
         entryDate: string | null;
         gradDate: string | null;
@@ -215,6 +216,7 @@ const Register = (): React.ReactElement => {
                 label="Email"
                 placeholder="Email address"
                 type="email"
+                pattern=".+@.+"
                 editable
               />
               <TextField

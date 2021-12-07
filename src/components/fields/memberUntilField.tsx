@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Form } from "react-bulma-components";
 import DateField from "components/fields/dateField";
 import { toast } from "react-toastify";
@@ -24,6 +24,12 @@ const MemberUntilField = ({
   future = false,
 }: Props): React.ReactElement => {
   const [untilGrad, setUntilGrad] = useState(dateValue === gradDate);
+
+  useEffect(() => {
+    if (untilGrad && gradDate) {
+      setDateValue(gradDate);
+    }
+  }, [gradDate, untilGrad, setDateValue]);
 
   const onCheckboxChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {

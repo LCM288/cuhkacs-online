@@ -10,7 +10,9 @@ import MemberUntilField from "components/fields/memberUntilField";
 import MajorField from "components/fields/majorField";
 import { Modal, Button, Heading } from "react-bulma-components";
 import { PreventDefaultForm } from "utils/domEventHelpers";
-import { RegistrationListRow, MemberListRow } from "types/tableRow";
+import { Member } from "types/db";
+import { DateTime } from "luxon";
+import { CollegeCode } from "static/college.json";
 
 export type UpdatedMember = {
   sid: string;
@@ -23,7 +25,7 @@ export type UpdatedMember = {
   email: string | null;
   phone: string | null;
   studentStatus: {
-    college: string | null;
+    college: CollegeCode | null;
     major: string | null;
     entryDate: string | null;
     gradDate: string | null;
@@ -38,7 +40,7 @@ export type UpdatedMember = {
 interface Props {
   onSave: (newData: UpdatedMember) => void;
   onCancel: () => void;
-  row: RegistrationListRow | MemberListRow;
+  member: Member;
   loading: boolean;
   type: "Registration" | "Member";
   fullyEditable?: boolean;
@@ -47,46 +49,67 @@ interface Props {
 const EditMemberModal = ({
   onSave,
   onCancel,
-  row,
+  member,
   loading,
   type,
   fullyEditable = false,
 }: Props): React.ReactElement => {
-  const [sid, setSID] = useState(row.sid);
-  const [englishName, setEnglishName] = useState(row.englishName);
-  const [chineseName, setChineseName] = useState(row.chineseName ?? "");
-  const [gender, setGender] = useState(row.gender ?? null);
-  const [dob, setDob] = useState(row.dateOfBirth ?? null);
-  const [email, setEmail] = useState(row.email ?? `${sid}@link.cuhk.edu.hk`);
-  const [phone, setPhone] = useState(row.phone ?? "");
-  const [collegeCode, setCollegeCode] = useState<string | null>(row.college);
-  const [majorCode, setMajorCode] = useState<string | null>(row.major);
-  const [doEntry, setDoEntry] = useState<string | null>(row.dateOfEntry);
+  const [sid, setSID] = useState(member.sid);
+  const [englishName, setEnglishName] = useState(member.name.eng);
+  const [chineseName, setChineseName] = useState(member.name.chi ?? "");
+  const [gender, setGender] = useState(member.gender ?? null);
+  const [dob, setDob] = useState(member.dob ?? null);
+  const [email, setEmail] = useState(member.email ?? `${sid}@link.cuhk.edu.hk`);
+  const [phone, setPhone] = useState(member.phone ?? "");
+  const [collegeCode, setCollegeCode] = useState<CollegeCode | null>(
+    member.studentStatus.college
+  );
+  const [majorCode, setMajorCode] = useState<string | null>(
+    member.studentStatus.major
+  );
+  const [doEntry, setDoEntry] = useState<string | null>(
+    member.studentStatus.entryDate
+  );
   const [doGrad, setDoGrad] = useState<string | null>(
-    row.expectedGraduationDate
+    member.studentStatus.gradDate
   );
   const memberSince = useMemo(
-    () => ("memberSince" in row ? row.memberSince : null),
-    [row]
+    () =>
+      member.memberStatus?.since
+        ? DateTime.fromMillis(member.memberStatus.since, {
+            zone: "Asia/Hong_Kong",
+          }).toISODate()
+        : null,
+    [member]
   );
   const [memberUntil, setMemberUntil] = useState(
-    "memberUntil" in row ? row.memberUntil : null
+    member.memberStatus?.until
+      ? DateTime.fromMillis(member.memberStatus.until, {
+          zone: "Asia/Hong_Kong",
+        }).toISODate()
+      : null
   );
 
   const onReset = useCallback(() => {
-    setSID(row.sid);
-    setEnglishName(row.englishName);
-    setChineseName(row.chineseName ?? "");
-    setGender(row.gender ?? null);
-    setDob(row.dateOfBirth ?? null);
-    setEmail(row.email ?? `${row.sid}@link.cuhk.edu.hk`);
-    setPhone(row.phone ?? "");
-    setCollegeCode(row.college);
-    setMajorCode(row.major);
-    setDoEntry(row.dateOfEntry);
-    setDoGrad(row.expectedGraduationDate);
-    setMemberUntil("memberUntil" in row ? row.memberUntil : null);
-  }, [row]);
+    setSID(member.sid);
+    setEnglishName(member.name.eng);
+    setChineseName(member.name.chi ?? "");
+    setGender(member.gender ?? null);
+    setDob(member.dob ?? null);
+    setEmail(member.email ?? `${member.sid}@link.cuhk.edu.hk`);
+    setPhone(member.phone ?? "");
+    setCollegeCode(member.studentStatus.college);
+    setMajorCode(member.studentStatus.major);
+    setDoEntry(member.studentStatus.entryDate);
+    setDoGrad(member.studentStatus.gradDate);
+    setMemberUntil(
+      member.memberStatus?.until
+        ? DateTime.fromMillis(member.memberStatus.until, {
+            zone: "Asia/Hong_Kong",
+          }).toISODate()
+        : null
+    );
+  }, [member]);
 
   const onConfirm = useCallback(
     (newData: UpdatedMember) => {
@@ -164,6 +187,7 @@ const EditMemberModal = ({
                 label="Email"
                 placeholder="Email address"
                 type="email"
+                pattern=".+@.+"
                 editable
               />
               <TextField
@@ -190,7 +214,7 @@ const EditMemberModal = ({
                     gradDate={doGrad}
                     dateValue={memberUntil}
                     setDateValue={setMemberUntil}
-                    editable={fullyEditable}
+                    editable
                   />
                 </>
               )}

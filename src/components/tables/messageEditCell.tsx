@@ -7,7 +7,7 @@ import { useUpdate } from "utils/firebase";
 import { serverTimestamp } from "firebase/database";
 import { Message } from "types/db";
 import { useForceRerender } from "utils/miscHooks";
-import { MessageKey } from "types/tableRow";
+import { MessageKey } from "types/db";
 
 const { Input, Field, Control } = Form;
 

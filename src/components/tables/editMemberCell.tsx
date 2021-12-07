@@ -7,20 +7,19 @@ import { toast } from "react-toastify";
 import useClipped from "utils/useClipped";
 import { useUpdate } from "utils/firebase";
 import { Member } from "types/db";
-import { RegistrationListRow, MemberListRow } from "types/tableRow";
 import { DateTime } from "luxon";
 import { serverTimestamp } from "firebase/database";
 
 interface Props {
-  row: RegistrationListRow | MemberListRow;
+  member: Member;
   type: "Registration" | "Member";
 }
 
-const EditMemberCell = ({ row, type }: Props): React.ReactElement => {
+const EditMemberCell = ({ member, type }: Props): React.ReactElement => {
   const { loading: editLoading, update: updateMember } = useUpdate<
     Member,
     "lastRenewed" | "updatedAt"
-  >(`members/${row.sid}`);
+  >(`members/${member.sid}`);
 
   const [openModal, setOpenModal] = useState(false);
 
@@ -72,37 +71,16 @@ const EditMemberCell = ({ row, type }: Props): React.ReactElement => {
             toast.error("Some error has occurred.");
             return;
           }
-          if (!("memberSince" in row)) {
-            console.error("memberSince field missing in row");
+          if (!member.memberStatus) {
+            console.error("memberStatus field missing in member");
             toast.error("Some error has occurred.");
             return;
           }
-          if (!("lastRenewed" in row)) {
-            console.error("lastRenewed field missing in row");
-            toast.error("Some error has occurred.");
-            return;
-          }
-          if (!("memberUntil" in row)) {
-            console.error("memberUntil field missing in row");
-            toast.error("Some error has occurred.");
-            return;
-          }
-          const since = DateTime.fromISO(row.memberSince, {
-            zone: "Asia/Hong_Kong",
-          }).valueOf();
-          const lastRenewed = DateTime.fromISO(row.lastRenewed, {
-            zone: "Asia/Hong_Kong",
-          }).valueOf();
-          const oldUntil = DateTime.fromISO(row.memberUntil, {
-            zone: "Asia/Hong_Kong",
-          }).valueOf();
+          const lastRenewed = member.memberStatus.lastRenewed;
+          const oldUntil = member.memberStatus.until;
           const newUntil = DateTime.fromISO(newData.memberStatus.until, {
             zone: "Asia/Hong_Kong",
           }).valueOf();
-          if (newUntil < DateTime.now().valueOf()) {
-            toast.error("Please specify a future date.");
-            return;
-          }
           updateMember({
             ...newData,
             studentStatus: {
@@ -112,7 +90,7 @@ const EditMemberCell = ({ row, type }: Props): React.ReactElement => {
               gradDate: newData.studentStatus.gradDate,
             },
             memberStatus: {
-              since,
+              since: member.memberStatus.since,
               lastRenewed:
                 newUntil > oldUntil ? serverTimestamp() : lastRenewed,
               until: newUntil,
@@ -129,7 +107,7 @@ const EditMemberCell = ({ row, type }: Props): React.ReactElement => {
             });
       }
     },
-    [row, type, updateMember]
+    [member, type, updateMember]
   );
 
   const promptEdit = useCallback(() => {
@@ -146,7 +124,7 @@ const EditMemberCell = ({ row, type }: Props): React.ReactElement => {
         <EditMemberModal
           onSave={onSave}
           onCancel={cancelEdit}
-          row={row}
+          member={member}
           loading={editLoading}
           type={type}
         />

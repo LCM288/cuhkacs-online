@@ -1,5 +1,17 @@
+export type CollegeCode =
+  | "CC"
+  | "NA"
+  | "UC"
+  | "SC"
+  | "WYS"
+  | "WS"
+  | "SH"
+  | "MC"
+  | "CW"
+  | "NO";
+
 export type College = {
-  code: string;
+  code: CollegeCode;
   englishName: string;
   chineseName: string;
 };

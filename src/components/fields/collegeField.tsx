@@ -1,11 +1,11 @@
 import React, { useMemo, useCallback } from "react";
 import { Level } from "react-bulma-components";
 import SelectField from "components/fields/selectField";
-import collegeData, { College } from "static/college.json";
+import collegeData, { College, CollegeCode } from "static/college.json";
 
 interface Props {
-  collegeCode: string | null;
-  setCollegeCode: (value: string | null) => void;
+  collegeCode: CollegeCode | null;
+  setCollegeCode: (value: CollegeCode | null) => void;
 }
 
 const CollegeField = ({
@@ -13,7 +13,7 @@ const CollegeField = ({
   setCollegeCode,
 }: Props): React.ReactElement => {
   type CollegeOption = {
-    value: string;
+    value: CollegeCode;
     chineseLabel: string;
     englishLabel: string;
   };

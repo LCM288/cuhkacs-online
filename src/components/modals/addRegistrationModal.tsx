@@ -11,6 +11,7 @@ import DateField from "components/fields/dateField";
 import MajorField from "components/fields/majorField";
 import { PreventDefaultForm } from "utils/domEventHelpers";
 import useClipped from "utils/useClipped";
+import { CollegeCode } from "static/college.json";
 
 export type NewMember = {
   sid: string | null;
@@ -23,7 +24,7 @@ export type NewMember = {
   email: string | null;
   phone: string | null;
   studentStatus: {
-    college: string | null;
+    college: CollegeCode | null;
     major: string | null;
     entryDate: string | null;
     gradDate: string | null;
@@ -48,7 +49,7 @@ const AddRegistrationModal = ({
   const [dob, setDob] = useState<string | null>(null);
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [collegeCode, setCollegeCode] = useState<string | null>(null);
+  const [collegeCode, setCollegeCode] = useState<CollegeCode | null>(null);
   const [majorCode, setMajorCode] = useState<string | null>(null);
   const [doEntry, setDoEntry] = useState<string | null>(null);
   const [doGrad, setDoGrad] = useState<string | null>(null);
