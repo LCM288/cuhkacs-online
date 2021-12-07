@@ -11,7 +11,7 @@
         ".write": "auth.token.email.endsWith('@link.cuhk.edu.hk') && auth.token.email.replace('@link.cuhk.edu.hk', '') === $sid && (!data.child('memberStatus').child('since').exists() || data.child('memberStatus').child('until').val() < now)",
         ".validate": "newData.hasChildren(['sid', 'name', 'studentStatus', 'createdAt', 'updatedAt']) && (newData.hasChildren(['memberStatus']) || !data.hasChildren(['memberStatus']))",
         "sid": {
-          ".validate": "newData.isString() && newData.val() === $sid"
+          ".validate": "newData.isString() && newData.val().length < 16 && newData.val() === $sid"
         },
         "name": {
           ".validate": "newData.hasChildren(['eng'])",

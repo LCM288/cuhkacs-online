@@ -8,7 +8,10 @@ import { UpdateType, useSet } from "utils/firebase";
 import { Executive } from "types/db";
 
 const AddAdmin = (): React.ReactElement => {
-  const { loading, set: addExecutive } = useSet();
+  const { loading, set: addExecutive } = useSet<
+    Executive,
+    "createdAt" | "updatedAt"
+  >();
 
   const [modalOpen, setModalOpen] = useState(false);
 

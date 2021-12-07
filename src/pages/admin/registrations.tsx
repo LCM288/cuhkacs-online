@@ -18,7 +18,7 @@ import { toast } from "react-toastify";
 import ApproveCell from "components/tables/approveCell";
 import EditMemberCell from "components/tables/editMemberCell";
 import PaginationControl from "components/tables/paginationControl";
-// import AddRegistration from "components/admin/registrations/addRegistration";
+import AddRegistration from "components/addRegistration";
 import Loading from "components/loading";
 import useHideColumn from "utils/useHideColumn";
 import { ref, query, orderByChild, startAt, endAt } from "firebase/database";
@@ -75,8 +75,10 @@ const Registrations = (): React.ReactElement => {
       },
       {
         Header: "Chinese Name",
-        accessor: (row: Member) => row.name.chi ?? "N/A",
+        accessor: (row: Member) => row.name.chi,
         id: "chineseName",
+        Cell: ({ value }: { value: string | undefined }) =>
+          value ?? <i>No Data</i>,
         width: 165,
         maxWidth: 165,
       },
@@ -91,6 +93,12 @@ const Registrations = (): React.ReactElement => {
         Header: "Gender",
         accessor: "gender",
         id: "gender",
+        Cell: ({ value }: { value: string | undefined }) =>
+          value ? (
+            value.substr(0, 1).toUpperCase() + value.substr(1)
+          ) : (
+            <i>No Data</i>
+          ),
         width: 105,
         maxWidth: 105,
       },
@@ -98,6 +106,8 @@ const Registrations = (): React.ReactElement => {
         Header: "Date of Birth",
         accessor: "dob",
         id: "dateOfBirth",
+        Cell: ({ value }: { value: string | undefined }) =>
+          value ?? <i>No Data</i>,
         width: 155,
         maxWidth: 155,
       },
@@ -105,6 +115,8 @@ const Registrations = (): React.ReactElement => {
         Header: "Email",
         accessor: "email",
         id: "email",
+        Cell: ({ value }: { value: string | undefined }) =>
+          value ?? <i>No Data</i>,
         width: 300,
         maxWidth: 300,
       },
@@ -112,6 +124,8 @@ const Registrations = (): React.ReactElement => {
         Header: "Phone",
         accessor: "phone",
         id: "phone",
+        Cell: ({ value }: { value: string | undefined }) =>
+          value ?? <i>No Data</i>,
         width: 145,
         maxWidth: 145,
       },
@@ -240,9 +254,7 @@ const Registrations = (): React.ReactElement => {
       ["dateOfEntry", "expectedGraduationDate"],
       ["chineseName"],
       ["major", "college"],
-      ["registrationType"],
       ["englishName"],
-      ["id"],
     ],
     []
   );
@@ -327,7 +339,9 @@ const Registrations = (): React.ReactElement => {
       />
       <Level className="is-mobile">
         <div />
-        <Level.Side align="right">{/* <AddRegistration /> */}</Level.Side>
+        <Level.Side align="right">
+          <AddRegistration />
+        </Level.Side>
       </Level>
       <Loading loading={loading} />
     </>
