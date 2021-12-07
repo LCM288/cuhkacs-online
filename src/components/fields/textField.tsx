@@ -7,6 +7,7 @@ interface Props {
   value: string;
   setValue?: (value: string) => void;
   label: string;
+  maxLength?: number | undefined;
   placeholder?: string;
   editable?: boolean;
   type?: string;
@@ -18,6 +19,7 @@ const TextField = ({
   value,
   setValue = () => {},
   label,
+  maxLength,
   placeholder = "",
   editable = false,
   type = "text",
@@ -41,6 +43,7 @@ const TextField = ({
             disabled={!editable}
             type={type}
             pattern={pattern}
+            maxLength={maxLength}
             required={required}
           />
         </Control>

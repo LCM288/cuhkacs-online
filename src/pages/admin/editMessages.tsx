@@ -21,6 +21,7 @@ type MessageMeta = {
   key: MessageKey;
   desc: string;
   type: "string" | "richtext";
+  maxLength: number;
 };
 
 type EditMessageListRow = MessageMeta & {
@@ -32,35 +33,37 @@ const messagesMeta: MessageMeta[] = [
     key: "welcome",
     desc: "Welcome message displayed to everyone",
     type: "richtext",
+    maxLength: 65535,
   },
   {
     key: "member",
     desc: "Message displayed to active members",
     type: "richtext",
+    maxLength: 65535,
   },
   {
     key: "expired",
     desc: "Message displayed to expired members",
     type: "richtext",
+    maxLength: 65535,
   },
   {
     key: "registered",
     desc: "Message displayed to unactivated members",
     type: "richtext",
+    maxLength: 65535,
   },
   {
     key: "visitor",
     desc: "Message displayed to non registered student",
     type: "richtext",
+    maxLength: 65535,
   },
 ];
 
 const EditMessages = (): React.ReactElement => {
   // auth
   const userStatus = useUserStatus();
-
-  // constant
-  const alwaysHiddenColumns = useMemo(() => ["desc", "type"], []);
 
   // resize
   const [resizeListener, sizes] = useResizeAware();
@@ -94,34 +97,20 @@ const EditMessages = (): React.ReactElement => {
           row,
           value,
         }: {
-          row: { values: EditMessageListRow };
+          row: { original: EditMessageListRow };
           value: string;
         }) => {
           return (
             <div>
               <p>{value}</p>
               <p>
-                <i>{row.values.desc}</i>
+                <i>{row.original.desc}</i>
               </p>
             </div>
           );
         },
         width: 300,
         maxWidth: 300,
-      },
-      {
-        Header: "Description",
-        accessor: "desc",
-        id: "desc",
-        width: 0,
-        maxWidth: 0,
-      },
-      {
-        Header: "Type",
-        accessor: "type",
-        id: "type",
-        width: 0,
-        maxWidth: 0,
       },
       {
         Header: "Value",
@@ -132,22 +121,23 @@ const EditMessages = (): React.ReactElement => {
           value,
           isExpanded,
         }: {
-          row: { values: EditMessageListRow } & UseRowStateRowProps<
+          row: { original: EditMessageListRow } & UseRowStateRowProps<
             Record<string, unknown>
           >;
           value: string;
           isExpanded?: boolean;
         }) => (
           <MessageEditCell
-            messageKey={row.values.key}
-            type={row.values.type}
+            messageKey={row.original.key}
+            type={row.original.type}
             setEditValue={(newValue: string) => {
               row.setState({ editingValue: newValue });
             }}
-            editingValue={row.state.editingValue as string}
+            editingValue={row.state.editingValue as string | undefined}
             value={value}
             windowWidth={windowWidth}
             isExpanded={isExpanded}
+            maxLength={row.original.maxLength}
           />
         ),
         minWidth: 300,
@@ -174,12 +164,9 @@ const EditMessages = (): React.ReactElement => {
       ({
         columns: tableColumns,
         data: tableData,
-        initialState: {
-          hiddenColumns: alwaysHiddenColumns,
-        },
         autoResetRowState: false,
       } as TableOptions<Record<string, unknown>>),
-    [alwaysHiddenColumns, tableColumns, tableData]
+    [tableColumns, tableData]
   );
 
   const tableInstance = useTable(tableOption, useRowState);
@@ -198,13 +185,7 @@ const EditMessages = (): React.ReactElement => {
   // resizeListener
   const hideColumnOrder = useMemo(() => [["value"]], []);
 
-  useHideColumn(
-    windowWidth,
-    hideColumnOrder,
-    tableColumns,
-    setHiddenColumns,
-    alwaysHiddenColumns
-  );
+  useHideColumn(windowWidth, hideColumnOrder, tableColumns, setHiddenColumns);
 
   // set title
   useSetTitle("Edit Messages");
@@ -226,7 +207,6 @@ const EditMessages = (): React.ReactElement => {
         allColumns={allColumns}
         visibleColumns={visibleColumns}
         windowWidth={windowWidth}
-        alwaysHiddenColumns={alwaysHiddenColumns}
         size="fullwidth"
         striped
       />

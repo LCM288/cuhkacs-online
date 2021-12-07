@@ -49,7 +49,8 @@ const EditAdminModal = ({
             <Heading className="has-text-centered">Edit Admin</Heading>
             <TextField
               value={sid}
-              pattern="^\d{10}$"
+              pattern="\d*"
+              maxLength={16}
               label="Student ID"
               placeholder="Student ID"
               required
@@ -58,6 +59,7 @@ const EditAdminModal = ({
               value={displayName}
               setValue={setDisplayName}
               label="Display Name"
+              maxLength={128}
               placeholder="Display Name"
               editable
             />
@@ -65,6 +67,7 @@ const EditAdminModal = ({
               value={title}
               setValue={setTitle}
               label="Title"
+              maxLength={128}
               placeholder="Title"
               editable
             />

@@ -11,7 +11,7 @@
         ".write": "auth.token.email.endsWith('@link.cuhk.edu.hk') && auth.token.email.replace('@link.cuhk.edu.hk', '') === $sid && (!data.child('memberStatus').child('since').exists() || data.child('memberStatus').child('until').val() < now)",
         ".validate": "newData.hasChildren(['sid', 'name', 'studentStatus', 'createdAt', 'updatedAt']) && (newData.hasChildren(['memberStatus']) || !data.hasChildren(['memberStatus']))",
         "sid": {
-          ".validate": "newData.isString() && newData.val().length < 16 && newData.val() === $sid"
+          ".validate": "newData.isString() && newData.val().matches(/^\\d*$/) && newData.val().length < 16 && newData.val() === $sid"
         },
         "name": {
           ".validate": "newData.hasChildren(['eng'])",
@@ -32,10 +32,10 @@
           ".validate": "!newData.exists() || newData.isString() && newData.val().matches(/^\\d{4}-\\d{2}-\\d{2}$/)"
         },
         "email": {
-          ".validate": "!newData.exists() || (newData.isString() && newData.val().matches(/^.+@.+$/) && newData.val().length < 256)"
+          ".validate": "!newData.exists() || (newData.isString() && newData.val().matches(/^.+@.+$/) && newData.val().length < 324)"
         },
         "phone": {
-          ".validate": "!newData.exists() || (newData.isString() && newData.val().matches(/^\\+?\\d+(-\\d+)*$/) && newData.val().length < 256)"
+          ".validate": "!newData.exists() || (newData.isString() && newData.val().matches(/^\\+?\\d+(-\\d+)*$/) && newData.val().length < 64)"
         },
         "studentStatus": {
           ".validate": "newData.hasChildren(['college', 'major', 'entryDate', 'gradDate'])",
@@ -88,7 +88,7 @@
         ".read": "auth !== null && auth.token !== null && auth.token.email.endsWith('@link.cuhk.edu.hk') && auth.token.email.replace('@link.cuhk.edu.hk', '') === $sid",
         ".validate": "newData.hasChildren(['sid', 'displayName', 'title', 'createdAt', 'updatedAt'])",
         "sid": {
-          ".validate": "newData.val() === $sid"
+          ".validate": "newData.isString() && newData.val().matches(/^\\d*$/) && newData.val().length < 16 && newData.val() === $sid"
         },
         "displayName": {
           ".validate": "newData.isString() && newData.val().length < 128"

@@ -8,6 +8,8 @@ import { serverTimestamp } from "firebase/database";
 import { Message } from "types/db";
 import { useForceRerender } from "utils/miscHooks";
 import { MessageKey } from "types/db";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 
 const { Input, Field, Control } = Form;
 
@@ -15,10 +17,11 @@ interface Props {
   messageKey: MessageKey;
   type: "string" | "richtext";
   setEditValue: (newValue: string) => void;
-  editingValue: string;
+  editingValue: string | undefined;
   value: string;
   windowWidth: number;
   isExpanded: boolean | undefined;
+  maxLength: number;
 }
 
 const MessageEditCell = ({
@@ -29,6 +32,7 @@ const MessageEditCell = ({
   value,
   windowWidth,
   isExpanded,
+  maxLength,
 }: Props): React.ReactElement => {
   const { loading: isSaving, update } = useUpdate<Message, "updatedAt">(
     `publicMessages/${messageKey}`
@@ -64,6 +68,10 @@ const MessageEditCell = ({
 
   const updateValue = useCallback(
     (newValue: string) => {
+      if (newValue.length > maxLength) {
+        toast.error("Message exceeds maximum length.");
+        return;
+      }
       updateMessage(newValue)
         .then(() => toast.success(`${messageKey} message updated successfully`))
         .catch((err) => {
@@ -71,7 +79,7 @@ const MessageEditCell = ({
           toast.error(err.message);
         });
     },
-    [updateMessage, messageKey]
+    [updateMessage, messageKey, maxLength]
   );
 
   const simpleMDEOption: SimpleMDEReactProps["options"] = useMemo(
@@ -117,14 +125,16 @@ const MessageEditCell = ({
     () => (
       <Button
         color="success"
-        onClick={() => updateValue(editingValue)}
+        onClick={() => updateValue(editingValue ?? "")}
         loading={isSaving}
-        disabled={value === editingValue}
+        disabled={
+          value === editingValue || (editingValue?.length ?? 0) > maxLength
+        }
       >
         Update
       </Button>
     ),
-    [updateValue, isSaving, value, editingValue]
+    [updateValue, isSaving, value, editingValue, maxLength]
   );
 
   switch (type) {
@@ -139,6 +149,7 @@ const MessageEditCell = ({
                 onChange={(event: React.ChangeEvent<HTMLInputElement>): void =>
                   setEditValue(event.target.value)
                 }
+                maxLength={maxLength}
               />
             </Control>
             {windowWidth > 768 && (
@@ -181,6 +192,12 @@ const MessageEditCell = ({
                   onChange={setEditValue}
                   options={simpleMDEOption}
                 />
+                {(editingValue?.length ?? 0) > maxLength && (
+                  <Form.Help color="danger">
+                    <FontAwesomeIcon icon={faExclamationCircle} /> Message too
+                    long ({editingValue?.length ?? 0}/{maxLength})
+                  </Form.Help>
+                )}
               </Tile>
             </Tile>
             <Tile
@@ -193,7 +210,7 @@ const MessageEditCell = ({
                 className="box preview-content"
                 style={{ left: "8px", position: "relative" }}
               >
-                <Markdown>{editingValue}</Markdown>
+                <Markdown>{editingValue ?? ""}</Markdown>
               </Tile>
             </Tile>
           </Tile>

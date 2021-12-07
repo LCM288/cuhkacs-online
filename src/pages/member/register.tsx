@@ -186,13 +186,15 @@ const Register = (): React.ReactElement => {
             <>
               <TextField
                 value={userStatus.sid}
-                pattern="^\d{10}$"
+                pattern="\d*"
+                maxLength={16}
                 label="Student ID"
                 required
               />
               <TextField
                 value={userStatus.displayName ?? ""}
                 label="English Name"
+                maxLength={128}
                 placeholder="English Name as in CU Link Card"
                 required
               />
@@ -200,6 +202,7 @@ const Register = (): React.ReactElement => {
                 value={chineseName}
                 setValue={setChineseName}
                 label="Chinese Name"
+                maxLength={64}
                 placeholder="Chinese Name as in CU Link Card"
                 editable
               />
@@ -217,6 +220,7 @@ const Register = (): React.ReactElement => {
                 placeholder="Email address"
                 type="email"
                 pattern=".+@.+"
+                maxLength={324}
                 editable
               />
               <TextField
@@ -226,6 +230,7 @@ const Register = (): React.ReactElement => {
                 placeholder="Phone Number"
                 type="tel"
                 pattern="\+?\d+(-\d+)*"
+                maxLength={64}
                 editable
               />
               <CollegeField

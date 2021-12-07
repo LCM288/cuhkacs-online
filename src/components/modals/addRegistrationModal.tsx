@@ -82,7 +82,8 @@ const AddRegistrationModal = ({
             <TextField
               value={sid}
               setValue={setSID}
-              pattern="^\d{1,16}$"
+              pattern="\d*"
+              maxLength={16}
               label="Student ID"
               placeholder="Student ID"
               editable
@@ -92,6 +93,7 @@ const AddRegistrationModal = ({
               value={englishName}
               setValue={setEnglishName}
               label="English Name"
+              maxLength={128}
               placeholder="English Name as in CU Link Card"
               editable
               required
@@ -100,6 +102,7 @@ const AddRegistrationModal = ({
               value={chineseName}
               setValue={setChineseName}
               label="Chinese Name"
+              maxLength={64}
               placeholder="Chinese Name as in CU Link Card"
               editable
             />
@@ -116,6 +119,8 @@ const AddRegistrationModal = ({
               label="Email"
               placeholder="Email address"
               type="email"
+              pattern=".+@.+"
+              maxLength={324}
               editable
             />
             <TextField
@@ -125,6 +130,7 @@ const AddRegistrationModal = ({
               placeholder="Phone Number"
               type="tel"
               pattern="\+?\d+(-\d+)*"
+              maxLength={64}
               editable
             />
             <CollegeField
