@@ -157,7 +157,7 @@ const AddAdminModal = ({
             })
           }
           onCancel={cancelConfirm}
-          disabled={!member}
+          disabled={!member?.memberStatus?.since}
         />
       )}
       <Loading loading={loading} />
