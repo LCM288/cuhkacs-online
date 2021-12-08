@@ -18,6 +18,7 @@ import { toast } from "react-toastify";
 import { useSetTitle } from "utils/miscHooks";
 import { Member } from "types/db";
 import type { CollegeCode } from "static/college.json";
+import { lengthLimits, patternLimits } from "utils/memberUtils";
 
 const Register = (): React.ReactElement => {
   const userStatus = useUserStatus();
@@ -186,15 +187,15 @@ const Register = (): React.ReactElement => {
             <>
               <TextField
                 value={userStatus.sid}
-                pattern="\d*"
-                maxLength={16}
+                pattern={patternLimits.sid.source}
+                maxLength={lengthLimits.sid}
                 label="Student ID"
                 required
               />
               <TextField
                 value={userStatus.displayName ?? ""}
                 label="English Name"
-                maxLength={128}
+                maxLength={lengthLimits.name.eng}
                 placeholder="English Name as in CU Link Card"
                 required
               />
@@ -202,7 +203,7 @@ const Register = (): React.ReactElement => {
                 value={chineseName}
                 setValue={setChineseName}
                 label="Chinese Name"
-                maxLength={64}
+                maxLength={lengthLimits.name.chi}
                 placeholder="Chinese Name as in CU Link Card"
                 editable
               />
@@ -219,8 +220,8 @@ const Register = (): React.ReactElement => {
                 label="Email"
                 placeholder="Email address"
                 type="email"
-                pattern=".+@.+"
-                maxLength={324}
+                pattern={patternLimits.email.source}
+                maxLength={lengthLimits.email}
                 editable
               />
               <TextField
@@ -229,8 +230,8 @@ const Register = (): React.ReactElement => {
                 label="Phone Number"
                 placeholder="Phone Number"
                 type="tel"
-                pattern="\+?\d+(-\d+)*"
-                maxLength={64}
+                pattern={patternLimits.phone.source}
+                maxLength={lengthLimits.phone}
                 editable
               />
               <CollegeField

@@ -13,6 +13,7 @@ import { PreventDefaultForm } from "utils/domEventHelpers";
 import { PartialMember } from "utils/memberUtils";
 import { DateTime } from "luxon";
 import { CollegeCode } from "static/college.json";
+import { lengthLimits, patternLimits } from "utils/memberUtils";
 
 export type UpdatedMember = {
   sid: string;
@@ -161,8 +162,8 @@ const EditMemberModal = ({
               <TextField
                 value={sid}
                 setValue={setSID}
-                pattern="\d*"
-                maxLength={16}
+                pattern={patternLimits.sid.source}
+                maxLength={lengthLimits.sid}
                 label="Student ID"
                 editable={fullyEditable}
                 required
@@ -171,7 +172,7 @@ const EditMemberModal = ({
                 value={englishName}
                 setValue={setEnglishName}
                 label="English Name"
-                maxLength={128}
+                maxLength={lengthLimits.name.eng}
                 placeholder="English Name as in CU Link Card"
                 editable
                 required
@@ -180,7 +181,7 @@ const EditMemberModal = ({
                 value={chineseName}
                 setValue={setChineseName}
                 label="Chinese Name"
-                maxLength={64}
+                maxLength={lengthLimits.name.chi}
                 placeholder="Chinese Name as in CU Link Card"
                 editable
               />
@@ -197,8 +198,8 @@ const EditMemberModal = ({
                 label="Email"
                 placeholder="Email address"
                 type="email"
-                pattern=".+@.+"
-                maxLength={324}
+                pattern={patternLimits.email.source}
+                maxLength={lengthLimits.email}
                 editable
               />
               <TextField
@@ -207,8 +208,8 @@ const EditMemberModal = ({
                 label="Phone Number"
                 placeholder="Phone Number"
                 type="tel"
-                pattern="\+?\d+(-\d+)*"
-                maxLength={64}
+                pattern={patternLimits.phone.source}
+                maxLength={lengthLimits.phone}
                 editable
               />
               <CollegeField
