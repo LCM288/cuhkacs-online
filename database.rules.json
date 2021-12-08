@@ -43,7 +43,7 @@
             ".validate": "newData.isString() && newData.val().matches(/^(CC|NA|UC|SC|WYS|WS|SH|MC|CW|NO)$/)"
           },
           "major": {
-            ".validate": "newData.isString() && newData.val().matches(/^\\w+$/) && newData.val().length < 256"
+            ".validate": "newData.isString() && newData.val().matches(/^(\\w| )+$/) && newData.val().length < 256"
           },
           "entryDate": {
             ".validate": "newData.isString() && newData.val().matches(/^\\d{4}-\\d{2}-\\d{2}$/)"
@@ -58,7 +58,7 @@
         "memberStatus": {
           ".validate": "newData.hasChildren(['since', 'lastRenewed', 'until']) && auth !== null && auth.token !== null && auth.token.email.endsWith('@link.cuhk.edu.hk') && root.child('executives').child(auth.token.email.replace('@link.cuhk.edu.hk', '')).exists()",
           "since": {
-            ".validate": "(!data.exists() && newData.isNumber() && newData.val() > now - 1000 && newData.val() < now + 1000) || data.val() === newData.val()"
+            ".validate": "(!data.exists() && newData.isNumber() && ((newData.val() > now - 1000 && newData.val() < now + 1000) || !data.parent().parent().exists())) || data.val() === newData.val()"
           },
           "lastRenewed": {
             ".validate": "((!data.exists() || newData.parent().child('until').val() > data.parent().child('until').val()) && newData.isNumber() && newData.val() > now - 1000 && newData.val() < now + 1000) || (newData.parent().child('until').val() <= data.parent().child('until').val() && data.val() === newData.val())"

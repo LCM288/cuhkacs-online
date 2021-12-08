@@ -78,7 +78,7 @@ const AdminLayout: React.FunctionComponent = () => {
                   Members
                 </Link>
                 <Navbar.Dropdown>
-                  <Link to="/admin/members/import" className="navbar-item">
+                  <Link to="/admin/import-members" className="navbar-item">
                     Import Members
                   </Link>
                   <Link to="/admin/members" className="navbar-item">

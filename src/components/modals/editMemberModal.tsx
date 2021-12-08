@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback } from "react";
 import Loading from "components/loading";
 import TextField from "components/fields/textField";
 import DOEntryField from "components/fields/doEntryField";
@@ -10,7 +10,7 @@ import MemberUntilField from "components/fields/memberUntilField";
 import MajorField from "components/fields/majorField";
 import { Modal, Button, Heading } from "react-bulma-components";
 import { PreventDefaultForm } from "utils/domEventHelpers";
-import { Member } from "types/db";
+import { PartialMember } from "utils/memberUtils";
 import { DateTime } from "luxon";
 import { CollegeCode } from "static/college.json";
 
@@ -32,6 +32,7 @@ export type UpdatedMember = {
   };
   memberStatus:
     | {
+        since: string;
         until: string;
       }
     | undefined;
@@ -40,7 +41,7 @@ export type UpdatedMember = {
 interface Props {
   onSave: (newData: UpdatedMember) => void;
   onCancel: () => void;
-  member: Member;
+  member: PartialMember;
   loading: boolean;
   type: "Registration" | "Member";
   fullyEditable?: boolean;
@@ -54,33 +55,31 @@ const EditMemberModal = ({
   type,
   fullyEditable = false,
 }: Props): React.ReactElement => {
-  const [sid, setSID] = useState(member.sid);
-  const [englishName, setEnglishName] = useState(member.name.eng);
-  const [chineseName, setChineseName] = useState(member.name.chi ?? "");
+  const [sid, setSID] = useState(member.sid ?? "");
+  const [englishName, setEnglishName] = useState(member.name?.eng ?? "");
+  const [chineseName, setChineseName] = useState(member.name?.chi ?? "");
   const [gender, setGender] = useState(member.gender ?? null);
   const [dob, setDob] = useState(member.dob ?? null);
   const [email, setEmail] = useState(member.email ?? `${sid}@link.cuhk.edu.hk`);
   const [phone, setPhone] = useState(member.phone ?? "");
   const [collegeCode, setCollegeCode] = useState<CollegeCode | null>(
-    member.studentStatus.college
+    member.studentStatus?.college ?? null
   );
   const [majorCode, setMajorCode] = useState<string | null>(
-    member.studentStatus.major
+    member.studentStatus?.major ?? null
   );
   const [doEntry, setDoEntry] = useState<string | null>(
-    member.studentStatus.entryDate
+    member.studentStatus?.entryDate ?? null
   );
   const [doGrad, setDoGrad] = useState<string | null>(
-    member.studentStatus.gradDate
+    member.studentStatus?.gradDate ?? null
   );
-  const memberSince = useMemo(
-    () =>
-      member.memberStatus?.since
-        ? DateTime.fromMillis(member.memberStatus.since, {
-            zone: "Asia/Hong_Kong",
-          }).toISODate()
-        : null,
-    [member]
+  const [memberSince, setMemberSince] = useState(
+    member.memberStatus?.since
+      ? DateTime.fromMillis(member.memberStatus.since, {
+          zone: "Asia/Hong_Kong",
+        }).toISODate()
+      : null
   );
   const [memberUntil, setMemberUntil] = useState(
     member.memberStatus?.until
@@ -91,17 +90,24 @@ const EditMemberModal = ({
   );
 
   const onReset = useCallback(() => {
-    setSID(member.sid);
-    setEnglishName(member.name.eng);
-    setChineseName(member.name.chi ?? "");
+    setSID(member.sid ?? "");
+    setEnglishName(member.name?.eng ?? "");
+    setChineseName(member.name?.chi ?? "");
     setGender(member.gender ?? null);
     setDob(member.dob ?? null);
     setEmail(member.email ?? `${member.sid}@link.cuhk.edu.hk`);
     setPhone(member.phone ?? "");
-    setCollegeCode(member.studentStatus.college);
-    setMajorCode(member.studentStatus.major);
-    setDoEntry(member.studentStatus.entryDate);
-    setDoGrad(member.studentStatus.gradDate);
+    setCollegeCode(member.studentStatus?.college ?? null);
+    setMajorCode(member.studentStatus?.major ?? null);
+    setDoEntry(member.studentStatus?.entryDate ?? null);
+    setDoGrad(member.studentStatus?.gradDate ?? null);
+    setMemberSince(
+      member.memberStatus?.since
+        ? DateTime.fromMillis(member.memberStatus.since, {
+            zone: "Asia/Hong_Kong",
+          }).toISODate()
+        : null
+    );
     setMemberUntil(
       member.memberStatus?.until
         ? DateTime.fromMillis(member.memberStatus.until, {
@@ -143,6 +149,7 @@ const EditMemberModal = ({
                 memberStatus:
                   memberSince && memberUntil
                     ? {
+                        since: memberSince,
                         until: memberUntil,
                       }
                     : undefined,
@@ -213,7 +220,13 @@ const EditMemberModal = ({
               <DOGradField doGrad={doGrad} setDoGrad={setDoGrad} />
               {type === "Member" && (
                 <>
-                  <DateField label="Member Since" dateValue={memberSince} />
+                  <DateField
+                    label="Member Since"
+                    dateValue={memberSince}
+                    setDateValue={setMemberSince}
+                    editable={fullyEditable}
+                    required
+                  />
                   <MemberUntilField
                     label="Member Until"
                     gradDate={doGrad}

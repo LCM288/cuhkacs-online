@@ -35,23 +35,9 @@ import Table from "components/tables/table";
 import { useSetTitle } from "utils/miscHooks";
 import { Navigate } from "react-router-dom";
 import useUserStatus from "utils/useUserStatus";
+import { getMemberStatus } from "utils/memberUtils";
 
 const { Input, Field, Label, Control, Select } = Form;
-
-type MemberStatus = "Activated" | "PG Member" | "Expired" | "Registered";
-
-const getStatus = (member: Member): MemberStatus => {
-  if (!member.memberStatus) {
-    return "Registered";
-  }
-  if (DateTime.now().valueOf() > member.memberStatus.until) {
-    return "Expired";
-  }
-  if (member.studentStatus.college === "NO") {
-    return "PG Member";
-  }
-  return "Activated";
-};
 
 const Members = (): React.ReactElement => {
   // auth
@@ -222,7 +208,7 @@ const Members = (): React.ReactElement => {
       },
       {
         Header: "Status",
-        accessor: getStatus,
+        accessor: getMemberStatus,
         id: "status",
         filter: statusFilter,
         disableSortBy: true,
@@ -348,12 +334,12 @@ const Members = (): React.ReactElement => {
           memberStatus,
         }) => ({
           SID: sid,
-          "Chinese Name": chineseName ?? "No Data",
+          "Chinese Name": chineseName,
           "English Name": englishName,
-          Gender: gender ?? "No Data",
-          "Date of Birth": dob ?? "No Data",
-          Email: email ?? "No Data",
-          Phone: phone ?? "No Data",
+          Gender: gender,
+          "Date of Birth": dob,
+          Email: email,
+          Phone: phone,
           College: college,
           Major: major,
           "Date of Entry": entryDate,
@@ -362,24 +348,17 @@ const Members = (): React.ReactElement => {
             ? DateTime.fromMillis(memberStatus.since, {
                 zone: "Asia/Hong_Kong",
               }).toISODate()
-            : "No Data",
+            : undefined,
+          "Member Until": memberStatus?.until
+            ? DateTime.fromMillis(memberStatus.until, {
+                zone: "Asia/Hong_Kong",
+              }).toISODate()
+            : undefined,
         })
       );
       const csv = Papa.unparse(memberExport, {
-        quotes: [
-          true, // sid
-          true, // chinese name
-          true, // english name
-          true, // gender
-          false, // date of birth
-          true, // email
-          true, // phone
-          true, // college
-          true, // major
-          false, // date of entry
-          false, // expected graduation date
-          false, // member since
-        ],
+        quotes: true,
+        newline: "\n",
       });
       const element = document.createElement("a");
       const file = new Blob([csv], { type: "text/plain" });

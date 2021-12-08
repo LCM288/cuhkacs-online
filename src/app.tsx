@@ -13,6 +13,7 @@ import EditMessages from "pages/admin/editMessages";
 import Admins from "pages/admin/admins";
 import Registrations from "pages/admin/registrations";
 import Members from "pages/admin/members";
+import ImportMembers from "pages/admin/importMembers";
 import MemberLayout from "pages/member/memberLayout";
 import MemberHome from "pages/member/memberHome";
 import Register from "pages/member/register";
@@ -167,6 +168,7 @@ const App = (): React.ReactElement => {
                   </Route>
                   <Route path="/admin" element={<AdminLayout />}>
                     <Route index element={<AdminHome />} />
+                    <Route path="import-members" element={<ImportMembers />} />
                     <Route path="members" element={<Members />} />
                     <Route path="registrations" element={<Registrations />} />
                     <Route path="admins" element={<Admins />} />
