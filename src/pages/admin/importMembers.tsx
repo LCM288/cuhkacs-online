@@ -653,6 +653,7 @@ const ImportMembers = (): React.ReactElement => {
             <InputFile
               color="primary"
               placeholder="Textarea"
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               inputProps={{ accept: ".csv,.tsv,.txt" } as any}
               onChange={onImport}
             />
