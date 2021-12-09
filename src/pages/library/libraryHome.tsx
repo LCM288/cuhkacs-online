@@ -51,7 +51,7 @@ const LibraryHome = (): React.ReactElement => {
         <Button.Group className="is-justify-content-center">
           {userStatus && (
             <Link to="/member" className="button is-warning">
-              Member Portal
+              Member Page
             </Link>
           )}
           {userStatus?.executive && (

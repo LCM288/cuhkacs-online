@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Heading, Button } from "react-bulma-components";
 import useUserStatus from "utils/useUserStatus";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import IndexWrapper from "components/indexWrapper";
 import Markdown from "components/markdown";
 import { appName } from "utils/const";
@@ -48,14 +48,14 @@ const Home = (): React.ReactElement => {
             <Markdown>{welcomeMessage.message}</Markdown>
           </div>
         )}
-        <Button
-          color="link"
-          onClick={signInCallback}
-          size="medium"
-          renderAs="a"
-        >
-          Login with CUHK OnePass
-        </Button>
+        <Button.Group className="is-justify-content-center" size="medium">
+          <Link to="/library" className="button is-light">
+            Library Portal
+          </Link>
+          <Button color="link" onClick={signInCallback}>
+            Login with CUHK OnePass
+          </Button>
+        </Button.Group>
       </>
     </IndexWrapper>
   );

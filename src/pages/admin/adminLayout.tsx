@@ -101,14 +101,22 @@ const AdminLayout: React.FunctionComponent = () => {
                 </Navbar.Dropdown>
               </Navbar.Item>
             </Navbar.Container>
-            <Navbar.Container align="right">
-              <Button
-                color="danger"
-                className="is-align-self-center"
-                onClick={signOutCallback}
-              >
-                Logout
-              </Button>
+            <Navbar.Container align="right" className="px-2">
+              <Button.Group>
+                <Link to="/library" className="button is-light">
+                  Library Portal
+                </Link>
+                <Link to="/member" className="button is-warning">
+                  Member Page
+                </Link>
+                <Button
+                  color="danger"
+                  className="is-align-self-center"
+                  onClick={signOutCallback}
+                >
+                  Logout
+                </Button>
+              </Button.Group>
             </Navbar.Container>
           </Navbar.Menu>
         </Navbar>

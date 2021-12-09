@@ -9,6 +9,7 @@ import {
   useSignInCallback,
   useSignOutCallback,
 } from "utils/miscHooks";
+import { appName } from "utils/const";
 
 const LibraryLayout: React.FunctionComponent = () => {
   const userStatus = useUserStatus();
@@ -71,25 +72,41 @@ const LibraryLayout: React.FunctionComponent = () => {
             />
           </Navbar.Brand>
           <Navbar.Menu>
-            <Navbar.Container align="right">
-              {userStatus ? (
-                <Button
-                  color="danger"
-                  className="is-align-self-center"
-                  onClick={signOutCallback}
-                >
-                  Logout
-                </Button>
-              ) : (
-                <Button
-                  color="link"
-                  className="is-align-self-center"
-                  onClick={signInCallback}
-                  renderAs="a"
-                >
-                  Login with CUHK OnePass
-                </Button>
-              )}
+            <Navbar.Container align="right" className="px-2">
+              <Button.Group>
+                {userStatus ? (
+                  <>
+                    <Link to="/member" className="button is-warning">
+                      Member Page
+                    </Link>
+                    {userStatus.executive && (
+                      <Link to="/admin" className="button is-info">
+                        Admin Portal
+                      </Link>
+                    )}
+                    <Button
+                      color="danger"
+                      className="is-align-self-center"
+                      onClick={signOutCallback}
+                    >
+                      Logout
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Link to="/" className="button is-primary">
+                      {appName} Home Page
+                    </Link>
+                    <Button
+                      color="link"
+                      className="is-align-self-center"
+                      onClick={signInCallback}
+                    >
+                      Login with CUHK OnePass
+                    </Button>
+                  </>
+                )}
+              </Button.Group>
             </Navbar.Container>
           </Navbar.Menu>
         </Navbar>
