@@ -10,13 +10,23 @@ import "react-day-picker/lib/style.css";
 import "easymde/dist/easymde.min.css";
 import reportWebVitals from "reportWebVitals";
 import App from "app";
+import ConstructionSite from "pages/constructionSite";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById("root")
-);
+if (window.location.host === "cuacs.org") {
+  ReactDOM.render(
+    <React.StrictMode>
+      <ConstructionSite />
+    </React.StrictMode>,
+    document.getElementById("root")
+  );
+} else {
+  ReactDOM.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>,
+    document.getElementById("root")
+  );
+}
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
