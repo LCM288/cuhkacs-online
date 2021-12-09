@@ -548,7 +548,7 @@ const ImportMembers = (): React.ReactElement => {
           const { year, month } = DateTime.local();
           const prevEntry = month >= 9 ? `${year}-09-01` : `${year - 1}-09-01`;
           const prevEntryGrad =
-            month >= 9 ? `${year + 4}-07-31` : `${year + 3}-07-31`;
+            month >= 9 ? `${year + 4}-08-01` : `${year + 3}-08-01`;
           const newData = results.data.map(
             ({
               SID: sid,
