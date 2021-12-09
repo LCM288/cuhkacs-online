@@ -539,13 +539,11 @@ const ImportMembers = (): React.ReactElement => {
 
   const onImport = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
-      console.log("loading");
       setIsFileProcessing(true);
       Papa.parse<Record<string, string>>(event.target.files[0], {
         header: true,
         skipEmptyLines: true,
         complete(results) {
-          console.log(results);
           const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
           const { year, month } = DateTime.local();
           const prevEntry = month >= 9 ? `${year}-09-01` : `${year - 1}-09-01`;
