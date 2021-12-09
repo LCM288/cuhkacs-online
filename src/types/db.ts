@@ -34,6 +34,7 @@ export type Executive = {
 };
 
 export type MessageKey =
+  | "library"
   | "welcome"
   | "member"
   | "expired"

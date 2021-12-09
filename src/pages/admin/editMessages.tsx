@@ -30,6 +30,12 @@ type EditMessageListRow = MessageMeta & {
 
 const messagesMeta: MessageMeta[] = [
   {
+    key: "library",
+    desc: "A message displayed on library's home page",
+    type: "richtext",
+    maxLength: 65535,
+  },
+  {
     key: "welcome",
     desc: "Welcome message displayed to everyone",
     type: "richtext",

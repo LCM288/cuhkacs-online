@@ -110,7 +110,17 @@
     "publicMessages": {
       ".read": "auth !== null && auth.token !== null && auth.token.email.endsWith('@link.cuhk.edu.hk') && root.child('executives').child(auth.token.email.replace('@link.cuhk.edu.hk', '')).exists()",
       ".write": "auth !== null && auth.token !== null && auth.token.email.endsWith('@link.cuhk.edu.hk') && root.child('executives').child(auth.token.email.replace('@link.cuhk.edu.hk', '')).exists()",
-      ".validate": "newData.hasChildren(['welcome', 'member', 'registered', 'expired', 'visitor'])",
+      ".validate": "newData.hasChildren(['library', 'welcome', 'member', 'registered', 'expired', 'visitor'])",
+      "library": {
+        ".read": true,
+        ".validate": "newData.hasChildren(['message', 'updatedAt'])",
+        "message": {
+          ".validate": "newData.isString() && newData.val().length < 65536"
+        },
+        "updatedAt": {
+          ".validate": "newData.isNumber() && newData.val() > now - 1000 && newData.val() < now + 1000"
+        }
+      },
       "welcome": {
         ".read": true,
         ".validate": "newData.hasChildren(['message', 'updatedAt'])",

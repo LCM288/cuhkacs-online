@@ -47,7 +47,7 @@ const AdminHome = (): React.ReactElement => {
           <Link to="/library" className="button is-light">
             Library Portal
           </Link>
-          <Link to="/member" className="button is-info">
+          <Link to="/member" className="button is-warning">
             Member Page
           </Link>
         </Button.Group>

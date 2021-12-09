@@ -15,29 +15,24 @@ const LibraryHome = (): React.ReactElement => {
   const userStatus = useUserStatus();
 
   const {
-    data: welcomeMessage,
-    error: welcomeMessageError,
-    loading: welcomeMessageLoading,
-  } = useGetAndListen<Message>(`publicMessages/welcome`);
+    data: libraryMessage,
+    error: libraryMessageError,
+    loading: libraryMessageLoading,
+  } = useGetAndListen<Message>(`publicMessages/library`);
 
   useEffect(() => {
-    if (welcomeMessageError) {
-      console.error(welcomeMessageError);
+    if (libraryMessageError) {
+      console.error(libraryMessageError);
       toast.info("Failed to get message.");
     }
-  }, [welcomeMessageError]);
+  }, [libraryMessageError]);
 
   useSetTitle(libraryName);
-
-  const isLoading = useMemo(
-    () => welcomeMessageLoading,
-    [welcomeMessageLoading]
-  );
 
   return (
     <IndexWrapper>
       <>
-        {isLoading ? (
+        {libraryMessageLoading ? (
           <Heading className="p-5 mb-0">Loading...</Heading>
         ) : (
           <BulmaImage
@@ -48,9 +43,9 @@ const LibraryHome = (): React.ReactElement => {
             }}
           />
         )}
-        {welcomeMessage && (
+        {libraryMessage && (
           <div className="mb-5">
-            <Markdown>{welcomeMessage.message}</Markdown>
+            <Markdown>{libraryMessage.message}</Markdown>
           </div>
         )}
         <Button.Group className="is-justify-content-center">
