@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button, Heading, Image as BulmaImage } from "react-bulma-components";
 import Markdown from "components/markdown";
