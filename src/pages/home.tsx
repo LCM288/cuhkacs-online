@@ -1,6 +1,4 @@
-import React, { useMemo, useCallback, useEffect } from "react";
-import { signInWithPopup, OAuthProvider } from "firebase/auth";
-import { auth } from "utils/firebase";
+import React, { useEffect } from "react";
 import { Heading, Button } from "react-bulma-components";
 import useUserStatus from "utils/useUserStatus";
 import { Navigate } from "react-router-dom";
@@ -9,23 +7,14 @@ import Markdown from "components/markdown";
 import { appName } from "utils/const";
 import { useGetAndListen } from "utils/firebase";
 import { toast } from "react-toastify";
-import { useSetTitle } from "utils/miscHooks";
+import { useSetTitle, useSignInCallback } from "utils/miscHooks";
 import { Message } from "types/db";
+import { useSetIcon } from "utils/miscHooks";
+import cuhkacsIcon from "static/cuhkacs.ico";
 
 const Home = (): React.ReactElement => {
   const userStatus = useUserStatus();
-  const provider = useMemo(() => {
-    const newProvider = new OAuthProvider("microsoft.com");
-    newProvider.setCustomParameters({
-      prompt: "select_account",
-      domain_hint: "link.cuhk.edu.hk",
-      tenant: "link.cuhk.edu.hk",
-    });
-    return newProvider;
-  }, []);
-  const signInCallback = useCallback(() => {
-    signInWithPopup(auth, provider).catch((error) => console.error(error));
-  }, [provider]);
+  const signInCallback = useSignInCallback();
 
   const {
     data: welcomeMessage,
@@ -41,6 +30,8 @@ const Home = (): React.ReactElement => {
   }, [welcomeMessageError]);
 
   useSetTitle(`Welcome to ${appName}`);
+
+  useSetIcon(cuhkacsIcon);
 
   if (userStatus) {
     return (

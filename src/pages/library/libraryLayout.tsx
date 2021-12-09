@@ -1,12 +1,16 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { Button, Navbar } from "react-bulma-components";
-import { Link, Outlet, Navigate } from "react-router-dom";
-import { appName } from "utils/const";
+import { Button, Navbar, Image as BulmaImage } from "react-bulma-components";
+import { Link, Outlet } from "react-router-dom";
 import useUserStatus from "utils/useUserStatus";
-import { useSetIcon, useSignOutCallback } from "utils/miscHooks";
-import cuhkacsIcon from "static/cuhkacs.ico";
+import indexLogo from "static/indexLogo.png";
+import indexIcon from "static/indexIcon.ico";
+import {
+  useSetIcon,
+  useSignInCallback,
+  useSignOutCallback,
+} from "utils/miscHooks";
 
-const MemberLayout: React.FunctionComponent = () => {
+const LibraryLayout: React.FunctionComponent = () => {
   const userStatus = useUserStatus();
   const navBarRef = useRef<HTMLDivElement | null>(null);
   const [isActive, setActive] = useState(false);
@@ -36,19 +40,17 @@ const MemberLayout: React.FunctionComponent = () => {
     };
   }, [navBarRef]);
 
+  const signInCallback = useSignInCallback();
+
   const signOutCallback = useSignOutCallback();
 
-  useSetIcon(cuhkacsIcon);
-
-  if (!userStatus) {
-    return <Navigate to="/" replace />;
-  }
+  useSetIcon(indexIcon);
 
   return (
     <div>
       <div ref={navBarRef}>
         <Navbar
-          color="warning"
+          color="light"
           fixed="top"
           active={isActive}
           onClick={() => {
@@ -56,8 +58,8 @@ const MemberLayout: React.FunctionComponent = () => {
           }}
         >
           <Navbar.Brand>
-            <Link to="/member" className="navbar-item">
-              {appName}
+            <Link to="/library" className="navbar-item">
+              <BulmaImage src={indexLogo} />
             </Link>
             <Navbar.Burger
               onClick={toggleActive}
@@ -70,13 +72,24 @@ const MemberLayout: React.FunctionComponent = () => {
           </Navbar.Brand>
           <Navbar.Menu>
             <Navbar.Container align="right">
-              <Button
-                color="danger"
-                className="is-align-self-center"
-                onClick={signOutCallback}
-              >
-                Logout
-              </Button>
+              {userStatus ? (
+                <Button
+                  color="danger"
+                  className="is-align-self-center"
+                  onClick={signOutCallback}
+                >
+                  Logout
+                </Button>
+              ) : (
+                <Button
+                  color="link"
+                  className="is-align-self-center"
+                  onClick={signInCallback}
+                  renderAs="a"
+                >
+                  Login with CUHK OnePass
+                </Button>
+              )}
             </Navbar.Container>
           </Navbar.Menu>
         </Navbar>
@@ -88,4 +101,4 @@ const MemberLayout: React.FunctionComponent = () => {
   );
 };
 
-export default MemberLayout;
+export default LibraryLayout;

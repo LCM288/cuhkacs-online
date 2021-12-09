@@ -10,7 +10,7 @@ const IndexWrapper = ({ children }: Props): React.ReactElement => (
     style={{
       top: "50%",
       left: "50%",
-      transform: "translate(-50%, max(-50%, -50vh))",
+      transform: "translate(-50%, max(-50%, -46.75vh))",
       position: "absolute",
     }}
   >

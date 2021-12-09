@@ -44,6 +44,9 @@ const AdminHome = (): React.ReactElement => {
         <Heading className="p-5 mb-0">{appName} Admin</Heading>
         <div className="mb-5">{greeting}</div>
         <Button.Group className="is-justify-content-center">
+          <Link to="/library" className="button is-light">
+            Library Portal
+          </Link>
           <Link to="/member" className="button is-info">
             Member Page
           </Link>

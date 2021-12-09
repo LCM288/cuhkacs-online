@@ -2,10 +2,9 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Navbar, Button } from "react-bulma-components";
 import { Navigate, Link, Outlet } from "react-router-dom";
 import { appName } from "utils/const";
-import { signOut } from "firebase/auth";
-import { auth } from "utils/firebase";
-import { toast } from "react-toastify";
 import useUserStatus from "utils/useUserStatus";
+import { useSetIcon, useSignOutCallback } from "utils/miscHooks";
+import cuhkacsIcon from "static/cuhkacs.ico";
 
 const AdminLayout: React.FunctionComponent = () => {
   const userStatus = useUserStatus();
@@ -37,11 +36,9 @@ const AdminLayout: React.FunctionComponent = () => {
     };
   }, [navBarRef]);
 
-  const signOutCallback = useCallback(() => {
-    signOut(auth).then(() => {
-      toast.success("You have logged out successfully");
-    });
-  }, []);
+  const signOutCallback = useSignOutCallback();
+
+  useSetIcon(cuhkacsIcon);
 
   if (!userStatus?.executive) {
     return <Navigate to="/" replace />;

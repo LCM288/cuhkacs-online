@@ -117,6 +117,9 @@ const MemberHome = (): React.ReactElement => {
               {registerButtonText}
             </Link>
           )}
+          <Link to="/library" className="button is-light">
+            Library Portal
+          </Link>
           {userStatus.executive && (
             <Link to="/admin" className="button is-info">
               Admin Portal
