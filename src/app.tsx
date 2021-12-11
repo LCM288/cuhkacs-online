@@ -23,6 +23,7 @@ import LibraryLayout from "pages/library/libraryLayout";
 import LibraryHome from "pages/library/libraryHome";
 import LibraryEdit from "pages/library/edit/libraryEdit";
 import NewSeries from "pages/library/edit/series/newSeries";
+import EditSeries from "pages/library/edit/series/editSeries";
 
 export const UserContext = React.createContext<AppUser | null>(null);
 
@@ -171,6 +172,7 @@ const App = (): React.ReactElement => {
                       <Route index element={<NotFound />} />
                       <Route path="series" element={<Outlet />}>
                         <Route index element={<NewSeries />} />
+                        <Route path=":seriesId" element={<EditSeries />} />
                       </Route>
                       <Route path="*" element={<NotFound />} />
                     </Route>

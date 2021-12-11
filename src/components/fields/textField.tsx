@@ -13,6 +13,8 @@ interface Props {
   type?: string;
   pattern?: string | undefined;
   required?: boolean;
+  loading?: boolean;
+  fullwidth?: boolean;
 }
 
 const TextField = ({
@@ -25,15 +27,17 @@ const TextField = ({
   type = "text",
   pattern,
   required = false,
+  loading,
+  fullwidth,
 }: Props): React.ReactElement => {
   return (
     <>
-      <Field>
-        <Label>
-          {label}
-          {required && "*"}
-        </Label>
-        <Control>
+      <Control fullwidth={fullwidth} loading={loading}>
+        <Field>
+          <Label>
+            {label}
+            {required && "*"}
+          </Label>
           <Input
             placeholder={placeholder}
             value={value}
@@ -46,8 +50,8 @@ const TextField = ({
             maxLength={maxLength}
             required={required}
           />
-        </Control>
-      </Field>
+        </Field>
+      </Control>
     </>
   );
 };

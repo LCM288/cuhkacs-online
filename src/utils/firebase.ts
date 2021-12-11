@@ -16,6 +16,7 @@ import {
   serverTimestamp,
   Query,
 } from "firebase/database";
+import { useForceRerender } from "utils/miscHooks";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCh9I9xgFFoXhdfRz9XF-Bq-OceWPe3xD0",
@@ -132,6 +133,7 @@ export const useLazyGetServer = <T = unknown>(): {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<T | undefined>(undefined);
   const [error, setError] = useState<Error | undefined>(undefined);
+  const { forceRerenderCount, forceRerender } = useForceRerender();
   const reference = useMemo(
     () =>
       typeof pathOrQuery === "string"
@@ -139,13 +141,17 @@ export const useLazyGetServer = <T = unknown>(): {
         : pathOrQuery,
     [pathOrQuery]
   );
-  const getServer = useCallback((pathOrQueryParam: string | Query) => {
-    setPathOrQuery(pathOrQueryParam);
-    return new Promise<T>((resolve, reject) => {
-      res.current = resolve;
-      rej.current = reject;
-    });
-  }, []);
+  const getServer = useCallback(
+    (pathOrQueryParam: string | Query) => {
+      setPathOrQuery(pathOrQueryParam);
+      return new Promise<T>((resolve, reject) => {
+        res.current = resolve;
+        rej.current = reject;
+        forceRerender();
+      });
+    },
+    [forceRerender]
+  );
   const clear = useCallback(() => {
     rej.current(new Error("Query Cleared"));
     setPathOrQuery(null);
@@ -173,7 +179,7 @@ export const useLazyGetServer = <T = unknown>(): {
           setLoading(false);
         });
     }
-  }, [reference]);
+  }, [reference, forceRerenderCount]);
   return {
     loading,
     data,
@@ -200,6 +206,7 @@ export const useLazyGetAndListen = <T = unknown>(): {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<T | undefined>(undefined);
   const [error, setError] = useState<Error | undefined>(undefined);
+  const { forceRerenderCount, forceRerender } = useForceRerender();
   const reference = useMemo(
     () =>
       typeof pathOrQuery === "string"
@@ -214,9 +221,10 @@ export const useLazyGetAndListen = <T = unknown>(): {
       return new Promise<T>((resolve, reject) => {
         res.current = resolve;
         rej.current = reject;
+        forceRerender();
       });
     },
-    []
+    [forceRerender]
   );
   const clear = useCallback(() => {
     rej.current(new Error("Query Cleared"));
@@ -250,7 +258,7 @@ export const useLazyGetAndListen = <T = unknown>(): {
       );
       return unsubscribe;
     }
-  }, [reference, options]);
+  }, [reference, options, forceRerenderCount]);
   return {
     loading,
     data,

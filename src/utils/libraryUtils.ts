@@ -7,7 +7,7 @@ export type LibrarySeries = {
   title: string;
   author: string;
   locationCount: number;
-  locations: Record<LocationKey, true>;
+  locations?: Record<LocationKey, true>;
   volumeCount: number;
   borrowCount: number;
   keywordCount: number;
