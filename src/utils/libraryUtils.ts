@@ -60,3 +60,17 @@ export type LibraryMemberBorrowing = {
   currentBorrows: Record<BorrowKey, true>;
   updatedAt: number;
 };
+
+export const lengthLimits = {
+  series: {
+    title: 127,
+    author: 127,
+  },
+  books: {
+    volume: 15,
+    language: 31,
+    isbn: 16,
+  },
+  location: 16,
+  keyword: 128,
+};

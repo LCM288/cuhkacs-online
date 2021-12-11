@@ -401,7 +401,7 @@
     "keywords": {
       ".read": true,
       "$keyword": {
-        ".validate": "newData.hasChildren(['seriesCount', 'series', 'createdAt', 'updatedAt']) && $keyword.length < 40",
+        ".validate": "newData.hasChildren(['seriesCount', 'series', 'createdAt', 'updatedAt']) && $keyword.length < 128",
         "seriesCount": {
           ".validate": "newData.isNumber()"
         },

@@ -21,6 +21,8 @@ import NotFound from "pages/notFound";
 import Loading from "components/loading";
 import LibraryLayout from "pages/library/libraryLayout";
 import LibraryHome from "pages/library/libraryHome";
+import LibraryEdit from "pages/library/edit/libraryEdit";
+import NewSeries from "pages/library/edit/series/newSeries";
 
 export const UserContext = React.createContext<AppUser | null>(null);
 
@@ -165,6 +167,14 @@ const App = (): React.ReactElement => {
                   <Route index element={<Home />} />
                   <Route path="/library" element={<LibraryLayout />}>
                     <Route index element={<LibraryHome />} />
+                    <Route path="edit" element={<LibraryEdit />}>
+                      <Route index element={<NotFound />} />
+                      <Route path="series" element={<Outlet />}>
+                        <Route index element={<NewSeries />} />
+                      </Route>
+                      <Route path="*" element={<NotFound />} />
+                    </Route>
+                    <Route path="*" element={<NotFound />} />
                   </Route>
                   <Route path="/member" element={<MemberLayout />}>
                     <Route index element={<MemberHome />} />
