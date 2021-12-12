@@ -114,6 +114,10 @@ export const getISBN = (str: string): string | null => {
   return null;
 };
 
-export const replaceLocationCode = (location: string): string => {
+export const encodeLocation = (location: string): string => {
   return location.replaceAll(".", "_");
+};
+
+export const decodeLocation = (location: string): string => {
+  return location.replaceAll("_", ".");
 };

@@ -2,19 +2,49 @@ import React, { useEffect, useMemo, useRef } from "react";
 import { useParams } from "react-router-dom";
 import EditSeriesData from "components/editSeriesData";
 import AddBook from "components/addBook";
-import { useGetAndListen } from "utils/firebase";
-import { LibrarySeries } from "utils/libraryUtils";
+import { useGetAndListen, database } from "utils/firebase";
+import { BookKey, LibraryBook, LibrarySeries } from "utils/libraryUtils";
 import NotFound from "pages/notFound";
+import ViewSeriesData from "components/viewSeriesData";
+import { Container, Section } from "react-bulma-components";
+import { ref, query, orderByChild, equalTo } from "firebase/database";
 
 const EditSeries = (): React.ReactElement => {
   const { seriesId } = useParams();
+
   const {
     data: seriesData,
     loading: seriesLoading,
     error: seriesError,
   } = useGetAndListen<LibrarySeries | null>(`library/series/data/${seriesId}`);
+
+  const queryRef = useMemo(
+    () =>
+      query(
+        ref(database, "library/books/data"),
+        orderByChild("seriesId"),
+        equalTo(seriesId ?? null)
+      ),
+    [seriesId]
+  );
+  const {
+    data: bookData,
+    loading: bookLoading,
+    error: bookError,
+  } = useGetAndListen<Record<BookKey, LibraryBook> | null>(queryRef);
+
   const firstLoading = useRef(true);
-  const lastVolume = useMemo(() => null, []);
+  const nextVolume = useMemo(
+    () =>
+      Math.max(
+        1,
+        ...Object.values(bookData ?? {})
+          .map(({ volume }) => parseFloat(volume))
+          .filter((volume) => !isNaN(volume))
+          .map((volume) => Math.floor(volume + 1))
+      ),
+    [bookData]
+  );
   const locations = useMemo(() => seriesData?.locations ?? {}, [seriesData]);
 
   useEffect(() => {
@@ -35,11 +65,21 @@ const EditSeries = (): React.ReactElement => {
         loading={seriesLoading}
         error={seriesError}
       />
-      <AddBook
-        seriesId={seriesId}
-        lastVolume={lastVolume}
-        locations={locations}
-      />
+      <Section>
+        <Container>
+          <ViewSeriesData
+            seriesId={seriesId}
+            data={bookData}
+            loading={bookLoading}
+            error={bookError}
+          />
+        </Container>
+        <AddBook
+          seriesId={seriesId}
+          nextVolume={nextVolume}
+          locations={locations}
+        />
+      </Section>
     </>
   );
 };

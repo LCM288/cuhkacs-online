@@ -256,6 +256,7 @@
           ".validate": "newData.isNumber()"
         },
         "data": {
+          ".indexOn": "seriesId",
           "$bookId": {
             ".validate": "newData.hasChildren(['seriesId', 'volume', 'language', 'status', 'location', 'borrowCount', 'isbn', 'createdAt', 'updatedAt']) && $bookId.length < 40",
             "seriesId": {

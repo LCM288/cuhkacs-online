@@ -116,7 +116,7 @@ const Members = (): React.ReactElement => {
         id: "gender",
         Cell: ({ value }: { value: string | undefined }) =>
           value ? (
-            value.substr(0, 1).toUpperCase() + value.substr(1)
+            value.substring(0, 1).toUpperCase() + value.substring(1)
           ) : (
             <i>No Data</i>
           ),

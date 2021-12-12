@@ -7,7 +7,8 @@ import {
   LocationKey,
   lengthLimits,
   getISBN,
-  replaceLocationCode,
+  encodeLocation,
+  decodeLocation,
 } from "utils/libraryUtils";
 import CreatableSelect from "react-select/creatable";
 import { toast } from "react-toastify";
@@ -19,7 +20,7 @@ const { Control, Field, Label } = Form;
 
 interface Props {
   seriesId: string;
-  lastVolume: string | null;
+  nextVolume: number;
   locations: Record<LocationKey, number>;
   onClose: () => void;
 }
@@ -31,7 +32,7 @@ type SelectOption = {
 
 const AddBookModal = ({
   seriesId,
-  lastVolume,
+  nextVolume,
   locations,
   onClose,
 }: Props): React.ReactElement => {
@@ -40,14 +41,8 @@ const AddBookModal = ({
     () => Object.keys(locations).sort((a, b) => locations[a] - locations[b]),
     [locations]
   );
-  const nextVolumn = useMemo(
-    () => (lastVolume ? Math.floor(parseFloat(lastVolume) + 1) : NaN),
-    [lastVolume]
-  );
   const id = useMemo(() => uuidv4(), []);
-  const [volume, setVolume] = useState(
-    isNaN(nextVolumn) ? "1" : nextVolumn.toString()
-  );
+  const [volume, setVolume] = useState(nextVolume.toString());
   const [language, setLanguage] = useState<string | null>("中文");
   const [location, setLocation] = useState<string | null>(
     sortedLocations[0] ?? null
@@ -66,12 +61,13 @@ const AddBookModal = ({
 
   const selectedLangauge = useMemo(
     () =>
-      languageOptions.find(({ value }) => value === language) ?? language
+      languageOptions.find(({ value }) => value === language) ??
+      (language
         ? {
             label: language,
             value: language,
           }
-        : null,
+        : null),
     [language, languageOptions]
   );
 
@@ -79,19 +75,20 @@ const AddBookModal = ({
     () =>
       sortedLocations.map((val) => ({
         value: val,
-        label: val,
+        label: decodeLocation(val),
       })) as SelectOption[],
     [sortedLocations]
   );
 
   const selectedLocation = useMemo(
     () =>
-      locationOptions.find(({ value }) => value === location) ?? location
+      locationOptions.find(({ value }) => value === location) ??
+      (location
         ? {
-            label: location,
             value: location,
+            label: decodeLocation(location),
           }
-        : null,
+        : null),
     [location, locationOptions]
   );
 
@@ -110,9 +107,9 @@ const AddBookModal = ({
       console.error("Location is missing");
       return;
     }
-    const replacedLocation = replaceLocationCode(location);
+    const encodedLocation = encodeLocation(location);
     const updates = {
-      [`series/data/${seriesId}/locations/${replacedLocation}`]: increment(1),
+      [`series/data/${seriesId}/locations/${encodedLocation}`]: increment(1),
       [`series/data/${seriesId}/volumeCount`]: increment(1),
       [`series/data/${seriesId}/updatedAt`]: serverTimestamp(),
       [`series_volume/${seriesId}/${id}`]: true,
@@ -122,17 +119,16 @@ const AddBookModal = ({
         volume,
         language,
         status: "on-shelf",
-        location: replacedLocation,
+        location: encodedLocation,
         borrowCount: 0,
         isbn,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       },
-      [`locations/data/${replacedLocation}/bookCount`]: increment(1),
-      [`location_series/${replacedLocation}/${seriesId}`]: increment(1),
-      [`location_book/${replacedLocation}/${id}`]: true,
+      [`locations/data/${encodedLocation}/bookCount`]: increment(1),
+      [`location_series/${encodedLocation}/${seriesId}`]: increment(1),
+      [`location_book/${encodedLocation}/${id}`]: true,
     };
-    console.log(updates);
     update(updates)
       .then(() => {
         toast.success("The book has been added.");
