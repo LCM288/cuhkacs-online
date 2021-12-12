@@ -16,14 +16,14 @@ export const stopAndPrevent = (event: React.SyntheticEvent): void => {
 export const StopClickDiv = ({
   children,
 }: {
-  children: React.ReactElement;
+  children: React.ReactNode;
 }): React.ReactElement => <div onClick={stopEvent}>{children}</div>;
 
 export const PreventDefaultForm = ({
   children,
   onSubmit,
 }: {
-  children: React.ReactElement;
+  children: React.ReactNode;
   onSubmit: (event: React.FormEvent<HTMLElement>) => void;
 }): React.ReactElement => (
   <form

@@ -31,36 +31,34 @@ const LibraryHome = (): React.ReactElement => {
 
   return (
     <IndexWrapper>
-      <>
-        {libraryMessageLoading ? (
-          <Heading className="p-5 mb-0">Loading...</Heading>
-        ) : (
-          <BulmaImage
-            src={indexLogo}
-            style={{
-              maxWidth: "50%",
-              margin: "auto",
-            }}
-          />
+      {libraryMessageLoading ? (
+        <Heading className="p-5 mb-0">Loading...</Heading>
+      ) : (
+        <BulmaImage
+          src={indexLogo}
+          style={{
+            maxWidth: "50%",
+            margin: "auto",
+          }}
+        />
+      )}
+      {libraryMessage && (
+        <div className="mb-5">
+          <Markdown>{libraryMessage.message}</Markdown>
+        </div>
+      )}
+      <Button.Group className="is-justify-content-center">
+        {userStatus && (
+          <Link to="/member" className="button is-warning">
+            Member Page
+          </Link>
         )}
-        {libraryMessage && (
-          <div className="mb-5">
-            <Markdown>{libraryMessage.message}</Markdown>
-          </div>
+        {userStatus?.executive && (
+          <Link to="/admin" className="button is-info">
+            Admin Portal
+          </Link>
         )}
-        <Button.Group className="is-justify-content-center">
-          {userStatus && (
-            <Link to="/member" className="button is-warning">
-              Member Page
-            </Link>
-          )}
-          {userStatus?.executive && (
-            <Link to="/admin" className="button is-info">
-              Admin Portal
-            </Link>
-          )}
-        </Button.Group>
-      </>
+      </Button.Group>
     </IndexWrapper>
   );
 };

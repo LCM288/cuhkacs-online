@@ -40,23 +40,21 @@ const Home = (): React.ReactElement => {
   }
   return (
     <IndexWrapper>
-      <>
-        {loading && <Heading className="p-5 mb-0">Loading...</Heading>}
-        <Heading className="p-5 mb-0">{appName}</Heading>
-        {welcomeMessage && (
-          <div className="mb-5">
-            <Markdown>{welcomeMessage.message}</Markdown>
-          </div>
-        )}
-        <Button.Group className="is-justify-content-center" size="medium">
-          <Link to="/library" className="button is-light">
-            Library Portal
-          </Link>
-          <Button color="link" onClick={signInCallback}>
-            Login with CUHK OnePass
-          </Button>
-        </Button.Group>
-      </>
+      {loading && <Heading className="p-5 mb-0">Loading...</Heading>}
+      <Heading className="p-5 mb-0">{appName}</Heading>
+      {welcomeMessage && (
+        <div className="mb-5">
+          <Markdown>{welcomeMessage.message}</Markdown>
+        </div>
+      )}
+      <Button.Group className="is-justify-content-center" size="medium">
+        <Link to="/library" className="button is-light">
+          Library Portal
+        </Link>
+        <Button color="link" onClick={signInCallback}>
+          Login with CUHK OnePass
+        </Button>
+      </Button.Group>
     </IndexWrapper>
   );
 };

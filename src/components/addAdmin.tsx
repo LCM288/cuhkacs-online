@@ -40,20 +40,18 @@ const AddAdmin = (): React.ReactElement => {
 
   return (
     <StopClickDiv>
-      <>
-        {modalOpen && (
-          <AddAdminModal
-            onSave={onAdd}
-            onClose={() => {
-              setModalOpen(false);
-            }}
-            loading={loading}
-          />
-        )}
-        <Button color="primary" onClick={promptAdd}>
-          Add admin
-        </Button>
-      </>
+      {modalOpen && (
+        <AddAdminModal
+          onSave={onAdd}
+          onClose={() => {
+            setModalOpen(false);
+          }}
+          loading={loading}
+        />
+      )}
+      <Button color="primary" onClick={promptAdd}>
+        Add admin
+      </Button>
     </StopClickDiv>
   );
 };

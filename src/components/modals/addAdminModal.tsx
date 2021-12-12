@@ -108,40 +108,38 @@ const AddAdminModal = ({
     <Modal show closeOnEsc={false} onClose={onClose}>
       <Modal.Content className="has-background-white box">
         <PreventDefaultForm onSubmit={() => promptConfirm(sid)}>
-          <>
-            <Heading className="has-text-centered">New Admin</Heading>
-            <TextField
-              value={sid}
-              setValue={setSID}
-              pattern="^\d{10}$"
-              label="Student ID"
-              placeholder="Student ID"
-              editable
-              required
-            />
-            <TextField
-              value={displayName}
-              setValue={setDisplayName}
-              label="Display Name"
-              placeholder="Display Name"
-              editable
-            />
-            <TextField
-              value={title}
-              setValue={setTitle}
-              label="Title"
-              placeholder="Title"
-              editable
-            />
-            <div className="is-pulled-right buttons pt-4">
-              <Button color="primary" type="submit">
-                Add
-              </Button>
-              <Button color="danger" onClick={onClose}>
-                Cancel
-              </Button>
-            </div>
-          </>
+          <Heading className="has-text-centered">New Admin</Heading>
+          <TextField
+            value={sid}
+            setValue={setSID}
+            pattern="^\d{10}$"
+            label="Student ID"
+            placeholder="Student ID"
+            editable
+            required
+          />
+          <TextField
+            value={displayName}
+            setValue={setDisplayName}
+            label="Display Name"
+            placeholder="Display Name"
+            editable
+          />
+          <TextField
+            value={title}
+            setValue={setTitle}
+            label="Title"
+            placeholder="Title"
+            editable
+          />
+          <div className="is-pulled-right buttons pt-4">
+            <Button color="primary" type="submit">
+              Add
+            </Button>
+            <Button color="danger" onClick={onClose}>
+              Cancel
+            </Button>
+          </div>
         </PreventDefaultForm>
       </Modal.Content>
       {openConfirmModal && (

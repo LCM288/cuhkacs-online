@@ -75,30 +75,28 @@ const NewSeries = (): React.ReactElement => {
       <Container>
         <Heading>New series</Heading>
         <PreventDefaultForm onSubmit={() => onSubmit({ id, title, author })}>
-          <>
-            <TextField value={id} label="ID" required />
-            <TextField
-              value={title}
-              setValue={setTitle}
-              label="Title"
-              maxLength={lengthLimits.series.title}
-              editable
-              required
-            />
-            <TextField
-              value={author}
-              setValue={setAuthor}
-              label="Author"
-              maxLength={lengthLimits.series.author}
-              editable
-              required
-            />
-            <Button.Group className="is-pulled-right">
-              <Button color="primary" type="submit" disabled={loading}>
-                Submit
-              </Button>
-            </Button.Group>
-          </>
+          <TextField value={id} label="ID" required />
+          <TextField
+            value={title}
+            setValue={setTitle}
+            label="Title"
+            maxLength={lengthLimits.series.title}
+            editable
+            required
+          />
+          <TextField
+            value={author}
+            setValue={setAuthor}
+            label="Author"
+            maxLength={lengthLimits.series.author}
+            editable
+            required
+          />
+          <Button.Group className="is-pulled-right">
+            <Button color="primary" type="submit" disabled={loading}>
+              Submit
+            </Button>
+          </Button.Group>
         </PreventDefaultForm>
       </Container>
     </Section>

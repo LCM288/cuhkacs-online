@@ -78,78 +78,76 @@ const AddRegistrationModal = ({
     <Modal show closeOnEsc={false} onClose={onClose}>
       <Modal.Content className="has-background-white box">
         <PreventDefaultForm onSubmit={promptConfirm}>
-          <>
-            <Heading className="has-text-centered">New Registration</Heading>
-            <TextField
-              value={sid}
-              setValue={setSID}
-              pattern={patternLimits.sid.source}
-              maxLength={lengthLimits.sid}
-              label="Student ID"
-              placeholder="Student ID"
-              editable
-              required
-            />
-            <TextField
-              value={englishName}
-              setValue={setEnglishName}
-              label="English Name"
-              maxLength={lengthLimits.name.eng}
-              placeholder="English Name as in CU Link Card"
-              editable
-              required
-            />
-            <TextField
-              value={chineseName}
-              setValue={setChineseName}
-              label="Chinese Name"
-              maxLength={lengthLimits.name.chi}
-              placeholder="Chinese Name as in CU Link Card"
-              editable
-            />
-            <GenderField gender={gender} setGender={setGender} />
-            <DateField
-              label="Date of Birth"
-              dateValue={dob}
-              setDateValue={setDob}
-              editable
-            />
-            <TextField
-              value={email}
-              setValue={setEmail}
-              label="Email"
-              placeholder="Email address"
-              type="email"
-              pattern={patternLimits.email.source}
-              maxLength={lengthLimits.email}
-              editable
-            />
-            <TextField
-              value={phone}
-              setValue={setPhone}
-              label="Phone Number"
-              placeholder="Phone Number"
-              type="tel"
-              pattern={patternLimits.phone.source}
-              maxLength={lengthLimits.phone}
-              editable
-            />
-            <CollegeField
-              collegeCode={collegeCode}
-              setCollegeCode={setCollegeCode}
-            />
-            <MajorField majorCode={majorCode} setMajorCode={setMajorCode} />
-            <DOEntryField doEntry={doEntry} setDoEntry={setDoEntry} />
-            <DOGradField doGrad={doGrad} setDoGrad={setDoGrad} />
-            <div className="is-pulled-right buttons pt-4">
-              <Button color="primary" type="submit">
-                Add
-              </Button>
-              <Button color="danger" onClick={onClose}>
-                Cancel
-              </Button>
-            </div>
-          </>
+          <Heading className="has-text-centered">New Registration</Heading>
+          <TextField
+            value={sid}
+            setValue={setSID}
+            pattern={patternLimits.sid.source}
+            maxLength={lengthLimits.sid}
+            label="Student ID"
+            placeholder="Student ID"
+            editable
+            required
+          />
+          <TextField
+            value={englishName}
+            setValue={setEnglishName}
+            label="English Name"
+            maxLength={lengthLimits.name.eng}
+            placeholder="English Name as in CU Link Card"
+            editable
+            required
+          />
+          <TextField
+            value={chineseName}
+            setValue={setChineseName}
+            label="Chinese Name"
+            maxLength={lengthLimits.name.chi}
+            placeholder="Chinese Name as in CU Link Card"
+            editable
+          />
+          <GenderField gender={gender} setGender={setGender} />
+          <DateField
+            label="Date of Birth"
+            dateValue={dob}
+            setDateValue={setDob}
+            editable
+          />
+          <TextField
+            value={email}
+            setValue={setEmail}
+            label="Email"
+            placeholder="Email address"
+            type="email"
+            pattern={patternLimits.email.source}
+            maxLength={lengthLimits.email}
+            editable
+          />
+          <TextField
+            value={phone}
+            setValue={setPhone}
+            label="Phone Number"
+            placeholder="Phone Number"
+            type="tel"
+            pattern={patternLimits.phone.source}
+            maxLength={lengthLimits.phone}
+            editable
+          />
+          <CollegeField
+            collegeCode={collegeCode}
+            setCollegeCode={setCollegeCode}
+          />
+          <MajorField majorCode={majorCode} setMajorCode={setMajorCode} />
+          <DOEntryField doEntry={doEntry} setDoEntry={setDoEntry} />
+          <DOGradField doGrad={doGrad} setDoGrad={setDoGrad} />
+          <div className="is-pulled-right buttons pt-4">
+            <Button color="primary" type="submit">
+              Add
+            </Button>
+            <Button color="danger" onClick={onClose}>
+              Cancel
+            </Button>
+          </div>
         </PreventDefaultForm>
       </Modal.Content>
       {openConfirmModal && (

@@ -96,37 +96,35 @@ const MemberHome = (): React.ReactElement => {
 
   return (
     <IndexWrapper>
-      <>
-        <Heading className="p-5 mb-0">
-          {isLoading ? "Loading..." : appName}
-        </Heading>
-        <div className="mb-5">{greeting}</div>
-        {welcomeMessage && (
-          <div className="mb-5">
-            <Markdown>{welcomeMessage.message}</Markdown>
-          </div>
-        )}
-        {customMessage && (
-          <div className="mb-5">
-            <Markdown>{customMessage.message}</Markdown>
-          </div>
-        )}
-        <Button.Group className="is-justify-content-center">
-          {registerButtonText && (
-            <Link to="/member/register" className="button is-primary">
-              {registerButtonText}
-            </Link>
-          )}
-          <Link to="/library" className="button is-light">
-            Library Portal
+      <Heading className="p-5 mb-0">
+        {isLoading ? "Loading..." : appName}
+      </Heading>
+      <div className="mb-5">{greeting}</div>
+      {welcomeMessage && (
+        <div className="mb-5">
+          <Markdown>{welcomeMessage.message}</Markdown>
+        </div>
+      )}
+      {customMessage && (
+        <div className="mb-5">
+          <Markdown>{customMessage.message}</Markdown>
+        </div>
+      )}
+      <Button.Group className="is-justify-content-center">
+        {registerButtonText && (
+          <Link to="/member/register" className="button is-primary">
+            {registerButtonText}
           </Link>
-          {userStatus.executive && (
-            <Link to="/admin" className="button is-info">
-              Admin Portal
-            </Link>
-          )}
-        </Button.Group>
-      </>
+        )}
+        <Link to="/library" className="button is-light">
+          Library Portal
+        </Link>
+        {userStatus.executive && (
+          <Link to="/admin" className="button is-info">
+            Admin Portal
+          </Link>
+        )}
+      </Button.Group>
     </IndexWrapper>
   );
 };

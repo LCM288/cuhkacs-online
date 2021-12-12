@@ -2,7 +2,7 @@ import React from "react";
 import { Section, Container } from "react-bulma-components";
 
 interface Props {
-  children: React.ReactElement;
+  children: React.ReactNode;
 }
 
 const IndexWrapper = ({ children }: Props): React.ReactElement => (

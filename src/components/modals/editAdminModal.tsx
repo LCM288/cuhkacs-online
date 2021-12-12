@@ -45,44 +45,42 @@ const EditAdminModal = ({
             onConfirm({ sid, displayName, title, updatedAt: serverTimestamp() })
           }
         >
-          <>
-            <Heading className="has-text-centered">Edit Admin</Heading>
-            <TextField
-              value={sid}
-              pattern="\d*"
-              maxLength={16}
-              label="Student ID"
-              placeholder="Student ID"
-              required
-            />
-            <TextField
-              value={displayName}
-              setValue={setDisplayName}
-              label="Display Name"
-              maxLength={128}
-              placeholder="Display Name"
-              editable
-            />
-            <TextField
-              value={title}
-              setValue={setTitle}
-              label="Title"
-              maxLength={128}
-              placeholder="Title"
-              editable
-            />
-            <div className="is-pulled-right buttons pt-4">
-              <Button type="button" onClick={onReset} color="warning">
-                Reset
-              </Button>
-              <Button type="submit" color="primary">
-                Confirm
-              </Button>
-              <Button type="button" color="danger" onClick={onCancel}>
-                Cancel
-              </Button>
-            </div>
-          </>
+          <Heading className="has-text-centered">Edit Admin</Heading>
+          <TextField
+            value={sid}
+            pattern="\d*"
+            maxLength={16}
+            label="Student ID"
+            placeholder="Student ID"
+            required
+          />
+          <TextField
+            value={displayName}
+            setValue={setDisplayName}
+            label="Display Name"
+            maxLength={128}
+            placeholder="Display Name"
+            editable
+          />
+          <TextField
+            value={title}
+            setValue={setTitle}
+            label="Title"
+            maxLength={128}
+            placeholder="Title"
+            editable
+          />
+          <div className="is-pulled-right buttons pt-4">
+            <Button type="button" onClick={onReset} color="warning">
+              Reset
+            </Button>
+            <Button type="submit" color="primary">
+              Confirm
+            </Button>
+            <Button type="button" color="danger" onClick={onCancel}>
+              Cancel
+            </Button>
+          </div>
         </PreventDefaultForm>
       </Modal.Content>
       <Loading loading={loading} />

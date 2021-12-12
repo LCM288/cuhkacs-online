@@ -184,76 +184,74 @@ const Register = (): React.ReactElement => {
               })
             }
           >
-            <>
-              <TextField
-                value={userStatus.sid}
-                pattern={patternLimits.sid.source}
-                maxLength={lengthLimits.sid}
-                label="Student ID"
-                required
-              />
-              <TextField
-                value={userStatus.displayName ?? ""}
-                label="English Name"
-                maxLength={lengthLimits.name.eng}
-                placeholder="English Name as in CU Link Card"
-                required
-              />
-              <TextField
-                value={chineseName}
-                setValue={setChineseName}
-                label="Chinese Name"
-                maxLength={lengthLimits.name.chi}
-                placeholder="Chinese Name as in CU Link Card"
-                editable
-              />
-              <GenderField gender={gender} setGender={setGender} />
-              <DateField
-                label="Date of Birth"
-                dateValue={dob}
-                setDateValue={setDob}
-                editable
-              />
-              <TextField
-                value={email}
-                setValue={setEmail}
-                label="Email"
-                placeholder="Email address"
-                type="email"
-                pattern={patternLimits.email.source}
-                maxLength={lengthLimits.email}
-                editable
-              />
-              <TextField
-                value={phone}
-                setValue={setPhone}
-                label="Phone Number"
-                placeholder="Phone Number"
-                type="tel"
-                pattern={patternLimits.phone.source}
-                maxLength={lengthLimits.phone}
-                editable
-              />
-              <CollegeField
-                collegeCode={collegeCode}
-                setCollegeCode={setCollegeCode}
-              />
-              <MajorField majorCode={majorCode} setMajorCode={setMajorCode} />
-              <DOEntryField doEntry={doEntry} setDoEntry={setDoEntry} />
-              <DOGradField doGrad={doGrad} setDoGrad={setDoGrad} />
-              <Button.Group>
-                <Button
-                  type="button"
-                  onClick={() => setShouldPromptReset(true)}
-                  color="warning"
-                >
-                  Reset
-                </Button>
-                <Button color="primary" type="submit" disabled={isSubmitting}>
-                  {submitButtonText}
-                </Button>
-              </Button.Group>
-            </>
+            <TextField
+              value={userStatus.sid}
+              pattern={patternLimits.sid.source}
+              maxLength={lengthLimits.sid}
+              label="Student ID"
+              required
+            />
+            <TextField
+              value={userStatus.displayName ?? ""}
+              label="English Name"
+              maxLength={lengthLimits.name.eng}
+              placeholder="English Name as in CU Link Card"
+              required
+            />
+            <TextField
+              value={chineseName}
+              setValue={setChineseName}
+              label="Chinese Name"
+              maxLength={lengthLimits.name.chi}
+              placeholder="Chinese Name as in CU Link Card"
+              editable
+            />
+            <GenderField gender={gender} setGender={setGender} />
+            <DateField
+              label="Date of Birth"
+              dateValue={dob}
+              setDateValue={setDob}
+              editable
+            />
+            <TextField
+              value={email}
+              setValue={setEmail}
+              label="Email"
+              placeholder="Email address"
+              type="email"
+              pattern={patternLimits.email.source}
+              maxLength={lengthLimits.email}
+              editable
+            />
+            <TextField
+              value={phone}
+              setValue={setPhone}
+              label="Phone Number"
+              placeholder="Phone Number"
+              type="tel"
+              pattern={patternLimits.phone.source}
+              maxLength={lengthLimits.phone}
+              editable
+            />
+            <CollegeField
+              collegeCode={collegeCode}
+              setCollegeCode={setCollegeCode}
+            />
+            <MajorField majorCode={majorCode} setMajorCode={setMajorCode} />
+            <DOEntryField doEntry={doEntry} setDoEntry={setDoEntry} />
+            <DOGradField doGrad={doGrad} setDoGrad={setDoGrad} />
+            <Button.Group>
+              <Button
+                type="button"
+                onClick={() => setShouldPromptReset(true)}
+                color="warning"
+              >
+                Reset
+              </Button>
+              <Button color="primary" type="submit" disabled={isSubmitting}>
+                {submitButtonText}
+              </Button>
+            </Button.Group>
           </PreventDefaultForm>
         </Container>
       </Section>

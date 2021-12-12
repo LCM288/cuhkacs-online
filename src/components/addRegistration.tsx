@@ -80,20 +80,18 @@ const AddRegistration = (): React.ReactElement => {
 
   return (
     <StopClickDiv>
-      <>
-        {modalOpen && (
-          <AddRegistrationModal
-            onSave={onAdd}
-            onClose={() => {
-              setModalOpen(false);
-            }}
-            loading={loading}
-          />
-        )}
-        <Button color="primary" onClick={promptAdd}>
-          Add registration
-        </Button>
-      </>
+      {modalOpen && (
+        <AddRegistrationModal
+          onSave={onAdd}
+          onClose={() => {
+            setModalOpen(false);
+          }}
+          loading={loading}
+        />
+      )}
+      <Button color="primary" onClick={promptAdd}>
+        Add registration
+      </Button>
     </StopClickDiv>
   );
 };

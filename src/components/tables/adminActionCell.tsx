@@ -81,40 +81,38 @@ const AdminActionCell = ({ adminData }: Props): React.ReactElement => {
 
   return (
     <StopClickDiv>
-      <>
-        {openEditModal && (
-          <EditAdminModal
-            onSave={onSave}
-            onCancel={cancelEdit}
-            adminData={adminData}
-            loading={loading}
-          />
-        )}
-        {openDeleteModal && (
-          <PromptModal
-            message={`Are you sure to remove ${adminData.sid} from the admin list ?`}
-            onConfirm={() => onDelete(adminData.sid)}
-            onCancel={cancelDelete}
-            confirmColor="danger"
-            cancelColor="info"
-            confirmText="Remove"
-            cancelText="Back"
-          />
-        )}
-        <Button.Group>
-          <Button color="info" onClick={promptEdit}>
-            Edit
-          </Button>
-          <Button
-            color="danger"
-            onClick={promptDelete}
-            disabled={adminData.sid === userStatus?.sid}
-          >
-            Delete
-          </Button>
-        </Button.Group>
-        {!openEditModal && <Loading loading={loading} />}
-      </>
+      {openEditModal && (
+        <EditAdminModal
+          onSave={onSave}
+          onCancel={cancelEdit}
+          adminData={adminData}
+          loading={loading}
+        />
+      )}
+      {openDeleteModal && (
+        <PromptModal
+          message={`Are you sure to remove ${adminData.sid} from the admin list ?`}
+          onConfirm={() => onDelete(adminData.sid)}
+          onCancel={cancelDelete}
+          confirmColor="danger"
+          cancelColor="info"
+          confirmText="Remove"
+          cancelText="Back"
+        />
+      )}
+      <Button.Group>
+        <Button color="info" onClick={promptEdit}>
+          Edit
+        </Button>
+        <Button
+          color="danger"
+          onClick={promptDelete}
+          disabled={adminData.sid === userStatus?.sid}
+        >
+          Delete
+        </Button>
+      </Button.Group>
+      {!openEditModal && <Loading loading={loading} />}
     </StopClickDiv>
   );
 };

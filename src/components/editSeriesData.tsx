@@ -130,59 +130,57 @@ const EditSeriesData = ({ seriesId }: Props): React.ReactElement => {
     <PreventDefaultForm
       onSubmit={() => onSeriesEditSubmit({ id: seriesId, title, author })}
     >
-      <>
-        <Form.Field kind="group" multiline>
-          <TextField
-            value={title}
-            setValue={setTitle}
-            label="Title"
-            fullwidth
-            maxLength={lengthLimits.series.title}
-            editable={isEditingHeader}
-            loading={loading}
-            required
-          />
-          <TextField
-            value={author}
-            setValue={setAuthor}
-            label="Author"
-            fullwidth
-            maxLength={lengthLimits.series.author}
-            editable={isEditingHeader}
-            loading={loading}
-            required
-          />
-          <Button.Group
-            className="is-align-self-flex-end mb-1"
-            style={{ minWidth: "10.5rem" }}
-          >
-            {isEditingHeader ? (
-              <>
-                <Button
-                  type="button"
-                  color="warning"
-                  onClick={() => setIsEditingHeader(false)}
-                  loading={isUpdateLoading}
-                >
-                  Reset
-                </Button>
-                <Button type="submit" color="success" loading={isUpdateLoading}>
-                  Submit
-                </Button>
-              </>
-            ) : (
+      <Form.Field kind="group" multiline>
+        <TextField
+          value={title}
+          setValue={setTitle}
+          label="Title"
+          fullwidth
+          maxLength={lengthLimits.series.title}
+          editable={isEditingHeader}
+          loading={loading}
+          required
+        />
+        <TextField
+          value={author}
+          setValue={setAuthor}
+          label="Author"
+          fullwidth
+          maxLength={lengthLimits.series.author}
+          editable={isEditingHeader}
+          loading={loading}
+          required
+        />
+        <Button.Group
+          className="is-align-self-flex-end mb-1"
+          style={{ minWidth: "10.5rem" }}
+        >
+          {isEditingHeader ? (
+            <>
               <Button
                 type="button"
-                color="info"
-                onClick={() => setIsEditingHeader(true)}
+                color="warning"
+                onClick={() => setIsEditingHeader(false)}
                 loading={isUpdateLoading}
               >
-                Enable Editing
+                Reset
               </Button>
-            )}
-          </Button.Group>
-        </Form.Field>
-      </>
+              <Button type="submit" color="success" loading={isUpdateLoading}>
+                Submit
+              </Button>
+            </>
+          ) : (
+            <Button
+              type="button"
+              color="info"
+              onClick={() => setIsEditingHeader(true)}
+              loading={isUpdateLoading}
+            >
+              Enable Editing
+            </Button>
+          )}
+        </Button.Group>
+      </Form.Field>
     </PreventDefaultForm>
   );
 };

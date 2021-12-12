@@ -157,98 +157,96 @@ const EditMemberModal = ({
               })
             }
           >
-            <>
-              <Heading className="has-text-centered">Edit {type}</Heading>
-              <TextField
-                value={sid}
-                setValue={setSID}
-                pattern={patternLimits.sid.source}
-                maxLength={lengthLimits.sid}
-                label="Student ID"
-                editable={fullyEditable}
-                required
-              />
-              <TextField
-                value={englishName}
-                setValue={setEnglishName}
-                label="English Name"
-                maxLength={lengthLimits.name.eng}
-                placeholder="English Name as in CU Link Card"
-                editable
-                required
-              />
-              <TextField
-                value={chineseName}
-                setValue={setChineseName}
-                label="Chinese Name"
-                maxLength={lengthLimits.name.chi}
-                placeholder="Chinese Name as in CU Link Card"
-                editable
-              />
-              <GenderField gender={gender} setGender={setGender} />
-              <DateField
-                label="Date of Birth"
-                dateValue={dob}
-                setDateValue={setDob}
-                editable
-              />
-              <TextField
-                value={email}
-                setValue={setEmail}
-                label="Email"
-                placeholder="Email address"
-                type="email"
-                pattern={patternLimits.email.source}
-                maxLength={lengthLimits.email}
-                editable
-              />
-              <TextField
-                value={phone}
-                setValue={setPhone}
-                label="Phone Number"
-                placeholder="Phone Number"
-                type="tel"
-                pattern={patternLimits.phone.source}
-                maxLength={lengthLimits.phone}
-                editable
-              />
-              <CollegeField
-                collegeCode={collegeCode}
-                setCollegeCode={setCollegeCode}
-              />
-              <MajorField majorCode={majorCode} setMajorCode={setMajorCode} />
-              <DOEntryField doEntry={doEntry} setDoEntry={setDoEntry} />
-              <DOGradField doGrad={doGrad} setDoGrad={setDoGrad} />
-              {type === "Member" && (
-                <>
-                  <DateField
-                    label="Member Since"
-                    dateValue={memberSince}
-                    setDateValue={setMemberSince}
-                    editable={fullyEditable}
-                    required
-                  />
-                  <MemberUntilField
-                    label="Member Until"
-                    gradDate={doGrad}
-                    dateValue={memberUntil}
-                    setDateValue={setMemberUntil}
-                    editable
-                  />
-                </>
-              )}
-              <div className="is-pulled-right buttons pt-4">
-                <Button type="button" onClick={onReset} color="warning">
-                  Reset
-                </Button>
-                <Button type="submit" color="primary">
-                  Confirm
-                </Button>
-                <Button type="button" color="danger" onClick={onCancel}>
-                  Cancel
-                </Button>
-              </div>
-            </>
+            <Heading className="has-text-centered">Edit {type}</Heading>
+            <TextField
+              value={sid}
+              setValue={setSID}
+              pattern={patternLimits.sid.source}
+              maxLength={lengthLimits.sid}
+              label="Student ID"
+              editable={fullyEditable}
+              required
+            />
+            <TextField
+              value={englishName}
+              setValue={setEnglishName}
+              label="English Name"
+              maxLength={lengthLimits.name.eng}
+              placeholder="English Name as in CU Link Card"
+              editable
+              required
+            />
+            <TextField
+              value={chineseName}
+              setValue={setChineseName}
+              label="Chinese Name"
+              maxLength={lengthLimits.name.chi}
+              placeholder="Chinese Name as in CU Link Card"
+              editable
+            />
+            <GenderField gender={gender} setGender={setGender} />
+            <DateField
+              label="Date of Birth"
+              dateValue={dob}
+              setDateValue={setDob}
+              editable
+            />
+            <TextField
+              value={email}
+              setValue={setEmail}
+              label="Email"
+              placeholder="Email address"
+              type="email"
+              pattern={patternLimits.email.source}
+              maxLength={lengthLimits.email}
+              editable
+            />
+            <TextField
+              value={phone}
+              setValue={setPhone}
+              label="Phone Number"
+              placeholder="Phone Number"
+              type="tel"
+              pattern={patternLimits.phone.source}
+              maxLength={lengthLimits.phone}
+              editable
+            />
+            <CollegeField
+              collegeCode={collegeCode}
+              setCollegeCode={setCollegeCode}
+            />
+            <MajorField majorCode={majorCode} setMajorCode={setMajorCode} />
+            <DOEntryField doEntry={doEntry} setDoEntry={setDoEntry} />
+            <DOGradField doGrad={doGrad} setDoGrad={setDoGrad} />
+            {type === "Member" && (
+              <>
+                <DateField
+                  label="Member Since"
+                  dateValue={memberSince}
+                  setDateValue={setMemberSince}
+                  editable={fullyEditable}
+                  required
+                />
+                <MemberUntilField
+                  label="Member Until"
+                  gradDate={doGrad}
+                  dateValue={memberUntil}
+                  setDateValue={setMemberUntil}
+                  editable
+                />
+              </>
+            )}
+            <div className="is-pulled-right buttons pt-4">
+              <Button type="button" onClick={onReset} color="warning">
+                Reset
+              </Button>
+              <Button type="submit" color="primary">
+                Confirm
+              </Button>
+              <Button type="button" color="danger" onClick={onCancel}>
+                Cancel
+              </Button>
+            </div>
           </PreventDefaultForm>
         </Modal.Content>
         <Loading loading={loading} />
