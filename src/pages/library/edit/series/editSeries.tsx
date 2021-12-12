@@ -39,6 +39,7 @@ const EditSeries = (): React.ReactElement => {
       Math.max(
         1,
         ...Object.values(bookData ?? {})
+          .filter(({ status }) => ["on-shelf", "on-loan"].includes(status))
           .map(({ volume }) => parseFloat(volume))
           .filter((volume) => !isNaN(volume))
           .map((volume) => Math.floor(volume + 1))

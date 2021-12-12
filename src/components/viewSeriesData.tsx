@@ -14,7 +14,11 @@ import { BookKey, decodeLocation, LibraryBook } from "utils/libraryUtils";
 import useHideColumn from "utils/useHideColumn";
 import Table from "components/tables/table";
 import { DateTime } from "luxon";
-import { Form, Loader } from "react-bulma-components";
+import { Form, Loader, Button } from "react-bulma-components";
+import { StopClickDiv } from "utils/domEventHelpers";
+import PromptModal from "components/modals/promptModal";
+import { useUpdate } from "utils/firebase";
+import { increment, serverTimestamp } from "firebase/database";
 
 const { Checkbox } = Form;
 
@@ -30,6 +34,7 @@ const ViewSeriesData = ({
   loading,
   error,
 }: Props): React.ReactElement => {
+  const { update } = useUpdate("library");
   useEffect(() => {
     if (error) {
       console.error(error);
@@ -43,6 +48,84 @@ const ViewSeriesData = ({
         ? rows
         : rows.filter((row) => row.original.status !== "deleted"),
     []
+  );
+
+  const [promptContent, setPromptContent] = useState(<></>);
+
+  const deleteBook = useCallback(
+    (bookData: LibraryBook & { id: string }) => {
+      const updates = {
+        [`series/data/${bookData.seriesId}/locations/${bookData.location}`]:
+          increment(-1),
+        [`series/data/${bookData.seriesId}/volumeCount`]: increment(-1),
+        [`series/data/${bookData.seriesId}/updatedAt`]: serverTimestamp(),
+        [`series_volume/${bookData.seriesId}/${bookData.id}`]: null,
+        "books/count": increment(-1),
+        [`books/data/${bookData.id}/status`]: "deleted",
+        [`books/data/${bookData.id}/updatedAt`]: serverTimestamp(),
+        [`locations/data/${bookData.location}/bookCount`]: increment(-1),
+        [`location_series/${bookData.location}/${bookData.seriesId}`]:
+          increment(-1),
+        [`location_book/${bookData.location}/${bookData.id}`]: null,
+      };
+      update(updates)
+        .then(() => {
+          toast.info(`Volume ${bookData.volume} has been deleted.`);
+          setPromptContent(<></>);
+        })
+        .catch((err) => {
+          console.error(err);
+          if (err instanceof Error) {
+            toast.error(err.message);
+          }
+        });
+    },
+    [update]
+  );
+
+  const tableData = useMemo(() => {
+    return data
+      ? Object.keys(data)
+          .map((key) => ({
+            id: key,
+            ...data[key],
+          }))
+          .sort((a, b) => {
+            const numA = parseFloat(a.volume);
+            const numB = parseFloat(b.volume);
+            if ((isNaN(numA) && isNaN(numB)) || numA === numB) {
+              return a.volume < b.volume ? -1 : 1;
+            } else if (isNaN(numA)) {
+              return -1;
+            } else if (isNaN(numB)) {
+              return 1;
+            } else {
+              return numA - numB;
+            }
+          })
+      : [];
+  }, [data]);
+
+  const promptDelete = useCallback(
+    (id: string) => {
+      const bookData = tableData.find((book) => book.id === id);
+      if (!bookData || bookData.status === "deleted") {
+        toast.error(`Book id ${id} not found`);
+        return;
+      }
+      setPromptContent(
+        <PromptModal
+          message={`Are you sure you want to delete volume ${bookData.volume}?`}
+          onConfirm={() => deleteBook(bookData)}
+          onCancel={() => setPromptContent(<></>)}
+          confirmText="Remove"
+          cancelText="Back"
+          confirmColor="danger"
+          cancelColor="info"
+        />
+      );
+    },
+    [deleteBook, tableData]
   );
 
   const tableColumns = useMemo(
@@ -110,32 +193,34 @@ const ViewSeriesData = ({
         width: 145,
         maxWidth: 145,
       },
+      {
+        Header: "Action",
+        accessor: (row: { id: string }) => row.id,
+        id: "action",
+        disableSortBy: true,
+        minWidth: 170,
+        width: 170,
+        maxWidth: 170,
+        Cell: ({ value, row }: { value: string; row: Row<LibraryBook> }) => (
+          <StopClickDiv>
+            <Button.Group>
+              <Button color="info" disabled={row.original.status === "deleted"}>
+                Edit
+              </Button>
+              <Button
+                color="danger"
+                disabled={row.original.status === "deleted"}
+                onClick={() => promptDelete(value)}
+              >
+                Delete
+              </Button>
+            </Button.Group>
+          </StopClickDiv>
+        ),
+      },
     ],
-    [statusFilter]
+    [promptDelete, statusFilter]
   );
-
-  const tableData = useMemo(() => {
-    return data
-      ? Object.keys(data)
-          .map((key) => ({
-            id: key,
-            ...data[key],
-          }))
-          .sort((a, b) => {
-            const numA = parseFloat(a.volume);
-            const numB = parseFloat(b.volume);
-            if (isNaN(numA) && isNaN(numB)) {
-              return a.volume < b.volume ? -1 : 1;
-            } else if (isNaN(numA)) {
-              return -1;
-            } else if (isNaN(numB)) {
-              return 1;
-            } else {
-              return numA - numB;
-            }
-          })
-      : [];
-  }, [data]);
 
   const tableGetRowId = useMemo(() => {
     return (row: Record<string, unknown>) => row.id as string;
@@ -199,7 +284,7 @@ const ViewSeriesData = ({
       ["id"],
       ["language"],
       ["updatedAt"],
-      ["isbn"],
+      ["isbn", "action"],
       ["createdAt"],
       ["location"],
       ["status"],
@@ -212,6 +297,7 @@ const ViewSeriesData = ({
   return (
     <>
       {resizeListener}
+      {promptContent}
       {loading ? (
         <Loader className="is-pulled-right" />
       ) : (

@@ -258,9 +258,9 @@
         "data": {
           ".indexOn": "seriesId",
           "$bookId": {
-            ".validate": "newData.hasChildren(['seriesId', 'volume', 'language', 'status', 'location', 'borrowCount', 'isbn', 'createdAt', 'updatedAt']) && $bookId.length < 40",
+            ".validate": "data.child('status').val() !== 'deleted' && newData.hasChildren(['seriesId', 'volume', 'language', 'status', 'location', 'borrowCount', 'isbn', 'createdAt', 'updatedAt']) && $bookId.length < 40",
             "seriesId": {
-              ".validate": "newData.isString() && newData.parent().parent().parent().parent().child('series_volume').child(newData.val()).child($bookId).val() === true && (!data.exists() || newData.parent().parent().parent().parent().child('series_volume').child(data.val()).child($bookId).val() === null)"
+              ".validate": "(!data.exists() || newData.val() === data.val()) && newData.isString() && newData.parent().parent().parent().parent().child('series_volume').child(newData.val()).child($bookId).val() === true && (!data.exists() || newData.parent().parent().parent().parent().child('series_volume').child(data.val()).child($bookId).val() === null)"
             },
             "volume": {
               ".validate": "newData.isString() && newData.val().length < 16"
@@ -272,7 +272,7 @@
               ".validate": "newData.isString() && newData.val().matches(/^(on-loan)|(on-shelf)|(lost)|(deleted)$/)"
             },
             "location": {
-              ".validate": "newData.isString() && newData.parent().parent().parent().parent().child('location_book').child(newData.val()).child($bookId).exists() && (!data.exists() || !newData.parent().parent().parent().parent().child('location_book').child(data.val()).child($bookId).exists())"
+              ".validate": "newData.isString() && (newData.parent().child('status').val() === 'deleted' || newData.parent().parent().parent().parent().child('location_book').child(newData.val()).child($bookId).exists()) && (!data.exists() || (newData.val() === data.val() && newData.parent().child('status').val() !== 'deleted') || !newData.parent().parent().parent().parent().child('location_book').child(data.val()).child($bookId).exists())"
             },
             "borrowCount": {
               ".validate": "newData.isNumber()"
@@ -345,7 +345,7 @@
       "$location": {
         ".validate": "newData.parent().parent().child('locations').child('data').child($location).exists()",
         "$bookId": {
-          ".validate": "(!newData.exists() || newData.val() === true) && newData.exists() === (newData.parent().parent().parent().child('books').child('data').child($bookId).child('location').val() === $location)"
+          ".validate": "(!newData.exists() || newData.val() === true) && newData.exists() === (newData.parent().parent().parent().child('books').child('data').child($bookId).child('location').val() === $location && newData.parent().parent().parent().child('books').child('data').child($bookId).child('status').val() !== 'deleted')"
         }
       }
     },

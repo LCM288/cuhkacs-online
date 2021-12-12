@@ -38,7 +38,10 @@ const AddBookModal = ({
 }: Props): React.ReactElement => {
   const { loading, update } = useUpdate("library");
   const sortedLocations = useMemo(
-    () => Object.keys(locations).sort((a, b) => locations[a] - locations[b]),
+    () =>
+      Object.keys(locations)
+        .filter((locationKey) => locations[locationKey])
+        .sort((a, b) => locations[b] - locations[a]),
     [locations]
   );
   const id = useMemo(() => uuidv4(), []);
@@ -108,6 +111,12 @@ const AddBookModal = ({
       return;
     }
     const encodedLocation = encodeLocation(location);
+    const validatedISBN = getISBN(isbn);
+    if (!validatedISBN) {
+      toast.error("Invalid ISBN");
+      setISBN("");
+      return;
+    }
     const updates = {
       [`series/data/${seriesId}/locations/${encodedLocation}`]: increment(1),
       [`series/data/${seriesId}/volumeCount`]: increment(1),
@@ -121,7 +130,7 @@ const AddBookModal = ({
         status: "on-shelf",
         location: encodedLocation,
         borrowCount: 0,
-        isbn,
+        isbn: validatedISBN,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       },
