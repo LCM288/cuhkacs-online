@@ -16,7 +16,7 @@ export type LibrarySeries = {
 
 export type LibraryBook = {
   seriesId: SeriesKey;
-  volumn: string;
+  volume: string;
   language: string;
   status: "on-loan" | "on-shelf" | "lost" | "deleted";
   location: LocationKey;
@@ -27,7 +27,6 @@ export type LibraryBook = {
 };
 
 export type LibraryLocation = {
-  seriesCount: number;
   bookCount: number;
   createdAt: number;
   updatedAt: number;
@@ -72,4 +71,49 @@ export const lengthLimits = {
   },
   location: 16,
   keyword: 128,
+};
+
+/*
+ * Verify and convert ISBN to its 13 digit format.
+ * Return null if invalid.
+ */
+export const getISBN = (str: string): string | null => {
+  if (str.length === 10) {
+    {
+      let checkSum10 = 0;
+      for (let i = 0; i < 10; i++) {
+        checkSum10 += (i + 1) * parseInt(str[i]);
+      }
+      if (checkSum10 % 11 !== 0) {
+        return null;
+      }
+    }
+    {
+      let checkSum13 = 9 + 7 * 3 + 8;
+      for (let i = 0; i < 9; i++) {
+        checkSum13 += (i % 2 === 0 ? 3 : 1) * parseInt(str[i]);
+      }
+      let r = 10 - (checkSum13 % 10);
+      r %= 10;
+      return `${978}${str.substring(0, 9)}${r}`;
+    }
+  }
+  if (str.length === 13) {
+    // annoying @typescript-eslint/no-redeclare false positive here
+    let checkSum13b = 0;
+    for (let i = 0; i < 12; i++) {
+      checkSum13b += (i % 2 === 0 ? 1 : 3) * parseInt(str[i]);
+    }
+    let rb = 10 - (checkSum13b % 10);
+    rb %= 10;
+    if (str[12] !== `${rb}`) {
+      return null;
+    }
+    return str;
+  }
+  return null;
+};
+
+export const replaceLocationCode = (location: string): string => {
+  return location.replaceAll(".", "_");
 };

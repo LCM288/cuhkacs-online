@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { useParams } from "react-router-dom";
 import EditSeriesData from "components/editSeriesData";
 import AddBook from "components/addBook";
@@ -14,6 +14,8 @@ const EditSeries = (): React.ReactElement => {
     error: seriesError,
   } = useGetAndListen<LibrarySeries | null>(`library/series/data/${seriesId}`);
   const firstLoading = useRef(true);
+  const lastVolume = useMemo(() => null, []);
+  const locations = useMemo(() => seriesData?.locations ?? {}, [seriesData]);
 
   useEffect(() => {
     if (seriesData) {
@@ -33,7 +35,11 @@ const EditSeries = (): React.ReactElement => {
         loading={seriesLoading}
         error={seriesError}
       />
-      <AddBook seriesId={seriesId} />
+      <AddBook
+        seriesId={seriesId}
+        lastVolume={lastVolume}
+        locations={locations}
+      />
     </>
   );
 };
