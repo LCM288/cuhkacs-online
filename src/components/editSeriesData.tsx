@@ -1,22 +1,29 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useGetAndListen, useLazyGetServer, useUpdate } from "utils/firebase";
+import { useLazyGetServer, useUpdate } from "utils/firebase";
 import { LibrarySeries, lengthLimits } from "utils/libraryUtils";
 import { toast } from "react-toastify";
 import { Form, Button } from "react-bulma-components";
 import { PreventDefaultForm } from "utils/domEventHelpers";
 import TextField from "components/fields/textField";
 import { serverTimestamp } from "firebase/database";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
-  seriesId: string | undefined;
+  seriesId: string;
+  data: LibrarySeries | null | undefined;
+  loading: boolean;
+  error: Error | undefined;
 }
 
-const EditSeriesData = ({ seriesId }: Props): React.ReactElement => {
-  const { data, loading, error } = useGetAndListen<LibrarySeries | null>(
-    `library/series/data/${seriesId}`
-  );
+const EditSeriesData = ({
+  seriesId,
+  data,
+  loading,
+  error,
+}: Props): React.ReactElement => {
   const { getServer } = useLazyGetServer<Record<string, true> | null>();
   const { update } = useUpdate("library");
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (error) {
@@ -39,8 +46,12 @@ const EditSeriesData = ({ seriesId }: Props): React.ReactElement => {
         setTitle("");
         setAuthor("");
       }
+      if (seriesData === null) {
+        toast.info("This series has been removed.");
+        navigate("/library/edit/series");
+      }
     },
-    []
+    [navigate]
   );
 
   useEffect(() => {
@@ -55,16 +66,10 @@ const EditSeriesData = ({ seriesId }: Props): React.ReactElement => {
       title: newTitle,
       author: newAuthor,
     }: {
-      id: string | undefined;
+      id: string;
       title: string;
       author: string;
     }) => {
-      console.log("submit");
-      if (!id) {
-        console.error("Series ID is missing");
-        toast.error("Some error occurred.");
-        return;
-      }
       setIsUpdateLoading(true);
       const newKeywords = new Set<string>();
       for (let i = 0; i < newTitle.length; i++) {
@@ -135,6 +140,7 @@ const EditSeriesData = ({ seriesId }: Props): React.ReactElement => {
           value={title}
           setValue={setTitle}
           label="Title"
+          placeholder="Title"
           fullwidth
           maxLength={lengthLimits.series.title}
           editable={isEditingHeader}
@@ -145,6 +151,7 @@ const EditSeriesData = ({ seriesId }: Props): React.ReactElement => {
           value={author}
           setValue={setAuthor}
           label="Author"
+          placeholder="Author"
           fullwidth
           maxLength={lengthLimits.series.author}
           editable={isEditingHeader}

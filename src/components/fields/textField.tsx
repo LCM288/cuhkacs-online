@@ -22,7 +22,7 @@ const TextField = ({
   setValue = () => {},
   label,
   maxLength,
-  placeholder = "",
+  placeholder = label,
   editable = false,
   type = "text",
   pattern,

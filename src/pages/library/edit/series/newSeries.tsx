@@ -60,7 +60,7 @@ const NewSeries = (): React.ReactElement => {
       update(updates)
         .then(() => {
           toast.success(`Series ${newTitle} has been added.`);
-          navigate(`/library/edit/series/${newId}`);
+          navigate(`/library/edit/series/books/${newId}`);
         })
         .catch((err) => {
           console.error(err);

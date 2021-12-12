@@ -171,8 +171,12 @@ const App = (): React.ReactElement => {
                     <Route path="edit" element={<LibraryEdit />}>
                       <Route index element={<NotFound />} />
                       <Route path="series" element={<Outlet />}>
-                        <Route index element={<NewSeries />} />
-                        <Route path=":seriesId" element={<EditSeries />} />
+                        <Route index element={<div>Hello</div>} />
+                        <Route path="new" element={<NewSeries />} />
+                        <Route path="books" element={<Outlet />}>
+                          <Route path=":seriesId" element={<EditSeries />} />
+                        </Route>
+                        <Route path="*" element={<NotFound />} />
                       </Route>
                       <Route path="*" element={<NotFound />} />
                     </Route>
