@@ -6,8 +6,7 @@ export type BorrowKey = string;
 export type LibrarySeries = {
   title: string;
   author: string;
-  locationCount: number;
-  locations?: Record<LocationKey, true>;
+  locations?: Record<LocationKey, number>;
   volumeCount: number;
   borrowCount: number;
   keywordCount: number;
