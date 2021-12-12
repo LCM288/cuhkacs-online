@@ -45,10 +45,12 @@ const NewSeries = (): React.ReactElement => {
           updatedAt: serverTimestamp(),
         },
       };
-      const seriesKeywordUpdate: Record<string, true> = {};
-      const keywordsUpdate: Record<string, true> = {};
+      const seriesKeywordUpdate: Record<string, unknown> = {};
+      const keywordsUpdate: Record<string, unknown> = {};
       keywords.forEach((keyword) => {
-        keywordsUpdate[`keywords/${keyword}/${newId}`] = true;
+        keywordsUpdate[`keywords/${keyword}/series/${newId}`] = true;
+        keywordsUpdate[`keywords/${keyword}/seriesCount`] = increment(1);
+        keywordsUpdate[`keywords/${keyword}/updatedAt`] = serverTimestamp();
         seriesKeywordUpdate[`series_keyword/${newId}/${keyword}`] = true;
       });
       const updates = {

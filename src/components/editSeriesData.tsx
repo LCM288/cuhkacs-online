@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { Form, Button } from "react-bulma-components";
 import { PreventDefaultForm } from "utils/domEventHelpers";
 import TextField from "components/fields/textField";
-import { serverTimestamp } from "firebase/database";
+import { increment, serverTimestamp } from "firebase/database";
 import { useNavigate } from "react-router-dom";
 
 interface Props {
@@ -84,19 +84,31 @@ const EditSeriesData = ({
         [`series/data/${id}/keywordCount`]: newKeywords.size,
         [`series/data/${id}/updatedAt`]: serverTimestamp(),
       };
-      const seriesKeywordUpdate: Record<string, true | null> = {};
-      const keywordsUpdate: Record<string, true | null> = {};
+      const seriesKeywordUpdate: Record<string, unknown> = {};
+      const keywordsUpdate: Record<string, unknown> = {};
       try {
         const oldKeywordRecord = await getServer(
           `library/series_keyword/${id}`
         );
         if (oldKeywordRecord) {
-          // Setting null must happen before setting true so that it can be overwritten if needed.
           Object.keys(oldKeywordRecord).forEach((keyword) => {
-            keywordsUpdate[`keywords/${keyword}/${id}`] = null;
-            seriesKeywordUpdate[`series_keyword/${id}/${keyword}`] = null;
+            if (!newKeywords.has(keyword)) {
+              keywordsUpdate[`keywords/${keyword}/series/${id}`] = null;
+              keywordsUpdate[`keywords/${keyword}/seriesCount`] = increment(-1);
+              keywordsUpdate[`keywords/${keyword}/updatedAt`] =
+                serverTimestamp();
+              seriesKeywordUpdate[`series_keyword/${id}/${keyword}`] = null;
+            }
           });
         }
+        newKeywords.forEach((keyword) => {
+          if (!oldKeywordRecord?.[keyword]) {
+            keywordsUpdate[`keywords/${keyword}/series/${id}`] = true;
+            keywordsUpdate[`keywords/${keyword}/seriesCount`] = increment(1);
+            keywordsUpdate[`keywords/${keyword}/updatedAt`] = serverTimestamp();
+            seriesKeywordUpdate[`series_keyword/${id}/${keyword}`] = true;
+          }
+        });
       } catch (err) {
         console.error(err);
         if (err instanceof Error) {
@@ -105,10 +117,6 @@ const EditSeriesData = ({
         setIsUpdateLoading(false);
         return;
       }
-      newKeywords.forEach((keyword) => {
-        keywordsUpdate[`keywords/${keyword}/${id}`] = true;
-        seriesKeywordUpdate[`series_keyword/${id}/${keyword}`] = true;
-      });
       const updates = {
         ...seriesUpdate,
         ...keywordsUpdate,

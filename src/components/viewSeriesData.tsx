@@ -10,7 +10,12 @@ import {
   useTable,
 } from "react-table";
 import { toast } from "react-toastify";
-import { BookKey, decodeLocation, LibraryBook } from "utils/libraryUtils";
+import {
+  BookKey,
+  decodeLocation,
+  LibraryBook,
+  LocationKey,
+} from "utils/libraryUtils";
 import useHideColumn from "utils/useHideColumn";
 import Table from "components/tables/table";
 import { DateTime } from "luxon";
@@ -19,6 +24,8 @@ import { StopClickDiv } from "utils/domEventHelpers";
 import PromptModal from "components/modals/promptModal";
 import { useUpdate } from "utils/firebase";
 import { increment, serverTimestamp } from "firebase/database";
+import Loading from "components/loading";
+import EditBookModal from "components/modals/editBookModal";
 
 const { Checkbox } = Form;
 
@@ -27,14 +34,16 @@ interface Props {
   data: Record<BookKey, LibraryBook> | null | undefined;
   loading: boolean;
   error: Error | undefined;
+  locations: Record<LocationKey, number>;
 }
 
 const ViewSeriesData = ({
   data,
   loading,
   error,
+  locations,
 }: Props): React.ReactElement => {
-  const { update } = useUpdate("library");
+  const { loading: updateLoading, update } = useUpdate("library");
   useEffect(() => {
     if (error) {
       console.error(error);
@@ -64,6 +73,7 @@ const ViewSeriesData = ({
         [`books/data/${bookData.id}/status`]: "deleted",
         [`books/data/${bookData.id}/updatedAt`]: serverTimestamp(),
         [`locations/data/${bookData.location}/bookCount`]: increment(-1),
+        [`locations/data/${bookData.location}/updatedAt`]: serverTimestamp(),
         [`location_series/${bookData.location}/${bookData.seriesId}`]:
           increment(-1),
         [`location_book/${bookData.location}/${bookData.id}`]: null,
@@ -126,6 +136,25 @@ const ViewSeriesData = ({
       );
     },
     [deleteBook, tableData]
+  );
+
+  const openEditModal = useCallback(
+    (id: string) => {
+      const bookData = tableData.find((book) => book.id === id);
+      if (!bookData || bookData.status === "deleted") {
+        toast.error(`Book id ${id} not found`);
+        return;
+      }
+      setPromptContent(
+        <EditBookModal
+          update={update}
+          bookData={bookData}
+          locations={locations}
+          onClose={() => setPromptContent(<></>)}
+        />
+      );
+    },
+    [locations, tableData, update]
   );
 
   const tableColumns = useMemo(
@@ -204,7 +233,11 @@ const ViewSeriesData = ({
         Cell: ({ value, row }: { value: string; row: Row<LibraryBook> }) => (
           <StopClickDiv>
             <Button.Group>
-              <Button color="info" disabled={row.original.status === "deleted"}>
+              <Button
+                color="info"
+                disabled={row.original.status === "deleted"}
+                onClick={() => openEditModal(value)}
+              >
                 Edit
               </Button>
               <Button
@@ -219,7 +252,7 @@ const ViewSeriesData = ({
         ),
       },
     ],
-    [promptDelete, statusFilter]
+    [openEditModal, promptDelete, statusFilter]
   );
 
   const tableGetRowId = useMemo(() => {
@@ -298,6 +331,7 @@ const ViewSeriesData = ({
     <>
       {resizeListener}
       {promptContent}
+      {<Loading loading={updateLoading} />}
       {loading ? (
         <Loader className="is-pulled-right" />
       ) : (

@@ -47,7 +47,6 @@ export type LibraryBorrow = {
 export type LibraryKeyword = {
   seriesCount: number;
   series: Record<SeriesKey, true>;
-  createdAt: number;
   updatedAt: number;
 };
 

@@ -73,6 +73,7 @@ const EditSeries = (): React.ReactElement => {
             data={bookData}
             loading={bookLoading}
             error={bookError}
+            locations={locations}
           />
         </Container>
         <AddBook

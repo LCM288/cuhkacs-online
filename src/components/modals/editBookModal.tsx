@@ -2,25 +2,23 @@ import React, { useState, useMemo, useCallback } from "react";
 import { Heading, Modal, Button, Form } from "react-bulma-components";
 import TextField from "components/fields/textField";
 import { PreventDefaultForm } from "utils/domEventHelpers";
-import { v4 as uuidv4 } from "uuid";
 import {
   LocationKey,
   lengthLimits,
   getISBN,
   encodeLocation,
   decodeLocation,
+  LibraryBook,
 } from "utils/libraryUtils";
 import CreatableSelect from "react-select/creatable";
 import { toast } from "react-toastify";
 import { serverTimestamp, increment } from "firebase/database";
-import { useUpdate } from "utils/firebase";
-import Loading from "components/loading";
 
 const { Control, Field, Label } = Form;
 
 interface Props {
-  seriesId: string;
-  nextVolume: number;
+  update: (value: Record<string, unknown>) => Promise<void>;
+  bookData: LibraryBook & { id: string };
   locations: Record<LocationKey, number>;
   onClose: () => void;
 }
@@ -30,13 +28,12 @@ type SelectOption = {
   label: string;
 };
 
-const AddBookModal = ({
-  seriesId,
-  nextVolume,
+const EditBookModal = ({
+  update,
+  bookData,
   locations,
   onClose,
 }: Props): React.ReactElement => {
-  const { loading, update } = useUpdate("library");
   const sortedLocations = useMemo(
     () =>
       Object.keys(locations)
@@ -44,13 +41,11 @@ const AddBookModal = ({
         .sort((a, b) => locations[b] - locations[a]),
     [locations]
   );
-  const id = useMemo(() => uuidv4(), []);
-  const [volume, setVolume] = useState(nextVolume.toString());
-  const [language, setLanguage] = useState<string | null>("中文");
-  const [location, setLocation] = useState<string | null>(
-    sortedLocations[0] ?? null
-  );
-  const [isbn, setISBN] = useState("");
+  const id = useMemo(() => bookData.id, [bookData]);
+  const [volume, setVolume] = useState(bookData.volume);
+  const [language, setLanguage] = useState<string | null>(bookData.language);
+  const [location, setLocation] = useState<string | null>(bookData.location);
+  const [isbn, setISBN] = useState(bookData.isbn);
 
   const languageOptions = useMemo(
     () =>
@@ -117,31 +112,41 @@ const AddBookModal = ({
       setISBN("");
       return;
     }
+    const locationUpdates =
+      encodedLocation === bookData.location
+        ? {}
+        : {
+            [`series/data/${bookData.seriesId}/locations/${encodedLocation}`]:
+              increment(1),
+            [`series/data/${bookData.seriesId}/locations/${bookData.location}`]:
+              increment(-1),
+            [`series/data/${bookData.seriesId}/updatedAt`]: serverTimestamp(),
+            [`locations/data/${encodedLocation}/bookCount`]: increment(1),
+            [`locations/data/${encodedLocation}/updatedAt`]: serverTimestamp(),
+            [`locations/data/${bookData.location}/bookCount`]: increment(-1),
+            [`locations/data/${bookData.location}/updatedAt`]:
+              serverTimestamp(),
+            [`location_series/${encodedLocation}/${bookData.seriesId}`]:
+              increment(1),
+            [`location_series/${bookData.location}/${bookData.seriesId}`]:
+              increment(-1),
+            [`location_book/${encodedLocation}/${id}`]: true,
+            [`location_book/${bookData.location}/${id}`]: null,
+          };
+    const bookUpdates = {
+      [`books/data/${bookData.id}/volume`]: volume,
+      [`books/data/${bookData.id}/language`]: language,
+      [`books/data/${bookData.id}/location`]: encodedLocation,
+      [`books/data/${bookData.id}/isbn`]: validatedISBN,
+      [`books/data/${bookData.id}/updatedAt`]: serverTimestamp(),
+    };
     const updates = {
-      [`series/data/${seriesId}/locations/${encodedLocation}`]: increment(1),
-      [`series/data/${seriesId}/volumeCount`]: increment(1),
-      [`series/data/${seriesId}/updatedAt`]: serverTimestamp(),
-      [`series_volume/${seriesId}/${id}`]: true,
-      "books/count": increment(1),
-      [`books/data/${id}`]: {
-        seriesId,
-        volume,
-        language,
-        status: "on-shelf",
-        location: encodedLocation,
-        borrowCount: 0,
-        isbn: validatedISBN,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      },
-      [`locations/data/${encodedLocation}/bookCount`]: increment(1),
-      [`locations/data/${encodedLocation}/updatedAt`]: serverTimestamp(),
-      [`location_series/${encodedLocation}/${seriesId}`]: increment(1),
-      [`location_book/${encodedLocation}/${id}`]: true,
+      ...locationUpdates,
+      ...bookUpdates,
     };
     update(updates)
       .then(() => {
-        toast.success("The book has been added.");
+        toast.success("The book has been updated.");
         onClose();
       })
       .catch((err) => {
@@ -150,11 +155,10 @@ const AddBookModal = ({
           toast.error(err.message);
         }
       });
-  }, [id, isbn, language, location, onClose, seriesId, update, volume]);
+  }, [bookData, id, isbn, language, location, onClose, update, volume]);
 
   return (
     <>
-      <Loading loading={loading} />
       <Modal show closeOnEsc={false} onClose={onClose}>
         <Modal.Content className="has-background-white box">
           <PreventDefaultForm onSubmit={onSubmit}>
@@ -228,7 +232,7 @@ const AddBookModal = ({
             />
             <div className="is-pulled-right buttons pt-4">
               <Button color="primary" type="submit">
-                Add
+                Update
               </Button>
               <Button color="danger" onClick={onClose}>
                 Cancel
@@ -241,4 +245,4 @@ const AddBookModal = ({
   );
 };
 
-export default AddBookModal;
+export default EditBookModal;

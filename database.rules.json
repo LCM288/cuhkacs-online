@@ -187,7 +187,7 @@
         },
         "data": {
           "$seriesId": {
-            ".validate": "newData.hasChildren(['title', 'author', 'volumeCount', 'borrowCount', 'keywordCount', 'createdAt', 'updatedAt']) && (newData.child('volumeCount').val() === 0 || newData.hasChildren(['locations'])) && $seriesId.length < 40",
+            ".validate": "newData.child('updatedAt').val() !== data.child('updatedAt').val() && newData.hasChildren(['title', 'author', 'volumeCount', 'borrowCount', 'keywordCount', 'createdAt', 'updatedAt']) && (newData.child('volumeCount').val() === 0 || newData.hasChildren(['locations'])) && $seriesId.length < 40",
             "title": {
               ".validate": "newData.isString() && newData.val().length < 128"
             },
@@ -245,7 +245,7 @@
         "$seriesId": {
           ".validate": "newData.parent().parent().child('series').child('data').child($seriesId).exists()",
           "$keyword": {
-            ".validate": "(newData.val() === true || !newData.exists()) && newData.exists() === newData.parent().parent().parent().child('keywords').child($keyword).child($seriesId).exists()"
+            ".validate": "(newData.val() === true || !newData.exists()) && newData.exists() === newData.parent().parent().parent().child('keywords').child($keyword).child('series').child($seriesId).exists()"
           }
         }
       },
@@ -258,7 +258,7 @@
         "data": {
           ".indexOn": "seriesId",
           "$bookId": {
-            ".validate": "data.child('status').val() !== 'deleted' && newData.hasChildren(['seriesId', 'volume', 'language', 'status', 'location', 'borrowCount', 'isbn', 'createdAt', 'updatedAt']) && $bookId.length < 40",
+            ".validate": "newData.child('updatedAt').val() !== data.child('updatedAt').val() && data.child('status').val() !== 'deleted' && newData.hasChildren(['seriesId', 'volume', 'language', 'status', 'location', 'borrowCount', 'isbn', 'createdAt', 'updatedAt']) && $bookId.length < 40",
             "seriesId": {
               ".validate": "(!data.exists() || newData.val() === data.val()) && newData.isString() && newData.parent().parent().parent().parent().child('series_volume').child(newData.val()).child($bookId).val() === true && (!data.exists() || newData.parent().parent().parent().parent().child('series_volume').child(data.val()).child($bookId).val() === null)"
             },
@@ -294,30 +294,138 @@
         "$other": {
           ".validate": false
         }
-      }
-    },
-    "book_borrow": {
-      "$bookId": {
-        ".validate": "newData.parent().parent().child('books').child('data').child($bookId).exists()",
-        "$borrowId": {
-          ".validate": "newData.val() === true && newData.parent().parent().parent().child('borrows').child('data').child($borrowId).child('bookId').val() === $bookId"
-        }
-      }
-    },
-    "locations": {
-      ".read": true,
-      ".validate": "newData.hasChildren(['count', 'data'])",
-      "count": {
-        ".validate": "newData.isNumber()"
       },
-      "data": {
+      "book_borrow": {
+        "$bookId": {
+          ".validate": "newData.parent().parent().child('books').child('data').child($bookId).exists()",
+          "$borrowId": {
+            ".validate": "newData.val() === true && newData.parent().parent().parent().child('borrows').child('data').child($borrowId).child('bookId').val() === $bookId"
+          }
+        }
+      },
+      "locations": {
+        ".read": true,
+        ".validate": "newData.hasChildren(['data'])",
+        "data": {
+          "$location": {
+            ".validate": "newData.child('updatedAt').val() !== data.child('updatedAt').val() && newData.hasChildren(['bookCount', 'updatedAt']) && $location.length < 16",
+            "bookCount": {
+              ".validate": "newData.isNumber()"
+            },
+            "updatedAt": {
+              ".validate": "newData.isNumber() && newData.val() > now - 1000 && newData.val() < now + 1000"
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        },
+        "$other": {
+          ".validate": false
+        }
+      },
+      "location_series": {
+        ".read": true,
         "$location": {
-          ".validate": "newData.hasChildren(['bookCount', 'createdAt', 'updatedAt']) && $location.length < 16",
-          "bookCount": {
+          ".validate": "newData.parent().parent().child('locations').child('data').child($location).exists()",
+          "$seriesId": {
+            ".validate": "newData.isNumber() && newData.parent().parent().parent().child('series').child('data').child($seriesId).child('locations').child($location).val() === newData.val()"
+          }
+        }
+      },
+      "location_book": {
+        ".read": true,
+        "$location": {
+          ".validate": "newData.parent().parent().child('locations').child('data').child($location).exists()",
+          "$bookId": {
+            ".validate": "(!newData.exists() || newData.val() === true) && newData.exists() === (newData.parent().parent().parent().child('books').child('data').child($bookId).child('location').val() === $location && newData.parent().parent().parent().child('books').child('data').child($bookId).child('status').val() !== 'deleted')"
+          }
+        }
+      },
+      "borrows": {
+        ".validate": "newData.hasChildren(['count', 'data'])",
+        "count": {
+          ".validate": "newData.isNumber()"
+        },
+        "data": {
+          "$borrowId": {
+            ".read": "auth.token.email.endsWith('@link.cuhk.edu.hk') && auth.token.email.replace('@link.cuhk.edu.hk', '') === data.child('sid').val()",
+            ".validate": "newData.child('updatedAt').val() !== data.child('updatedAt').val() && newData.hasChildren(['sid', 'series', 'bookId', 'borrowTime', 'dueDate', 'renewCount', 'createdAt', 'updatedAt']) && !data.child('returnTime').exists() && $borrowId.length < 40",
+            "sid": {
+              ".validate": "(data.val() === newData.val() || (!data.exists() && newData.isString() && root.child('members').child(newData.val()).child('memberStatus').exists() && root.child('members').child(newData.val()).child('memberStatus').child('since').val() > now && root.child('members').child(newData.val()).child('memberStatus').child('until').val() < now)) && newData.parent().parent().parent().parent().child('memberBorrows').child(newData.val()).child('borrows').child($borrowId).val() === true"
+            },
+            "seriesId": {
+              ".validate": "(data.val() === newData.val() || (!data.exists() && newData.isString())) && newData.parent().parent().parent().parent().child('series_borrow').child(newData.val()).child($borrowId).val() === true"
+            },
+            "bookId": {
+              ".validate": "(data.val() === newData.val() || (!data.exists() && newData.isString())) && newData.parent().parent().parent().parent().child('book_borrow').child(newData.val()).child($borrowId).val() === true"
+            },
+            "borrowTime": {
+              ".validate": "data.val() === newData.val() || (!data.exists() && newData.isNumber() && newData.val() > now - 1000 && newData.val() < now + 1000)"
+            },
+            "dueDate": {
+              ".validate": "newData.isString() && newData.val().matches(/\\d{4}-\\d{2}-\\d{2}/)"
+            },
+            "renewCount": {
+              ".validate": "newData.isNumber() && (newData.val() === data.val() || (newData.parent().child('dueDate').val() !== data.parent().child('dueDate').val() && ((data.exists() ? newData.val() === data.val() + 1 : newData.val() === 1))))"
+            },
+            "returnTime": {
+              ".validate": "newData.isNumber() && newData.val() > now - 1000 && newData.val() < now + 1000"
+            },
+            "createdAt": {
+              ".validate": "newData.isNumber() && ((!data.exists() && newData.val() > now - 1000 && newData.val() < now + 1000) || data.val() === newData.val())"
+            },
+            "updatedAt": {
+              ".validate": "newData.isNumber() && newData.val() > now - 1000 && newData.val() < now + 1000"
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        },
+        "$other": {
+          ".validate": false
+        }
+      },
+      "keywords": {
+        ".read": true,
+        "$keyword": {
+          ".validate": "newData.child('updatedAt').val() !== data.child('updatedAt').val() && newData.hasChildren(['seriesCount', 'updatedAt']) && (newData.hasChildren(['series']) || newData.child('seriesCount').val() === 0) && $keyword.length < 128",
+          "seriesCount": {
             ".validate": "newData.isNumber()"
           },
-          "createdAt": {
-            ".validate": "newData.isNumber() && ((!data.exists() && newData.val() > now - 1000 && newData.val() < now + 1000) || data.val() === newData.val())"
+          "series": {
+            "$seriesId": {
+              ".validate": "(newData.val() === true || !newData.exists()) && newData.exists() === newData.parent().parent().parent().parent().child('series_keyword').child($seriesId).child($keyword).exists()"
+            }
+          },
+          "updatedAt": {
+            ".validate": "newData.isNumber() && newData.val() > now - 1000 && newData.val() < now + 1000"
+          },
+          "$other": {
+            ".validate": false
+          }
+        }
+      },
+      "memberBorrowings": {
+        "$sid": {
+          ".read": "auth.token.email.endsWith('@link.cuhk.edu.hk') && auth.token.email.replace('@link.cuhk.edu.hk', '') === $sid",
+          ".validate": "newData.child('updatedAt').val() !== data.child('updatedAt').val() && newData.hasChildren(['borrowCount', 'borrows', 'currentBorrowCount', 'currentBorrows', 'updatedAt']) && (data.exists() || (newData.isString() && root.child('members').child($sid).child('memberStatus').exists() && root.child('members').child($sid).child('memberStatus').child('since').val() > now && root.child('members').child($sid).child('memberStatus').child('until').val() < now))",
+          "borrowCount": {
+            ".validate": "newData.isNumber()"
+          },
+          "borrows": {
+            "$borrowId": {
+              ".validate": "newData.val() === true && newData.parent().parent().parent().parent().child('borrows').child('data').child(newData.val()).child('sid').val() === $sid"
+            }
+          },
+          "currentBorrowCount": {
+            ".validate": "newData.isNumber()"
+          },
+          "currentBorrows": {
+            "$borrowId": {
+              ".validate": "!newData.exists() || (newData.val() === true && newData.parent().parent().parent().parent().child('borrows').child('data').child(newData.val()).exists())"
+            }
           },
           "updatedAt": {
             ".validate": "newData.isNumber() && newData.val() > now - 1000 && newData.val() < now + 1000"
@@ -331,121 +439,7 @@
         ".validate": false
       }
     },
-    "location_series": {
-      ".read": true,
-      "$location": {
-        ".validate": "newData.parent().parent().child('locations').child('data').child($location).exists()",
-        "$seriesId": {
-          ".validate": "newData.isNumber() && newData.parent().parent().parent().child('series').child('data').child($seriesId).child('locations').child($location).val() === newData.val()"
-        }
-      }
-    },
-    "location_book": {
-      ".read": true,
-      "$location": {
-        ".validate": "newData.parent().parent().child('locations').child('data').child($location).exists()",
-        "$bookId": {
-          ".validate": "(!newData.exists() || newData.val() === true) && newData.exists() === (newData.parent().parent().parent().child('books').child('data').child($bookId).child('location').val() === $location && newData.parent().parent().parent().child('books').child('data').child($bookId).child('status').val() !== 'deleted')"
-        }
-      }
-    },
-    "borrows": {
-      ".validate": "newData.hasChildren(['count', 'data'])",
-      "count": {
-        ".validate": "newData.isNumber()"
-      },
-      "data": {
-        "$borrowId": {
-          ".read": "auth.token.email.endsWith('@link.cuhk.edu.hk') && auth.token.email.replace('@link.cuhk.edu.hk', '') === data.child('sid').val()",
-          ".validate": "newData.hasChildren(['sid', 'series', 'bookId', 'borrowTime', 'dueDate', 'renewCount', 'createdAt', 'updatedAt']) && !data.child('returnTime').exists() && $borrowId.length < 40",
-          "sid": {
-            ".validate": "(data.val() === newData.val() || (!data.exists() && newData.isString() && root.child('members').child(newData.val()).child('memberStatus').exists() && root.child('members').child(newData.val()).child('memberStatus').child('since').val() > now && root.child('members').child(newData.val()).child('memberStatus').child('until').val() < now)) && newData.parent().parent().parent().parent().child('memberBorrows').child(newData.val()).child('borrows').child($borrowId).val() === true"
-          },
-          "seriesId": {
-            ".validate": "(data.val() === newData.val() || (!data.exists() && newData.isString())) && newData.parent().parent().parent().parent().child('series_borrow').child(newData.val()).child($borrowId).val() === true"
-          },
-          "bookId": {
-            ".validate": "(data.val() === newData.val() || (!data.exists() && newData.isString())) && newData.parent().parent().parent().parent().child('book_borrow').child(newData.val()).child($borrowId).val() === true"
-          },
-          "borrowTime": {
-            ".validate": "data.val() === newData.val() || (!data.exists() && newData.isNumber() && newData.val() > now - 1000 && newData.val() < now + 1000)"
-          },
-          "dueDate": {
-            ".validate": "newData.isString() && newData.val().matches(/\\d{4}-\\d{2}-\\d{2}/)"
-          },
-          "renewCount": {
-            ".validate": "newData.isNumber() && (newData.val() === data.val() || (newData.parent().child('dueDate').val() !== data.parent().child('dueDate').val() && ((data.exists() ? newData.val() === data.val() + 1 : newData.val() === 1))))"
-          },
-          "returnTime": {
-            ".validate": "newData.isNumber() && newData.val() > now - 1000 && newData.val() < now + 1000"
-          },
-          "createdAt": {
-            ".validate": "newData.isNumber() && ((!data.exists() && newData.val() > now - 1000 && newData.val() < now + 1000) || data.val() === newData.val())"
-          },
-          "updatedAt": {
-            ".validate": "newData.isNumber() && newData.val() > now - 1000 && newData.val() < now + 1000"
-          },
-          "$other": {
-            ".validate": false
-          }
-        }
-      },
-      "$other": {
-        ".validate": false
-      }
-    },
-    "keywords": {
-      ".read": true,
-      "$keyword": {
-        ".validate": "newData.hasChildren(['seriesCount', 'series', 'createdAt', 'updatedAt']) && $keyword.length < 128",
-        "seriesCount": {
-          ".validate": "newData.isNumber()"
-        },
-        "series": {
-          "$seriesId": {
-            ".validate": "(newData.val() === true || !newData.exists()) && newData.val() === newData.parent().parent().parent().parent().parent().child('series_keyword').child($seriesId).child($keyword).exists()"
-          }
-        },
-        "createdAt": {
-          ".validate": "newData.isNumber() && ((!data.exists() && newData.val() > now - 1000 && newData.val() < now + 1000) || data.val() === newData.val())"
-        },
-        "updatedAt": {
-          ".validate": "newData.isNumber() && newData.val() > now - 1000 && newData.val() < now + 1000"
-        },
-        "$other": {
-          ".validate": false
-        }
-      }
-    },
-    "memberBorrowings": {
-      "$sid": {
-        ".read": "auth.token.email.endsWith('@link.cuhk.edu.hk') && auth.token.email.replace('@link.cuhk.edu.hk', '') === $sid",
-        ".validate": "newData.hasChildren(['borrowCount', 'borrows', 'currentBorrowCount', 'currentBorrows', 'updatedAt']) && (data.exists() || (newData.isString() && root.child('members').child($sid).child('memberStatus').exists() && root.child('members').child($sid).child('memberStatus').child('since').val() > now && root.child('members').child($sid).child('memberStatus').child('until').val() < now))",
-        "borrowCount": {
-          ".validate": "newData.isNumber()"
-        },
-        "borrows": {
-          "$borrowId": {
-            ".validate": "newData.val() === true && newData.parent().parent().parent().parent().child('borrows').child('data').child(newData.val()).child('sid').val() === $sid"
-          }
-        },
-        "currentBorrowCount": {
-          ".validate": "newData.isNumber()"
-        },
-        "currentBorrows": {
-          "$borrowId": {
-            ".validate": "!newData.exists() || (newData.val() === true && newData.parent().parent().parent().parent().child('borrows').child('data').child(newData.val()).exists())"
-          }
-        },
-        "updatedAt": {
-          ".validate": "newData.isNumber() && newData.val() > now - 1000 && newData.val() < now + 1000"
-        },
-        "$other": {
-          ".validate": false
-        }
-      }
-    },
-    "$other" : {
+    "$other": {
       ".validate": false
     }
   }
