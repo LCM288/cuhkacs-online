@@ -59,14 +59,14 @@ const EditSeries = (): React.ReactElement => {
 
   return (
     <>
-      <EditSeriesData
-        seriesId={seriesId}
-        data={seriesData}
-        loading={seriesLoading}
-        error={seriesError}
-      />
-      <Section>
-        <Container>
+      <Section className="pt-0">
+        <EditSeriesData
+          seriesId={seriesId}
+          data={seriesData}
+          loading={seriesLoading}
+          error={seriesError}
+        />
+        <Container className="mt-5">
           <ViewSeriesData
             seriesId={seriesId}
             data={bookData}

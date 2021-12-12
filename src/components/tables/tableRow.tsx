@@ -2,7 +2,7 @@ import React, { useState, useMemo, useCallback } from "react";
 import { Row, ColumnInstance } from "react-table";
 import TableCell from "components/tables/tableCell";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
+import { faAngleUp, faAngleDown } from "@fortawesome/free-solid-svg-icons";
 
 import _ from "lodash";
 
@@ -85,7 +85,7 @@ const TableRow = ({
           <td style={{ width: 1 }}>
             <FontAwesomeIcon
               className="is-pulled-right"
-              icon={isExpanded ? faMinus : faPlus}
+              icon={isExpanded ? faAngleUp : faAngleDown}
             />
           </td>
         )}

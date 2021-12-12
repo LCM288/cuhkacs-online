@@ -116,10 +116,24 @@ const ViewSeriesData = ({
 
   const tableData = useMemo(() => {
     return data
-      ? Object.keys(data).map((key) => ({
-          id: key,
-          ...data[key],
-        }))
+      ? Object.keys(data)
+          .map((key) => ({
+            id: key,
+            ...data[key],
+          }))
+          .sort((a, b) => {
+            const numA = parseFloat(a.volume);
+            const numB = parseFloat(b.volume);
+            if (isNaN(numA) && isNaN(numB)) {
+              return a.volume < b.volume ? -1 : 1;
+            } else if (isNaN(numA)) {
+              return -1;
+            } else if (isNaN(numB)) {
+              return 1;
+            } else {
+              return numA - numB;
+            }
+          })
       : [];
   }, [data]);
 
