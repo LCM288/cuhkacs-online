@@ -8,6 +8,7 @@ import NotFound from "pages/notFound";
 import ViewSeriesData from "components/viewSeriesData";
 import { Container, Section } from "react-bulma-components";
 import { ref, query, orderByChild, equalTo } from "firebase/database";
+import { useSetTitle } from "utils/miscHooks";
 
 const EditSeries = (): React.ReactElement => {
   const { seriesId } = useParams();
@@ -53,6 +54,8 @@ const EditSeries = (): React.ReactElement => {
       firstLoading.current = false;
     }
   }, [seriesLoading, seriesData]);
+
+  useSetTitle(`Edit ${seriesData?.title ?? seriesId ?? "series"}`);
 
   if (!seriesId || (firstLoading.current && seriesData === null)) {
     return <NotFound />;

@@ -8,6 +8,7 @@ import { useUpdate } from "utils/firebase";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { lengthLimits } from "utils/libraryUtils";
+import { useSetTitle } from "utils/miscHooks";
 
 const NewSeries = (): React.ReactElement => {
   const id = useMemo(() => uuidv4(), []);
@@ -70,6 +71,8 @@ const NewSeries = (): React.ReactElement => {
     },
     [navigate, update]
   );
+
+  useSetTitle("Add a new series");
 
   return (
     <Section>
