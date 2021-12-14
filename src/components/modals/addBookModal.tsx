@@ -119,9 +119,9 @@ const AddBookModal = ({
     }
     const updates = {
       [`series/data/${seriesId}/locations/${encodedLocation}`]: increment(1),
-      [`series/data/${seriesId}/volumeCount`]: increment(1),
+      [`series/data/${seriesId}/bookCount`]: increment(1),
       [`series/data/${seriesId}/updatedAt`]: serverTimestamp(),
-      [`series_volume/${seriesId}/${id}`]: true,
+      [`series_book/${seriesId}/${id}`]: true,
       "books/count": increment(1),
       [`books/data/${id}`]: {
         seriesId,

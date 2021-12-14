@@ -66,9 +66,9 @@ const ViewSeriesData = ({
       const updates = {
         [`series/data/${bookData.seriesId}/locations/${bookData.location}`]:
           increment(-1),
-        [`series/data/${bookData.seriesId}/volumeCount`]: increment(-1),
+        [`series/data/${bookData.seriesId}/bookCount`]: increment(-1),
         [`series/data/${bookData.seriesId}/updatedAt`]: serverTimestamp(),
-        [`series_volume/${bookData.seriesId}/${bookData.id}`]: null,
+        [`series_book/${bookData.seriesId}/${bookData.id}`]: null,
         "books/count": increment(-1),
         [`books/data/${bookData.id}/status`]: "deleted",
         [`books/data/${bookData.id}/updatedAt`]: serverTimestamp(),

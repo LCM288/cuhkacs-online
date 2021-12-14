@@ -39,7 +39,7 @@ const NewSeries = (): React.ReactElement => {
         [`series/data/${newId}`]: {
           title: newTitle,
           author: newAuthor,
-          volumeCount: 0,
+          bookCount: 0,
           borrowCount: 0,
           keywordCount: keywords.size,
           createdAt: serverTimestamp(),

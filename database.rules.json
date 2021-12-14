@@ -178,7 +178,7 @@
     "library": {
       ".read": "auth !== null && auth.token !== null && auth.token.email.endsWith('@link.cuhk.edu.hk') && root.child('executives').child(auth.token.email.replace('@link.cuhk.edu.hk', '')).exists()",
       ".write": "auth !== null && auth.token !== null && auth.token.email.endsWith('@link.cuhk.edu.hk') && root.child('executives').child(auth.token.email.replace('@link.cuhk.edu.hk', '')).exists()",
-      ".validate": "newData.hasChildren(['series', 'series_volume', 'series_borrow', 'series_keyword', 'books', 'book_borrow', 'locations', 'location_series', 'location_book', 'borrows', 'keywords', 'memberBorrowings'])",
+      ".validate": "newData.hasChildren(['series', 'series_book', 'series_borrow', 'series_keyword', 'books', 'book_borrow', 'locations', 'location_series', 'location_book', 'borrows', 'keywords', 'memberBorrowings'])",
       "series": {
         ".read": true,
         ".validate": "newData.hasChildren(['count', 'data'])",
@@ -187,7 +187,7 @@
         },
         "data": {
           "$seriesId": {
-            ".validate": "newData.child('updatedAt').val() !== data.child('updatedAt').val() && newData.hasChildren(['title', 'author', 'volumeCount', 'borrowCount', 'keywordCount', 'createdAt', 'updatedAt']) && (newData.child('volumeCount').val() === 0 || newData.hasChildren(['locations'])) && $seriesId.length < 40",
+            ".validate": "newData.child('updatedAt').val() !== data.child('updatedAt').val() && newData.hasChildren(['title', 'author', 'bookCount', 'borrowCount', 'keywordCount', 'createdAt', 'updatedAt']) && (newData.child('bookCount').val() === 0 || newData.hasChildren(['locations'])) && $seriesId.length < 40",
             "title": {
               ".validate": "newData.isString() && newData.val().length < 128"
             },
@@ -199,7 +199,7 @@
                 ".validate": "newData.parent().parent().parent().parent().parent().child('location_series').child($location).child($seriesId).val() === newData.val()"
               }
             },
-            "volumeCount": {
+            "bookCount": {
               ".validate": "newData.isNumber()"
             },
             "borrowCount": {
@@ -223,7 +223,7 @@
           ".validate": false
         }
       },
-      "series_volume": {
+      "series_book": {
         ".read": true,
         "$seriesId": {
           ".validate": "newData.parent().parent().child('series').child('data').child($seriesId).exists()",
@@ -260,7 +260,7 @@
           "$bookId": {
             ".validate": "newData.child('updatedAt').val() !== data.child('updatedAt').val() && data.child('status').val() !== 'deleted' && newData.hasChildren(['seriesId', 'volume', 'language', 'status', 'location', 'borrowCount', 'isbn', 'createdAt', 'updatedAt']) && $bookId.length < 40",
             "seriesId": {
-              ".validate": "(!data.exists() || newData.val() === data.val()) && newData.isString() && newData.parent().parent().parent().parent().child('series_volume').child(newData.val()).child($bookId).val() === true && (!data.exists() || newData.parent().parent().parent().parent().child('series_volume').child(data.val()).child($bookId).val() === null)"
+              ".validate": "(!data.exists() || newData.val() === data.val()) && newData.isString() && newData.parent().parent().parent().parent().child('series_book').child(newData.val()).child($bookId).val() === true && (!data.exists() || newData.parent().parent().parent().parent().child('series_volume').child(data.val()).child($bookId).val() === null)"
             },
             "volume": {
               ".validate": "newData.isString() && newData.val().length < 16"
