@@ -1,7 +1,14 @@
+import { useEffect, useMemo, useReducer, useRef, useState } from "react";
+import { difference } from "lodash";
+import { onValue, ref } from "firebase/database";
+import { database } from "./firebase";
+
 export type SeriesKey = string;
 export type LocationKey = string;
 export type BookKey = string;
 export type BorrowKey = string;
+
+export type WithID<T> = T & { id: string };
 
 export type LibrarySeries = {
   title: string;
@@ -119,4 +126,95 @@ export const encodeLocation = (location: string): string => {
 
 export const decodeLocation = (location: string): string => {
   return location.replaceAll("_", ".");
+};
+
+export const useGetAndListenSeriesFromID = (
+  seriesIDs: SeriesKey[]
+): {
+  data: Record<SeriesKey, LibrarySeries>;
+  loading: boolean;
+} => {
+  const clearCallbacks = useRef<Record<SeriesKey, () => void>>({});
+  useEffect(() => {
+    return () => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      Object.values(clearCallbacks.current).forEach((clear) => clear());
+    };
+  }, []);
+
+  const [prevSeriesIDs, setPrevSeriesIDs] = useState<SeriesKey[]>([]);
+  useEffect(() => {
+    setPrevSeriesIDs(seriesIDs);
+  }, [seriesIDs]);
+
+  const [data, dispatch] = useReducer(
+    (
+      state: Record<SeriesKey, LibrarySeries>,
+      action: { key: SeriesKey; data: LibrarySeries | null }
+    ): Record<SeriesKey, LibrarySeries> => {
+      if (action.data) {
+        return { ...state, [action.key]: action.data };
+      } else {
+        const newState = { ...state };
+        delete newState[action.key];
+        return newState;
+      }
+    },
+    {}
+  );
+  const [loading, dispatchLoading] = useReducer(
+    (
+      state: Record<SeriesKey, boolean>,
+      action: { key: SeriesKey; loading: boolean }
+    ) => {
+      if (action.loading) {
+        return { ...state, [action.key]: action.loading };
+      } else {
+        const newState = { ...state };
+        delete newState[action.key];
+        return newState;
+      }
+    },
+    {}
+  );
+
+  const newIDs = useMemo(
+    () => difference(seriesIDs, prevSeriesIDs),
+    [seriesIDs, prevSeriesIDs]
+  );
+  useEffect(() => {
+    newIDs.forEach((id) => {
+      dispatchLoading({ key: id, loading: true });
+      const clear = onValue(
+        ref(database, `/library/series/data/${id}`),
+        (snapshot) => {
+          dispatch({ key: id, data: snapshot.val() });
+          dispatchLoading({ key: id, loading: false });
+        },
+        (error) => {
+          console.error(error);
+          dispatchLoading({ key: id, loading: false });
+        }
+      );
+      clearCallbacks.current[id] = clear;
+    });
+  }, [newIDs]);
+
+  const removedIDs = useMemo(
+    () => difference(prevSeriesIDs, seriesIDs),
+    [seriesIDs, prevSeriesIDs]
+  );
+  useEffect(() => {
+    removedIDs.forEach((id) => {
+      dispatchLoading({ key: id, loading: false });
+      dispatch({ key: id, data: null });
+      clearCallbacks.current[id]?.();
+      delete clearCallbacks.current[id];
+    });
+  }, [removedIDs]);
+
+  return {
+    data,
+    loading: Object.values(loading).some((x) => x),
+  };
 };

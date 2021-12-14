@@ -27,6 +27,8 @@ import EditSeries from "pages/library/edit/series/book/editSeries";
 import EditSeriesHome from "pages/library/edit/series/editSeriesHome";
 import BrowseSeries from "pages/library/browse/browseSeries";
 import BrowseBooks from "pages/library/browse/books/browseBooks";
+import SearchMode from "pages/library/search/searchMode";
+import SearchBy from "pages/library/search/searchBy";
 
 export const UserContext = React.createContext<AppUser | null>(null);
 
@@ -188,6 +190,11 @@ const App = (): React.ReactElement => {
                       <Route path="books" element={<Outlet />}>
                         <Route path=":seriesId" element={<BrowseBooks />} />
                         <Route path="*" element={<NotFound />} />
+                      </Route>
+                    </Route>
+                    <Route path="search" element={<Outlet />}>
+                      <Route path=":searchMode" element={<SearchMode />}>
+                        <Route path=":searchParam" element={<SearchBy />} />
                       </Route>
                     </Route>
                     <Route path="*" element={<NotFound />} />

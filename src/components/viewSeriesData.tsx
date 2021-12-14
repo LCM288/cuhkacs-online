@@ -19,13 +19,14 @@ import {
 import useHideColumn from "utils/useHideColumn";
 import Table from "components/tables/table";
 import { DateTime } from "luxon";
-import { Form, Loader, Button } from "react-bulma-components";
+import { Form, Loader, Button, Tag } from "react-bulma-components";
 import { StopClickDiv } from "utils/domEventHelpers";
 import PromptModal from "components/modals/promptModal";
 import { useUpdate } from "utils/firebase";
 import { increment, serverTimestamp } from "firebase/database";
 import Loading from "components/loading";
 import EditBookModal from "components/modals/editBookModal";
+import { Link } from "react-router-dom";
 
 const { Checkbox } = Form;
 
@@ -188,6 +189,14 @@ const ViewSeriesData = ({
         id: "location",
         width: 110,
         maxWidth: 110,
+        Cell: ({ value }: { value: string }) => (
+          <Link
+            to={`/library/search/location/${decodeLocation(value)}`}
+            className="tags has-addons"
+          >
+            <Tag color="info">{decodeLocation(value)}</Tag>
+          </Link>
+        ),
       },
       {
         Header: "Status",

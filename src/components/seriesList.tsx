@@ -4,14 +4,8 @@ import React, {
   useReducer,
   useMemo,
   useCallback,
-  useState,
 } from "react";
-import {
-  decodeLocation,
-  LibrarySeries,
-  LocationKey,
-  SeriesKey,
-} from "utils/libraryUtils";
+import { LibrarySeries, WithID, SeriesKey } from "utils/libraryUtils";
 import { database, useGetAndListen } from "utils/firebase";
 import {
   ref,
@@ -27,23 +21,11 @@ import {
   Query,
 } from "firebase/database";
 import { toast } from "react-toastify";
-import {
-  Row,
-  TableInstance,
-  TableOptions,
-  useFilters,
-  UseFiltersInstanceProps,
-  useSortBy,
-  useTable,
-} from "react-table";
 import { DateTime } from "luxon";
-import useResizeAware from "react-resize-aware";
-import useHideColumn from "utils/useHideColumn";
-import { Button, Form, Level, Loader, Tag } from "react-bulma-components";
-import Table from "components/tables/table";
-import { Link } from "react-router-dom";
+import { Button, Level } from "react-bulma-components";
+import SeriesListTable from "components/seriesListTable";
 
-type LibrarySeriesWithID = LibrarySeries & { id: string };
+type LibrarySeriesWithID = WithID<LibrarySeries>;
 
 const seriesDataReducer = (
   state: Record<SeriesKey, LibrarySeriesWithID>,
@@ -159,8 +141,6 @@ const useGetLastestSeries = (): {
   return { loadSeries, seriesList };
 };
 
-const { Checkbox } = Form;
-
 interface Props {
   editable?: boolean;
 }
@@ -187,240 +167,12 @@ const SeriesList = ({ editable = false }: Props): React.ReactElement => {
     }
   }, [seriesCountError]);
 
-  const emptySeriesFilter = useCallback(
-    (
-      rows: Array<Row<LibrarySeriesWithID>>,
-      id: string,
-      includeEmptySeries: boolean
-    ) =>
-      includeEmptySeries
-        ? rows
-        : rows.filter((row) => row.original.bookCount !== 0),
-    []
-  );
-
-  const tableData = useMemo(() => seriesList, [seriesList]);
-
-  const tableColumns = useMemo(
-    () => [
-      {
-        Header: "ID",
-        accessor: "id",
-        id: "id",
-        width: 330,
-        maxWidth: 330,
-        Cell: ({ value }: { value: string }) => (
-          <Link to={`books/${value}`} key="id">
-            {value}
-          </Link>
-        ),
-      },
-      {
-        Header: "Title",
-        accessor: "title",
-        id: "title",
-        width: 150,
-        maxWidth: 150,
-        Cell: ({
-          value,
-          row,
-        }: {
-          value: string;
-          row: { original: LibrarySeriesWithID };
-        }) => (
-          <Link to={`books/${row.original.id}`} key="title">
-            {value}
-          </Link>
-        ),
-      },
-      {
-        Header: "Author",
-        accessor: "author",
-        id: "author",
-        width: 120,
-        maxWidth: 120,
-      },
-      {
-        Header: "Locations",
-        accessor: (row: LibrarySeriesWithID): Record<LocationKey, number> =>
-          row.locations ?? {},
-        id: "locations",
-        disableSortBy: true,
-        width: 90,
-        maxWidth: 90,
-        Cell: ({ value }: { value: Record<LocationKey, number> }) => {
-          const locations = Object.keys(value)
-            .filter((key) => value[key] !== 0)
-            .sort((keyA, keyB) => value[keyA] - value[keyB]);
-          return locations.map((location) => (
-            <div key="locations">
-              <Tag color="light">{decodeLocation(location)}</Tag>*
-              {value[location]}
-            </div>
-          ));
-        },
-      },
-      {
-        Header: "Books",
-        accessor: "bookCount",
-        id: "bookCount",
-        filter: emptySeriesFilter,
-        width: 85,
-        maxWidth: 85,
-      },
-      {
-        Header: "Borrows",
-        accessor: "borrowCount",
-        id: "borrowCount",
-        width: 100,
-        maxWidth: 100,
-      },
-      {
-        Header: "Created At",
-        accessor: (row: LibrarySeriesWithID) =>
-          DateTime.fromMillis(row.createdAt, {
-            zone: "Asia/Hong_Kong",
-          }).toISODate(),
-        id: "createdAt",
-        width: 140,
-        maxWidth: 140,
-      },
-      {
-        Header: "Updated At",
-        accessor: (row: LibrarySeriesWithID) =>
-          DateTime.fromMillis(row.updatedAt, {
-            zone: "Asia/Hong_Kong",
-          }).toISODate(),
-        id: "updatedAt",
-        width: 145,
-        maxWidth: 145,
-      },
-      ...(editable
-        ? [
-            {
-              Header: "Edit",
-              accessor: () => "Edit",
-              id: "edit",
-              Cell: ({ row }: { row: { original: LibrarySeriesWithID } }) => (
-                <Link
-                  to={`/library/edit/series/books/${row.original.id}`}
-                  className="button is-info"
-                >
-                  Edit
-                </Link>
-              ),
-              disableSortBy: true,
-              minWidth: 85,
-              width: 85,
-              maxWidth: 85,
-            },
-          ]
-        : []),
-    ],
-    [editable, emptySeriesFilter]
-  );
-
-  const tableGetRowId = useMemo(() => {
-    return (row: Record<string, unknown>) => row.id as string;
-  }, []);
-
-  const initialFilters = useMemo(
-    () => [
-      {
-        id: "bookCount",
-        value: false,
-      },
-    ],
-    []
-  );
-
-  const tableOption = useMemo(
-    () =>
-      ({
-        columns: tableColumns,
-        data: tableData,
-        getRowId: tableGetRowId,
-        autoResetFilters: false,
-        initialState: { filters: initialFilters },
-      } as TableOptions<Record<string, unknown>>),
-    [initialFilters, tableColumns, tableData, tableGetRowId]
-  );
-
-  const tableInstance = useTable(
-    tableOption,
-    useFilters,
-    useSortBy
-  ) as TableInstance<Record<string, unknown>> &
-    UseFiltersInstanceProps<Record<string, unknown>>;
-
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-    setFilter,
-    setHiddenColumns,
-    allColumns,
-    visibleColumns,
-  } = tableInstance;
-
-  const [showEmptySeries, setShowEmptySeris] = useState(false);
-
-  useEffect(() => {
-    setFilter("bookCount", showEmptySeries);
-  }, [setFilter, showEmptySeries]);
-
-  const [resizeListener, sizes] = useResizeAware();
-  const windowWidth = useMemo(
-    () => sizes.width ?? window.innerWidth,
-    [sizes.width]
-  );
-
-  const hideColumnOrder = useMemo(
-    () => [
-      ["id"],
-      ["updatedAt"],
-      ["edit"],
-      ["bookCount", "borrowCount"],
-      ["createdAt"],
-      ["locations"],
-      ["author"],
-    ],
-    []
-  );
-
-  useHideColumn(windowWidth, hideColumnOrder, tableColumns, setHiddenColumns);
-
   return (
     <>
-      {resizeListener}
-      {seriesCountLoading ? (
-        <Loader className="is-pulled-right" />
-      ) : (
-        editable && (
-          <Checkbox
-            className="is-pulled-right"
-            onChange={(event) => setShowEmptySeris(event.target.checked)}
-            checked={showEmptySeries}
-          >
-            Show empty series
-          </Checkbox>
-        )
-      )}
-      <Table
-        getTableProps={getTableProps}
-        headerGroups={headerGroups}
-        tableColumns={tableColumns}
-        getTableBodyProps={getTableBodyProps}
-        rows={rows}
-        prepareRow={prepareRow}
-        allColumns={allColumns}
-        visibleColumns={visibleColumns}
-        windowWidth={windowWidth}
-        tableSortable
-        size="fullwidth"
-        striped
+      <SeriesListTable
+        loading={seriesCountLoading}
+        seriesList={seriesList}
+        editable={editable}
       />
       {seriesCount && seriesList.length < seriesCount ? (
         <Button fullwidth color="info" onClick={() => loadSeries(5)}>
