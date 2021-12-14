@@ -77,6 +77,7 @@ const EditSeries = (): React.ReactElement => {
             loading={bookLoading}
             error={bookError}
             locations={locations}
+            editable
           />
         </Container>
         <AddBook

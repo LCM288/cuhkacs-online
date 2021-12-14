@@ -25,7 +25,8 @@ import LibraryEdit from "pages/library/edit/libraryEdit";
 import NewSeries from "pages/library/edit/series/newSeries";
 import EditSeries from "pages/library/edit/series/book/editSeries";
 import EditSeriesHome from "pages/library/edit/series/editSeriesHome";
-import BrowseSeries from "pages/library/browseSeries";
+import BrowseSeries from "pages/library/browse/browseSeries";
+import BrowseBooks from "pages/library/browse/books/browseBooks";
 
 export const UserContext = React.createContext<AppUser | null>(null);
 
@@ -182,7 +183,13 @@ const App = (): React.ReactElement => {
                       </Route>
                       <Route path="*" element={<NotFound />} />
                     </Route>
-                    <Route path="browse" element={<BrowseSeries />} />
+                    <Route path="browse" element={<Outlet />}>
+                      <Route index element={<BrowseSeries />} />
+                      <Route path="books" element={<Outlet />}>
+                        <Route path=":seriesId" element={<BrowseBooks />} />
+                        <Route path="*" element={<NotFound />} />
+                      </Route>
+                    </Route>
                     <Route path="*" element={<NotFound />} />
                   </Route>
                   <Route path="/member" element={<MemberLayout />}>

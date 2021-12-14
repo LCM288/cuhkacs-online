@@ -33,12 +33,13 @@ import {
   TableOptions,
   useFilters,
   UseFiltersInstanceProps,
+  useSortBy,
   useTable,
 } from "react-table";
 import { DateTime } from "luxon";
 import useResizeAware from "react-resize-aware";
 import useHideColumn from "utils/useHideColumn";
-import { Button, Form, Level, Loader } from "react-bulma-components";
+import { Button, Form, Level, Loader, Tag } from "react-bulma-components";
 import Table from "components/tables/table";
 import { Link } from "react-router-dom";
 
@@ -208,6 +209,11 @@ const SeriesList = ({ editable = false }: Props): React.ReactElement => {
         id: "id",
         width: 330,
         maxWidth: 330,
+        Cell: ({ value }: { value: string }) => (
+          <Link to={`books/${value}`} key="id">
+            {value}
+          </Link>
+        ),
       },
       {
         Header: "Title",
@@ -215,6 +221,17 @@ const SeriesList = ({ editable = false }: Props): React.ReactElement => {
         id: "title",
         width: 150,
         maxWidth: 150,
+        Cell: ({
+          value,
+          row,
+        }: {
+          value: string;
+          row: { original: LibrarySeriesWithID };
+        }) => (
+          <Link to={`books/${row.original.id}`} key="title">
+            {value}
+          </Link>
+        ),
       },
       {
         Header: "Author",
@@ -228,6 +245,7 @@ const SeriesList = ({ editable = false }: Props): React.ReactElement => {
         accessor: (row: LibrarySeriesWithID): Record<LocationKey, number> =>
           row.locations ?? {},
         id: "locations",
+        disableSortBy: true,
         width: 90,
         maxWidth: 90,
         Cell: ({ value }: { value: Record<LocationKey, number> }) => {
@@ -235,8 +253,9 @@ const SeriesList = ({ editable = false }: Props): React.ReactElement => {
             .filter((key) => value[key] !== 0)
             .sort((keyA, keyB) => value[keyA] - value[keyB]);
           return locations.map((location) => (
-            <div>
-              {decodeLocation(location)}: {value[location]}
+            <div key="locations">
+              <Tag color="light">{decodeLocation(location)}</Tag>*
+              {value[location]}
             </div>
           ));
         },
@@ -246,15 +265,15 @@ const SeriesList = ({ editable = false }: Props): React.ReactElement => {
         accessor: "bookCount",
         id: "bookCount",
         filter: emptySeriesFilter,
-        width: 60,
-        maxWidth: 60,
+        width: 85,
+        maxWidth: 85,
       },
       {
         Header: "Borrows",
         accessor: "borrowCount",
         id: "borrowCount",
-        width: 75,
-        maxWidth: 75,
+        width: 100,
+        maxWidth: 100,
       },
       {
         Header: "Created At",
@@ -327,9 +346,11 @@ const SeriesList = ({ editable = false }: Props): React.ReactElement => {
     [initialFilters, tableColumns, tableData, tableGetRowId]
   );
 
-  const tableInstance = useTable(tableOption, useFilters) as TableInstance<
-    Record<string, unknown>
-  > &
+  const tableInstance = useTable(
+    tableOption,
+    useFilters,
+    useSortBy
+  ) as TableInstance<Record<string, unknown>> &
     UseFiltersInstanceProps<Record<string, unknown>>;
 
   const {
@@ -397,6 +418,7 @@ const SeriesList = ({ editable = false }: Props): React.ReactElement => {
         allColumns={allColumns}
         visibleColumns={visibleColumns}
         windowWidth={windowWidth}
+        tableSortable
         size="fullwidth"
         striped
       />

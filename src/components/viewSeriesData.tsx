@@ -35,6 +35,7 @@ interface Props {
   loading: boolean;
   error: Error | undefined;
   locations: Record<LocationKey, number>;
+  editable?: boolean;
 }
 
 const ViewSeriesData = ({
@@ -42,6 +43,7 @@ const ViewSeriesData = ({
   loading,
   error,
   locations,
+  editable = false,
 }: Props): React.ReactElement => {
   const { loading: updateLoading, update } = useUpdate("library");
   useEffect(() => {
@@ -222,37 +224,47 @@ const ViewSeriesData = ({
         width: 145,
         maxWidth: 145,
       },
-      {
-        Header: "Action",
-        accessor: (row: { id: string }) => row.id,
-        id: "action",
-        disableSortBy: true,
-        minWidth: 170,
-        width: 170,
-        maxWidth: 170,
-        Cell: ({ value, row }: { value: string; row: Row<LibraryBook> }) => (
-          <StopClickDiv>
-            <Button.Group>
-              <Button
-                color="info"
-                disabled={row.original.status === "deleted"}
-                onClick={() => openEditModal(value)}
-              >
-                Edit
-              </Button>
-              <Button
-                color="danger"
-                disabled={row.original.status === "deleted"}
-                onClick={() => promptDelete(value)}
-              >
-                Delete
-              </Button>
-            </Button.Group>
-          </StopClickDiv>
-        ),
-      },
+      ...(editable
+        ? [
+            {
+              Header: "Action",
+              accessor: (row: { id: string }) => row.id,
+              id: "action",
+              disableSortBy: true,
+              minWidth: 170,
+              width: 170,
+              maxWidth: 170,
+              Cell: ({
+                value,
+                row,
+              }: {
+                value: string;
+                row: Row<LibraryBook>;
+              }) => (
+                <StopClickDiv>
+                  <Button.Group>
+                    <Button
+                      color="info"
+                      disabled={row.original.status === "deleted"}
+                      onClick={() => openEditModal(value)}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      color="danger"
+                      disabled={row.original.status === "deleted"}
+                      onClick={() => promptDelete(value)}
+                    >
+                      Delete
+                    </Button>
+                  </Button.Group>
+                </StopClickDiv>
+              ),
+            },
+          ]
+        : []),
     ],
-    [openEditModal, promptDelete, statusFilter]
+    [editable, openEditModal, promptDelete, statusFilter]
   );
 
   const tableGetRowId = useMemo(() => {
@@ -335,13 +347,15 @@ const ViewSeriesData = ({
       {loading ? (
         <Loader className="is-pulled-right" />
       ) : (
-        <Checkbox
-          className="is-pulled-right"
-          onChange={(event) => setShowDeleted(event.target.checked)}
-          checked={showDeleted}
-        >
-          Show deleted books
-        </Checkbox>
+        editable && (
+          <Checkbox
+            className="is-pulled-right"
+            onChange={(event) => setShowDeleted(event.target.checked)}
+            checked={showDeleted}
+          >
+            Show deleted books
+          </Checkbox>
+        )
       )}
       <Table
         getTableProps={getTableProps}
