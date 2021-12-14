@@ -3,15 +3,17 @@ import ViewSeriesData from "components/viewSeriesData";
 import { equalTo, orderByChild, query, ref } from "firebase/database";
 import NotFound from "pages/notFound";
 import React, { useEffect, useMemo } from "react";
-import { Container, Heading } from "react-bulma-components";
-import { useParams } from "react-router-dom";
+import { Container, Heading, Level } from "react-bulma-components";
+import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { database, useGetAndListen } from "utils/firebase";
 import { BookKey, LibraryBook } from "utils/libraryUtils";
 import { useSetTitle } from "utils/miscHooks";
+import useUserStatus from "utils/useUserStatus";
 
 const BrowseBooks = (): React.ReactElement => {
   const { seriesId } = useParams();
+  const userStatus = useUserStatus();
 
   const queryRef = useMemo(
     () =>
@@ -68,10 +70,26 @@ const BrowseBooks = (): React.ReactElement => {
     <>
       <Loading loading={seriesLoading} />
       <Container className="mb-4">
-        <Heading size={2}>{seriesTitle ?? "Unknown title"}</Heading>
-        <Heading size={4} subtitle>
-          by {seriesAuthor ?? "Unknown author"}
-        </Heading>
+        <Level>
+          <Level.Side align="left">
+            <div>
+              <Heading size={2}>{seriesTitle ?? "Unknown title"}</Heading>
+              <Heading size={4} subtitle>
+                by {seriesAuthor ?? "Unknown author"}
+              </Heading>
+            </div>
+          </Level.Side>
+          {userStatus?.executive && (
+            <Level.Side align="right">
+              <Link
+                to={`/library/edit/series/books/${seriesId}`}
+                className="button is-info"
+              >
+                Edit
+              </Link>
+            </Level.Side>
+          )}
+        </Level>
       </Container>
       <ViewSeriesData
         seriesId={seriesId}

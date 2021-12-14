@@ -179,6 +179,7 @@ const App = (): React.ReactElement => {
                         <Route index element={<EditSeriesHome />} />
                         <Route path="new" element={<NewSeries />} />
                         <Route path="books" element={<Outlet />}>
+                          <Route index element={<NotFound />} />
                           <Route path=":seriesId" element={<EditSeries />} />
                         </Route>
                         <Route path="*" element={<NotFound />} />
@@ -188,12 +189,13 @@ const App = (): React.ReactElement => {
                     <Route path="browse" element={<Outlet />}>
                       <Route index element={<BrowseSeries />} />
                       <Route path="books" element={<Outlet />}>
+                        <Route index element={<NotFound />} />
                         <Route path=":seriesId" element={<BrowseBooks />} />
-                        <Route path="*" element={<NotFound />} />
                       </Route>
                     </Route>
                     <Route path="search" element={<Outlet />}>
                       <Route path=":searchMode" element={<SearchMode />}>
+                        <Route index element={<NotFound />} />
                         <Route path=":searchParam" element={<SearchBy />} />
                       </Route>
                     </Route>

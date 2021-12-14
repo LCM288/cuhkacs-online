@@ -84,6 +84,9 @@ const SeriesListTable = ({
         id: "author",
         width: 120,
         maxWidth: 120,
+        Cell: ({ value }: { value: string }) => (
+          <Link to={`/library/search/keyword/${value}`}>{value}</Link>
+        ),
       },
       {
         Header: "Locations",

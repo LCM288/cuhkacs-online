@@ -21,7 +21,7 @@ const SearchByKeyword = ({ keyword }: Props): React.ReactElement => {
         ref(database, "/library/keyword_series"),
         orderByKey(),
         startAt(encodeKeyword(keyword)),
-        endAt(encodeKeyword(keyword) + "/uffff")
+        endAt(encodeKeyword(keyword) + "\uffff")
       ),
     [keyword]
   );

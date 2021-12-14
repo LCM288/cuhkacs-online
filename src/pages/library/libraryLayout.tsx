@@ -1,6 +1,11 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { Button, Navbar, Image as BulmaImage } from "react-bulma-components";
-import { Link, Outlet } from "react-router-dom";
+import {
+  Button,
+  Navbar,
+  Image as BulmaImage,
+  Form,
+} from "react-bulma-components";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import useUserStatus from "utils/useUserStatus";
 import indexLogo from "static/indexLogo.png";
 import indexIcon from "static/indexIcon.ico";
@@ -10,10 +15,17 @@ import {
   useSignOutCallback,
 } from "utils/miscHooks";
 import { appName } from "utils/const";
+import { PreventDefaultForm } from "utils/domEventHelpers";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
+
+const { Field, Control, Input } = Form;
 
 const LibraryLayout: React.FunctionComponent = () => {
+  const navigate = useNavigate();
   const userStatus = useUserStatus();
   const navBarRef = useRef<HTMLDivElement | null>(null);
+  const [searchInput, setSearchInput] = useState("");
   const [isActive, setActive] = useState(false);
 
   const toggleActive = useCallback(() => {
@@ -72,7 +84,7 @@ const LibraryLayout: React.FunctionComponent = () => {
             />
           </Navbar.Brand>
           <Navbar.Menu>
-            <Navbar.Container>
+            <Navbar.Container className="is-flex-grow-1">
               <Navbar.Item hoverable role="menu" tabIndex={0}>
                 <Link to="/library/browse" className="navbar-link">
                   Browse
@@ -99,6 +111,33 @@ const LibraryLayout: React.FunctionComponent = () => {
                   </Navbar.Dropdown>
                 </Navbar.Item>
               )}
+              <Navbar.Item className="is-expanded">
+                <PreventDefaultForm
+                  onSubmit={() => {
+                    if (searchInput) {
+                      navigate(`/library/search/keyword/${searchInput}`);
+                    } else {
+                      navigate(`/library/browse`);
+                    }
+                  }}
+                  style={{ width: "100%" }}
+                >
+                  <Field kind="addons">
+                    <Control fullwidth>
+                      <Input
+                        value={searchInput}
+                        onChange={(event) => setSearchInput(event.target.value)}
+                        placeholder="Search for a series..."
+                      />
+                    </Control>
+                    <Control>
+                      <Button type="submit">
+                        <FontAwesomeIcon icon={faSearch} />
+                      </Button>
+                    </Control>
+                  </Field>
+                </PreventDefaultForm>
+              </Navbar.Item>
             </Navbar.Container>
             <Navbar.Container align="right" className="px-2">
               <Button.Group>
