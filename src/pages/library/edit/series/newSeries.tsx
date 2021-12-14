@@ -7,7 +7,7 @@ import { increment, serverTimestamp } from "firebase/database";
 import { useUpdate } from "utils/firebase";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { lengthLimits } from "utils/libraryUtils";
+import { encodeKeyword, lengthLimits } from "utils/libraryUtils";
 import { useSetTitle } from "utils/miscHooks";
 
 const NewSeries = (): React.ReactElement => {
@@ -29,10 +29,10 @@ const NewSeries = (): React.ReactElement => {
     }) => {
       const keywords = new Set<string>();
       for (let i = 0; i < newTitle.length; i++) {
-        keywords.add(newTitle.substring(i));
+        keywords.add(encodeKeyword(newTitle.substring(i)));
       }
       for (let i = 0; i < newAuthor.length; i++) {
-        keywords.add(newAuthor.substring(i));
+        keywords.add(encodeKeyword(newAuthor.substring(i)));
       }
       const seriesUpdate = {
         "series/count": increment(1),
@@ -49,9 +49,7 @@ const NewSeries = (): React.ReactElement => {
       const seriesKeywordUpdate: Record<string, unknown> = {};
       const keywordsUpdate: Record<string, unknown> = {};
       keywords.forEach((keyword) => {
-        keywordsUpdate[`keywords/${keyword}/series/${newId}`] = true;
-        keywordsUpdate[`keywords/${keyword}/seriesCount`] = increment(1);
-        keywordsUpdate[`keywords/${keyword}/updatedAt`] = serverTimestamp();
+        keywordsUpdate[`keyword_series/${keyword}/${newId}`] = true;
         seriesKeywordUpdate[`series_keyword/${newId}/${keyword}`] = true;
       });
       const updates = {

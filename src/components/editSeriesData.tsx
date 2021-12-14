@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useLazyGetServer, useUpdate } from "utils/firebase";
-import { LibrarySeries, lengthLimits } from "utils/libraryUtils";
+import { LibrarySeries, lengthLimits, encodeKeyword } from "utils/libraryUtils";
 import { toast } from "react-toastify";
 import { Form, Button } from "react-bulma-components";
 import { PreventDefaultForm } from "utils/domEventHelpers";
 import TextField from "components/fields/textField";
-import { increment, serverTimestamp } from "firebase/database";
+import { serverTimestamp } from "firebase/database";
 import { useNavigate } from "react-router-dom";
 
 interface Props {
@@ -73,10 +73,10 @@ const EditSeriesData = ({
       setIsUpdateLoading(true);
       const newKeywords = new Set<string>();
       for (let i = 0; i < newTitle.length; i++) {
-        newKeywords.add(newTitle.substring(i));
+        newKeywords.add(encodeKeyword(newTitle.substring(i)));
       }
       for (let i = 0; i < newAuthor.length; i++) {
-        newKeywords.add(newAuthor.substring(i));
+        newKeywords.add(encodeKeyword(newAuthor.substring(i)));
       }
       const seriesUpdate = {
         [`series/data/${id}/title`]: newTitle,
@@ -93,19 +93,14 @@ const EditSeriesData = ({
         if (oldKeywordRecord) {
           Object.keys(oldKeywordRecord).forEach((keyword) => {
             if (!newKeywords.has(keyword)) {
-              keywordsUpdate[`keywords/${keyword}/series/${id}`] = null;
-              keywordsUpdate[`keywords/${keyword}/seriesCount`] = increment(-1);
-              keywordsUpdate[`keywords/${keyword}/updatedAt`] =
-                serverTimestamp();
+              keywordsUpdate[`keyword_series/${keyword}/${id}`] = null;
               seriesKeywordUpdate[`series_keyword/${id}/${keyword}`] = null;
             }
           });
         }
         newKeywords.forEach((keyword) => {
           if (!oldKeywordRecord?.[keyword]) {
-            keywordsUpdate[`keywords/${keyword}/series/${id}`] = true;
-            keywordsUpdate[`keywords/${keyword}/seriesCount`] = increment(1);
-            keywordsUpdate[`keywords/${keyword}/updatedAt`] = serverTimestamp();
+            keywordsUpdate[`keyword_series/${keyword}/${id}`] = true;
             seriesKeywordUpdate[`series_keyword/${id}/${keyword}`] = true;
           }
         });

@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Form, Loader, Tag } from "react-bulma-components";
+import { Form, Level, Loader, Tag } from "react-bulma-components";
 import useResizeAware from "react-resize-aware";
 import { Link } from "react-router-dom";
 import {
@@ -276,6 +276,11 @@ const SeriesListTable = ({
         size="fullwidth"
         striped
       />
+      {rows.length === 0 && (
+        <Level>
+          <Level.Item>No Result</Level.Item>
+        </Level>
+      )}
     </>
   );
 };

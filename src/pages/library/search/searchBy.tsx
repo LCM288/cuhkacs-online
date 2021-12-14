@@ -1,3 +1,4 @@
+import SearchByKeyword from "components/searchByKeyword";
 import SearchByLocation from "components/searchByLocation";
 import NotFound from "pages/notFound";
 import React from "react";
@@ -15,6 +16,10 @@ const SearchBy = (): React.ReactElement => {
 
   if (searchMode === "location") {
     return <SearchByLocation location={searchParam} />;
+  }
+
+  if (searchMode === "keyword") {
+    return <SearchByKeyword keyword={searchParam} />;
   }
 
   return (

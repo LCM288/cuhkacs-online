@@ -178,7 +178,7 @@
     "library": {
       ".read": "auth !== null && auth.token !== null && auth.token.email.endsWith('@link.cuhk.edu.hk') && root.child('executives').child(auth.token.email.replace('@link.cuhk.edu.hk', '')).exists()",
       ".write": "auth !== null && auth.token !== null && auth.token.email.endsWith('@link.cuhk.edu.hk') && root.child('executives').child(auth.token.email.replace('@link.cuhk.edu.hk', '')).exists()",
-      ".validate": "newData.hasChildren(['series', 'series_book', 'series_borrow', 'series_keyword', 'books', 'book_borrow', 'locations', 'location_series', 'location_book', 'borrows', 'keywords', 'memberBorrowings'])",
+      ".validate": "newData.hasChildren(['series', 'series_book', 'series_borrow', 'series_keyword', 'books', 'book_borrow', 'locations', 'location_series', 'location_book', 'borrows', 'keyword_series', 'memberBorrowings'])",
       "series": {
         ".read": true,
         ".validate": "newData.hasChildren(['count', 'data'])",
@@ -246,7 +246,7 @@
         "$seriesId": {
           ".validate": "newData.parent().parent().child('series').child('data').child($seriesId).exists()",
           "$keyword": {
-            ".validate": "(newData.val() === true || !newData.exists()) && newData.exists() === newData.parent().parent().parent().child('keywords').child($keyword).child('series').child($seriesId).exists()"
+            ".validate": "(newData.val() === true || !newData.exists()) && newData.exists() === newData.parent().parent().parent().child('keyword_series').child($keyword).child($seriesId).exists()"
           }
         }
       },
@@ -388,23 +388,11 @@
           ".validate": false
         }
       },
-      "keywords": {
+      "keyword_series": {
         ".read": true,
         "$keyword": {
-          ".validate": "newData.child('updatedAt').val() !== data.child('updatedAt').val() && newData.hasChildren(['seriesCount', 'updatedAt']) && (newData.hasChildren(['series']) || newData.child('seriesCount').val() === 0) && $keyword.length < 128",
-          "seriesCount": {
-            ".validate": "newData.isNumber()"
-          },
-          "series": {
-            "$seriesId": {
-              ".validate": "(newData.val() === true || !newData.exists()) && newData.exists() === newData.parent().parent().parent().parent().child('series_keyword').child($seriesId).child($keyword).exists()"
-            }
-          },
-          "updatedAt": {
-            ".validate": "newData.isNumber() && newData.val() > now - 1000 && newData.val() < now + 1000"
-          },
-          "$other": {
-            ".validate": false
+          "$seriesId": {
+            ".validate": "(newData.val() === true || !newData.exists()) && newData.exists() === newData.parent().parent().parent().child('series_keyword').child($seriesId).child($keyword).exists()"
           }
         }
       },

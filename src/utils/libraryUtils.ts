@@ -123,6 +123,9 @@ export const getISBN = (str: string): string | null => {
 export const encodeLocation = (location: string): string => {
   return location.replaceAll(".", "_");
 };
+export const encodeKeyword = (keyword: string): string => {
+  return `_${keyword.replaceAll(".", "_")}`;
+};
 
 export const decodeLocation = (location: string): string => {
   return location.replaceAll("_", ".");
