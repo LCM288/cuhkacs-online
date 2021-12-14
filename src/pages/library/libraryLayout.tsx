@@ -72,6 +72,32 @@ const LibraryLayout: React.FunctionComponent = () => {
             />
           </Navbar.Brand>
           <Navbar.Menu>
+            <Navbar.Container>
+              <Navbar.Item hoverable role="menu" tabIndex={0}>
+                <Link to="/library/browse" className="navbar-link">
+                  Browse
+                </Link>
+                <Navbar.Dropdown>
+                  <Link to="/library/browse" className="navbar-item">
+                    Last Updated Series
+                  </Link>
+                </Navbar.Dropdown>
+              </Navbar.Item>
+
+              <Navbar.Item hoverable role="menu" tabIndex={0}>
+                <Link to="/library/edit/series" className="navbar-link">
+                  Edit
+                </Link>
+                <Navbar.Dropdown>
+                  <Link to="/library/edit/series" className="navbar-item">
+                    Edit Series
+                  </Link>
+                  <Link to="/library/edit/series/new" className="navbar-item">
+                    Add New Series
+                  </Link>
+                </Navbar.Dropdown>
+              </Navbar.Item>
+            </Navbar.Container>
             <Navbar.Container align="right" className="px-2">
               <Button.Group>
                 {userStatus ? (

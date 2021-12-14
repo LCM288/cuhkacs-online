@@ -96,7 +96,7 @@ const NewSeries = (): React.ReactElement => {
             editable
             required
           />
-          <Button.Group className="is-pulled-right">
+          <Button.Group className="is-pulled-right mt-4">
             <Button color="primary" type="submit" disabled={loading}>
               Submit
             </Button>
