@@ -1,32 +1,34 @@
 import TextField from "components/fields/textField";
-import React, { useCallback, useState, useMemo } from "react";
+import React, { useCallback, useState } from "react";
 import { Button, Container, Heading, Section } from "react-bulma-components";
 import { PreventDefaultForm } from "utils/domEventHelpers";
-import { v4 as uuidv4 } from "uuid";
-import { increment, serverTimestamp } from "firebase/database";
-import { useUpdate } from "utils/firebase";
+import { increment, serverTimestamp, push, ref } from "firebase/database";
+import { database, useUpdate } from "utils/firebase";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { encodeKeyword, lengthLimits } from "utils/libraryUtils";
 import { useSetTitle } from "utils/miscHooks";
 
 const NewSeries = (): React.ReactElement => {
-  const id = useMemo(() => uuidv4(), []);
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const { loading, update } = useUpdate("library");
   const navigate = useNavigate();
 
   const onSubmit = useCallback(
-    ({
-      id: newId,
+    async ({
       title: newTitle,
       author: newAuthor,
     }: {
-      id: string;
       title: string;
       author: string;
     }) => {
+      const newId = (await push(ref(database, "library/series/data"))).key;
+      if (!newId) {
+        console.error("Cannot get new id");
+        toast.error("Some error has occurred.");
+        return;
+      }
       const keywords = new Set<string>();
       for (let i = 0; i < newTitle.length; i++) {
         keywords.add(encodeKeyword(newTitle.substring(i)));
@@ -76,8 +78,7 @@ const NewSeries = (): React.ReactElement => {
     <Section>
       <Container>
         <Heading>New series</Heading>
-        <PreventDefaultForm onSubmit={() => onSubmit({ id, title, author })}>
-          <TextField value={id} label="ID" required />
+        <PreventDefaultForm onSubmit={() => onSubmit({ title, author })}>
           <TextField
             value={title}
             setValue={setTitle}

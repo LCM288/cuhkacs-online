@@ -166,8 +166,8 @@ const ViewSeriesData = ({
         Header: "ID",
         accessor: "id",
         id: "id",
-        width: 330,
-        maxWidth: 330,
+        width: 210,
+        maxWidth: 210,
       },
       {
         Header: "Volume",

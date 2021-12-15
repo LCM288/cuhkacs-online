@@ -2,7 +2,6 @@ import React, { useState, useMemo, useCallback } from "react";
 import { Heading, Modal, Button, Form } from "react-bulma-components";
 import TextField from "components/fields/textField";
 import { PreventDefaultForm } from "utils/domEventHelpers";
-import { v4 as uuidv4 } from "uuid";
 import {
   LocationKey,
   lengthLimits,
@@ -12,8 +11,8 @@ import {
 } from "utils/libraryUtils";
 import CreatableSelect from "react-select/creatable";
 import { toast } from "react-toastify";
-import { serverTimestamp, increment } from "firebase/database";
-import { useUpdate } from "utils/firebase";
+import { serverTimestamp, increment, push, ref } from "firebase/database";
+import { database, useUpdate } from "utils/firebase";
 import Loading from "components/loading";
 
 const { Control, Field, Label } = Form;
@@ -44,7 +43,6 @@ const AddBookModal = ({
         .sort((a, b) => locations[b] - locations[a]),
     [locations]
   );
-  const id = useMemo(() => uuidv4(), []);
   const [volume, setVolume] = useState(nextVolume.toString());
   const [language, setLanguage] = useState<string | null>("中文");
   const [location, setLocation] = useState<string | null>(
@@ -105,9 +103,16 @@ const AddBookModal = ({
     }
   }, []);
 
-  const onSubmit = useCallback(() => {
+  const onSubmit = useCallback(async () => {
+    const id = (await push(ref(database, "library/books/data"))).key;
+    if (!id) {
+      console.error("Cannot get new id");
+      toast.error("Some error has occurred.");
+      return;
+    }
     if (!location) {
       console.error("Location is missing");
+      toast.error("Some error has occurred.");
       return;
     }
     const encodedLocation = encodeLocation(location);
@@ -150,7 +155,7 @@ const AddBookModal = ({
           toast.error(err.message);
         }
       });
-  }, [id, isbn, language, location, onClose, seriesId, update, volume]);
+  }, [isbn, language, location, onClose, seriesId, update, volume]);
 
   return (
     <>
@@ -159,7 +164,6 @@ const AddBookModal = ({
         <Modal.Content className="has-background-white box">
           <PreventDefaultForm onSubmit={onSubmit}>
             <Heading className="has-text-centered">Add a new book</Heading>
-            <TextField value={id} label="ID" required />
             <TextField
               value={volume}
               setValue={setVolume}
