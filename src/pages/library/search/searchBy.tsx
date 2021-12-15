@@ -10,7 +10,7 @@ const SearchBy = (): React.ReactElement => {
 
   useSetTitle(
     searchMode === "keyword"
-      ? `Searching books: ${searchParam}`
+      ? `Searching books of ${searchParam}`
       : searchMode === "location"
       ? `Searching books at ${searchParam}`
       : "Search the library"
@@ -26,10 +26,6 @@ const SearchBy = (): React.ReactElement => {
 
   if (searchMode === "keyword") {
     return <SearchByKeyword keyword={searchParam} />;
-  }
-
-  if (searchMode === "keyword") {
-    return <NotFound />;
   }
 
   return <NotFound />;

@@ -2,7 +2,7 @@ import NotFound from "pages/notFound";
 import React from "react";
 import { Outlet, useParams } from "react-router-dom";
 
-const supportedSearchModes = ["keyword", "location", "isbn"];
+const supportedSearchModes = ["keyword", "location"];
 
 const SearchMode = (): React.ReactElement => {
   const { searchMode } = useParams();

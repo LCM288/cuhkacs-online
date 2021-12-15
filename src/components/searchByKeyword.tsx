@@ -2,12 +2,22 @@ import React, { useEffect, useMemo } from "react";
 import { toast } from "react-toastify";
 import { database, useGetAndListen } from "utils/firebase";
 import {
+  BookKey,
   encodeKeyword,
+  LibraryBook,
   SeriesKey,
   useGetAndListenSeriesFromID,
 } from "utils/libraryUtils";
 import SeriesListTable from "components/seriesListTable";
-import { orderByKey, query, ref, startAt, endAt } from "firebase/database";
+import {
+  orderByKey,
+  query,
+  ref,
+  startAt,
+  endAt,
+  equalTo,
+  orderByChild,
+} from "firebase/database";
 import { uniq } from "lodash";
 
 interface Props {
@@ -15,7 +25,7 @@ interface Props {
 }
 
 const SearchByKeyword = ({ keyword }: Props): React.ReactElement => {
-  const queryRef = useMemo(
+  const keywordQueryRef = useMemo(
     () =>
       query(
         ref(database, "/library/keyword_series"),
@@ -29,8 +39,7 @@ const SearchByKeyword = ({ keyword }: Props): React.ReactElement => {
     data: keywordsData,
     loading: keywordsLoading,
     error: keywordsError,
-  } = useGetAndListen<Record<string, Record<SeriesKey, true>>>(queryRef);
-
+  } = useGetAndListen<Record<string, Record<SeriesKey, true>>>(keywordQueryRef);
   useEffect(() => {
     if (keywordsError) {
       console.error(keywordsError);
@@ -38,16 +47,42 @@ const SearchByKeyword = ({ keyword }: Props): React.ReactElement => {
     }
   }, [keywordsError]);
 
+  const isbnQueryRef = useMemo(
+    () =>
+      query(
+        ref(database, "/library/books/data"),
+        orderByChild("isbn"),
+        equalTo(keyword)
+      ),
+    [keyword]
+  );
+  const {
+    data: booksData,
+    loading: booksLoading,
+    error: booksError,
+  } = useGetAndListen<Record<BookKey, LibraryBook>>(isbnQueryRef);
+  useEffect(() => {
+    if (booksError) {
+      console.error(booksError);
+      toast.error(booksError.message);
+    }
+  }, [booksError]);
+
   const seriesIdList = useMemo(
     () =>
-      keywordsData
-        ? uniq(
-            Object.values(keywordsData).flatMap((seriesData) =>
+      uniq(
+        (keywordsData
+          ? Object.values(keywordsData).flatMap((seriesData) =>
               Object.keys(seriesData)
             )
-          )
-        : [],
-    [keywordsData]
+          : []
+        ).concat(
+          booksData
+            ? Object.values(booksData).map(({ seriesId }) => seriesId)
+            : []
+        )
+      ),
+    [keywordsData, booksData]
   );
 
   const { data: seriesData, loading: seriesLoading } =
@@ -60,7 +95,7 @@ const SearchByKeyword = ({ keyword }: Props): React.ReactElement => {
 
   return (
     <SeriesListTable
-      loading={keywordsLoading || seriesLoading}
+      loading={keywordsLoading || booksLoading || seriesLoading}
       seriesList={seriesList}
     />
   );
