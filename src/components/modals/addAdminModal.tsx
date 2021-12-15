@@ -28,12 +28,10 @@ const AddAdminModal = ({
   onClose,
   loading,
 }: Props): React.ReactElement => {
-  const {
-    loading: memberLoading,
-    data: member,
-    error,
-    getServer: getMember,
-  } = useLazyGetServer<Member | null>();
+  const { loading: memberLoading, getServer: getMember } =
+    useLazyGetServer<Member | null>();
+  const [error, setError] = useState<Error | undefined>();
+  const [member, setMember] = useState<Member | null | undefined>();
 
   const [sid, setSID] = useState("");
   const [displayName, setDisplayName] = useState("");
@@ -93,8 +91,11 @@ const AddAdminModal = ({
 
   const promptConfirm = useCallback(
     (confirmSid: string) => {
-      // error will be handled elsewhere
-      getMember(`members/${confirmSid}`).catch(() => {});
+      getMember(`members/${confirmSid}`)
+        .then((value) => setMember(value))
+        .catch((err) => {
+          setError(err);
+        });
       setOpenConfirmModal(true);
     },
     [getMember]

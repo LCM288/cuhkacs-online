@@ -1,4 +1,11 @@
-import { useState, useCallback, useEffect, useMemo, useRef } from "react";
+import {
+  useState,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useReducer,
+} from "react";
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth, connectAuthEmulator } from "firebase/auth";
@@ -122,70 +129,32 @@ export const useGetCache = <T = unknown>(
 
 export const useLazyGetServer = <T = unknown>(): {
   loading: boolean;
-  data: T | undefined;
-  error: Error | undefined;
   getServer: (pathOrQuery: string | Query) => Promise<T>;
-  clear: () => void;
 } => {
-  const [pathOrQuery, setPathOrQuery] = useState<string | Query | null>(null);
-  const res = useRef<(data: T) => void>(() => {});
-  const rej = useRef<(err: Error) => void>(() => {});
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<T | undefined>(undefined);
-  const [error, setError] = useState<Error | undefined>(undefined);
-  const { forceRerenderCount, forceRerender } = useForceRerender();
-  const reference = useMemo(
-    () =>
+  const [loading, dispatchLoading] = useReducer(
+    (state: number, change: number) => state + change,
+    0
+  );
+  const getServer = useCallback((pathOrQuery: string | Query) => {
+    const reference =
       typeof pathOrQuery === "string"
         ? ref(database, pathOrQuery)
-        : pathOrQuery,
-    [pathOrQuery]
-  );
-  const getServer = useCallback(
-    (pathOrQueryParam: string | Query) => {
-      setPathOrQuery(pathOrQueryParam);
-      return new Promise<T>((resolve, reject) => {
-        res.current = resolve;
-        rej.current = reject;
-        forceRerender();
+        : pathOrQuery;
+    dispatchLoading(1);
+    return get(reference)
+      .then((snapshot) => {
+        const value = snapshot.val();
+        dispatchLoading(-1);
+        return value;
+      })
+      .catch((err) => {
+        dispatchLoading(-1);
+        throw err;
       });
-    },
-    [forceRerender]
-  );
-  const clear = useCallback(() => {
-    rej.current(new Error("Query Cleared"));
-    setPathOrQuery(null);
-    res.current = () => {};
-    rej.current = () => {};
-    setLoading(false);
-    setData(undefined);
-    setError(undefined);
   }, []);
-  useEffect(() => {
-    setData(undefined);
-    setError(undefined);
-    if (reference) {
-      setLoading(true);
-      get(reference)
-        .then((snapshot) => {
-          const value = snapshot.val();
-          setData(value);
-          res.current(value);
-          setLoading(false);
-        })
-        .catch((err) => {
-          setError(err);
-          rej.current(err);
-          setLoading(false);
-        });
-    }
-  }, [reference, forceRerenderCount]);
   return {
-    loading,
-    data,
-    error,
+    loading: loading !== 0,
     getServer,
-    clear,
   };
 };
 
