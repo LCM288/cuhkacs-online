@@ -47,7 +47,7 @@ const AddAdminModal = ({
     const college = collegeData.colleges.find(
       ({ code }) => code === collegeCode
     );
-    const majorCode = member?.studentStatus.college;
+    const majorCode = member?.studentStatus.major;
     const major = majorData.majors.find(({ code }) => code === majorCode);
     return (
       <>
