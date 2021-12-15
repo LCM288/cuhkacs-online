@@ -8,7 +8,13 @@ import { useSetTitle } from "utils/miscHooks";
 const SearchBy = (): React.ReactElement => {
   const { searchMode, searchParam } = useParams();
 
-  useSetTitle("Searching the library");
+  useSetTitle(
+    searchMode === "keyword"
+      ? `Searching books: ${searchParam}`
+      : searchMode === "location"
+      ? `Searching books at ${searchParam}`
+      : "Search the library"
+  );
 
   if (!searchParam) {
     return <NotFound />;
@@ -22,13 +28,11 @@ const SearchBy = (): React.ReactElement => {
     return <SearchByKeyword keyword={searchParam} />;
   }
 
-  return (
-    <>
-      Mode: {searchMode}
-      <br />
-      Param: {searchParam}
-    </>
-  );
+  if (searchMode === "keyword") {
+    return <NotFound />;
+  }
+
+  return <NotFound />;
 };
 
 export default SearchBy;

@@ -70,7 +70,7 @@ const NewSeries = (): React.ReactElement => {
     [navigate, update]
   );
 
-  useSetTitle("Add a new series");
+  useSetTitle("Adding a new series");
 
   return (
     <Section>

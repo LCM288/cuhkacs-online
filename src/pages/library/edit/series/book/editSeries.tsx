@@ -55,7 +55,7 @@ const EditSeries = (): React.ReactElement => {
     }
   }, [seriesLoading, seriesData]);
 
-  useSetTitle(`Edit ${seriesData?.title ?? seriesId ?? "series"}`);
+  useSetTitle(`Editing ${seriesData?.title ?? seriesId ?? "series"}`);
 
   if (!seriesId || (firstLoading.current && seriesData === null)) {
     return <NotFound />;
