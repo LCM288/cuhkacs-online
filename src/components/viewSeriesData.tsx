@@ -173,8 +173,8 @@ const ViewSeriesData = ({
         Header: "Volume",
         accessor: "volume",
         id: "volume",
-        width: 95,
-        maxWidth: 95,
+        width: 105,
+        maxWidth: 105,
       },
       {
         Header: "Language",
@@ -203,8 +203,8 @@ const ViewSeriesData = ({
         accessor: "status",
         id: "status",
         filter: statusFilter,
-        width: 85,
-        maxWidth: 85,
+        width: 95,
+        maxWidth: 95,
       },
       {
         Header: "Created At",

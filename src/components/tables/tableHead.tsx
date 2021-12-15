@@ -6,6 +6,7 @@ import {
   faSortUp,
   faSortDown,
 } from "@fortawesome/free-solid-svg-icons";
+import { Icon } from "react-bulma-components";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type SortableHeaderGroup = HeaderGroup & UseSortByColumnProps<any>;
@@ -23,27 +24,31 @@ const TableHead = ({
   tableColumns,
   tableSortable,
 }: Props): React.ReactElement => {
-  const getSortDirectionIndicatiorOf = useCallback(
+  const getHeaderWithSortDirectionIndicatior = useCallback(
     (column) => {
       const sortable =
         tableSortable &&
         !tableColumns.find((tableColumn) => tableColumn.id === column.id)
           ?.disableSortBy;
       if (!sortable) {
-        return "";
+        return column.render("Header");
       }
       const sortableColumn = column as SortableHeaderGroup;
       return (
-        <FontAwesomeIcon
-          className="ml-2"
-          icon={
-            sortableColumn.isSorted
-              ? sortableColumn.isSortedDesc
-                ? faSortUp
-                : faSortDown
-              : faSort
-          }
-        />
+        <div className="icon-text">
+          {column.render("Header")}
+          <Icon>
+            <FontAwesomeIcon
+              icon={
+                sortableColumn.isSorted
+                  ? sortableColumn.isSortedDesc
+                    ? faSortUp
+                    : faSortDown
+                  : faSort
+              }
+            />
+          </Icon>
+        </div>
       );
     },
     [tableSortable, tableColumns]
@@ -69,15 +74,14 @@ const TableHead = ({
                 zIndex: 1,
               }}
               className={`has-background-light ${
-                tableSortable &&
+                !tableSortable ||
                 tableColumns.find((tableColumn) => tableColumn.id === column.id)
                   ?.disableSortBy
                   ? ""
                   : "is-clickable"
               }`}
             >
-              {column.render("Header")}
-              <span>{getSortDirectionIndicatiorOf(column)}</span>
+              {getHeaderWithSortDirectionIndicatior(column)}
             </th>
           ))}
           <td

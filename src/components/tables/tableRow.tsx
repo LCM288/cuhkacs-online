@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleUp, faAngleDown } from "@fortawesome/free-solid-svg-icons";
 
 import _ from "lodash";
+import { Icon } from "react-bulma-components";
 
 interface Props {
   row: Row;
@@ -83,10 +84,12 @@ const TableRow = ({
         ))}
         {Boolean(hiddenColumns.length) && (
           <td style={{ width: 1 }}>
-            <FontAwesomeIcon
-              className="is-pulled-right"
-              icon={isExpanded ? faAngleUp : faAngleDown}
-            />
+            <Icon>
+              <FontAwesomeIcon
+                className="is-pulled-right"
+                icon={isExpanded ? faAngleUp : faAngleDown}
+              />
+            </Icon>
           </td>
         )}
       </tr>

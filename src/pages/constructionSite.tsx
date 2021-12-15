@@ -1,5 +1,5 @@
 import React from "react";
-import { Hero, Heading } from "react-bulma-components";
+import { Hero, Heading, Icon } from "react-bulma-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWrench } from "@fortawesome/free-solid-svg-icons";
 
@@ -8,7 +8,10 @@ const ConstructionSite = (): React.ReactElement => {
     <Hero size="fullheight" color="warning">
       <Hero.Body>
         <Heading style={{ margin: "auto" }}>
-          This site is under construction <FontAwesomeIcon icon={faWrench} />
+          This site is under construction
+          <Icon>
+            <FontAwesomeIcon icon={faWrench} />
+          </Icon>
         </Heading>
       </Hero.Body>
     </Hero>

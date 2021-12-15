@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useCallback, useEffect } from "react";
-import { Form, Button, Tile } from "react-bulma-components";
+import { Form, Button, Tile, Icon } from "react-bulma-components";
 import Markdown from "components/markdown";
 import { toast } from "react-toastify";
 import SimpleMDE, { SimpleMDEReactProps } from "react-simplemde-editor";
@@ -194,8 +194,10 @@ const MessageEditCell = ({
                 />
                 {(editingValue?.length ?? 0) > maxLength && (
                   <Form.Help color="danger">
-                    <FontAwesomeIcon icon={faExclamationCircle} /> Message too
-                    long ({editingValue?.length ?? 0}/{maxLength})
+                    <Icon>
+                      <FontAwesomeIcon icon={faExclamationCircle} />
+                    </Icon>
+                    Message too long ({editingValue?.length ?? 0}/{maxLength})
                   </Form.Help>
                 )}
               </Tile>

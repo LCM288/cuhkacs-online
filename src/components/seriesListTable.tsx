@@ -94,8 +94,8 @@ const SeriesListTable = ({
           row.locations ?? {},
         id: "locations",
         disableSortBy: true,
-        width: 90,
-        maxWidth: 90,
+        width: 100,
+        maxWidth: 100,
         Cell: ({ value }: { value: Record<LocationKey, number> }) => {
           const locations = Object.keys(value)
             .filter((key) => value[key] !== 0)
@@ -122,15 +122,15 @@ const SeriesListTable = ({
         accessor: "bookCount",
         id: "bookCount",
         filter: emptySeriesFilter,
-        width: 85,
-        maxWidth: 85,
+        width: 95,
+        maxWidth: 95,
       },
       {
         Header: "Borrows",
         accessor: "borrowCount",
         id: "borrowCount",
-        width: 100,
-        maxWidth: 100,
+        width: 110,
+        maxWidth: 110,
       },
       {
         Header: "Created At",

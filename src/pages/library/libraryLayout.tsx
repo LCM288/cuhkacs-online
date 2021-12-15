@@ -4,6 +4,7 @@ import {
   Navbar,
   Image as BulmaImage,
   Form,
+  Icon,
 } from "react-bulma-components";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import useUserStatus from "utils/useUserStatus";
@@ -132,7 +133,9 @@ const LibraryLayout: React.FunctionComponent = () => {
                     </Control>
                     <Control>
                       <Button type="submit">
-                        <FontAwesomeIcon icon={faSearch} />
+                        <Icon>
+                          <FontAwesomeIcon icon={faSearch} />
+                        </Icon>
                       </Button>
                     </Control>
                   </Field>
