@@ -257,7 +257,7 @@
           ".validate": "newData.isNumber()"
         },
         "data": {
-          ".indexOn": "seriesId",
+          ".indexOn": ["seriesId", "isbn"],
           "$bookId": {
             ".validate": "newData.child('updatedAt').val() !== data.child('updatedAt').val() && data.child('status').val() !== 'deleted' && newData.hasChildren(['seriesId', 'volume', 'language', 'status', 'location', 'borrowCount', 'isbn', 'createdAt', 'updatedAt']) && $bookId.length < 40",
             "seriesId": {
@@ -399,7 +399,7 @@
       "memberBorrowings": {
         "$sid": {
           ".read": "auth.token.email.endsWith('@link.cuhk.edu.hk') && auth.token.email.replace('@link.cuhk.edu.hk', '') === $sid",
-          ".validate": "newData.child('updatedAt').val() !== data.child('updatedAt').val() && newData.hasChildren(['borrowCount', 'borrows', 'currentBorrowCount', 'currentBorrows', 'updatedAt']) && (data.exists() || (newData.isString() && root.child('members').child($sid).child('memberStatus').exists() && root.child('members').child($sid).child('memberStatus').child('since').val() > now && root.child('members').child($sid).child('memberStatus').child('until').val() < now))",
+          ".validate": "newData.child('updatedAt').val() !== data.child('updatedAt').val() && newData.hasChildren(['borrowCount', 'currentBorrowCount', 'updatedAt']) && (newData.child('borrowCount').val() === 0 || newData.hasChild('borrows')) && (newData.child('currentBorrowCount').val() === 0 || newData.hasChild('currentBorrows')) && (data.exists() || (newData.isString() && root.child('members').child($sid).child('memberStatus').exists() && root.child('members').child($sid).child('memberStatus').child('since').val() > now && root.child('members').child($sid).child('memberStatus').child('until').val() < now))",
           "borrowCount": {
             ".validate": "newData.isNumber()"
           },

@@ -96,7 +96,9 @@ const AddBookModal = ({
   const validateISBN = useCallback((str: string) => {
     const isbn2 = getISBN(str);
     if (!isbn2) {
-      toast.error("Invalid ISBN");
+      if (str) {
+        toast.error("Invalid ISBN");
+      }
       setISBN("");
     } else {
       setISBN(isbn2);
