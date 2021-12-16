@@ -14,6 +14,7 @@ interface Props {
   yearRange?: number[];
   future?: boolean;
   required?: boolean;
+  autoFocus?: boolean;
 }
 
 const DateField = ({
@@ -24,6 +25,7 @@ const DateField = ({
   future = false,
   yearRange = [-30, 0],
   required = false,
+  autoFocus,
 }: Props): React.ReactElement => {
   const [calMonth, setCalMonth] = useState(new Date());
 
@@ -43,7 +45,7 @@ const DateField = ({
               pattern="^\d{4}-\d{2}-\d{2}$"
             />
           )}
-          inputProps={{ ref: null }}
+          inputProps={{ ref: null, autoFocus: autoFocus }}
           classNames={{
             container: "",
             overlayWrapper: "DayPickerInput-OverlayWrapper",

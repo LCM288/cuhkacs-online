@@ -16,6 +16,7 @@ interface Props {
   loading?: boolean;
   fullwidth?: boolean;
   onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
+  autoFocus?: boolean;
 }
 
 const TextField = ({
@@ -31,6 +32,7 @@ const TextField = ({
   loading,
   fullwidth,
   onBlur,
+  autoFocus,
 }: Props): React.ReactElement => {
   return (
     <>
@@ -52,6 +54,7 @@ const TextField = ({
             maxLength={maxLength}
             required={required}
             onBlur={onBlur}
+            autoFocus={autoFocus}
           />
         </Field>
       </Control>

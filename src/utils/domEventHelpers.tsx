@@ -22,8 +22,8 @@ export const StopClickDiv = ({
 export const PreventDefaultForm = ({
   children,
   onSubmit,
-  className = "",
-  style = {},
+  className,
+  style,
 }: {
   children: React.ReactNode;
   onSubmit: (event: React.FormEvent<HTMLElement>) => void;

@@ -99,10 +99,11 @@ const LibraryLayout: React.FunctionComponent = () => {
 
               {userStatus?.executive && (
                 <Navbar.Item hoverable role="menu" tabIndex={0}>
-                  <Link to="/library/edit/series" className="navbar-link">
-                    Edit
-                  </Link>
+                  <Navbar.Link>Library Admin</Navbar.Link>
                   <Navbar.Dropdown>
+                    <Link to="/library/borrowing" className="navbar-item">
+                      Borrow &amp; Return
+                    </Link>
                     <Link to="/library/edit/series" className="navbar-item">
                       Edit Series
                     </Link>

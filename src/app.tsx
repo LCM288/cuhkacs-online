@@ -29,6 +29,7 @@ import BrowseSeries from "pages/library/browse/browseSeries";
 import BrowseBooks from "pages/library/browse/books/browseBooks";
 import SearchMode from "pages/library/search/searchMode";
 import SearchBy from "pages/library/search/searchBy";
+import Borrowing from "pages/library/borrowing";
 
 export const UserContext = React.createContext<AppUser | null>(null);
 
@@ -199,6 +200,7 @@ const App = (): React.ReactElement => {
                         <Route path=":searchParam" element={<SearchBy />} />
                       </Route>
                     </Route>
+                    <Route path="borrowing" element={<Borrowing />} />
                     <Route path="*" element={<NotFound />} />
                   </Route>
                   <Route path="/member" element={<MemberLayout />}>
