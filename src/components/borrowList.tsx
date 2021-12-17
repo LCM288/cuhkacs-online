@@ -203,6 +203,12 @@ const BorrowList = (): React.ReactElement => {
   );
   const { data: bookVolumeData, loading: bookVolumeLoading } =
     useGetAndListenFromID<string>(bookIdList, getBookVolumePathFromId);
+  const getBookIsbnPathFromId = useCallback(
+    (bookId: string) => `/library/books/data/${bookId}/isbn`,
+    []
+  );
+  const { data: bookIsbnData, loading: bookIsbnLoading } =
+    useGetAndListenFromID<string>(bookIdList, getBookIsbnPathFromId);
 
   const extendedBorrowList = useMemo(
     () =>
@@ -211,8 +217,15 @@ const BorrowList = (): React.ReactElement => {
         memberEngName: memberEngNameData[borrow.sid] || null,
         seriesTitle: seriesTitleData[borrow.seriesId] || null,
         bookVolume: bookVolumeData[borrow.bookId] || null,
+        bookIsbn: bookIsbnData[borrow.bookId] || null,
       })),
-    [bookVolumeData, borrowList, memberEngNameData, seriesTitleData]
+    [
+      bookIsbnData,
+      bookVolumeData,
+      borrowList,
+      memberEngNameData,
+      seriesTitleData,
+    ]
   );
 
   return (
@@ -223,7 +236,8 @@ const BorrowList = (): React.ReactElement => {
           borrowCountLoading ||
           memberEngNameLoading ||
           seriesTitleLoading ||
-          bookVolumeLoading
+          bookVolumeLoading ||
+          bookIsbnLoading
         }
       />
       {borrowCount && borrowList.length < borrowCount ? (

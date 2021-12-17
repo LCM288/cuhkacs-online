@@ -12,7 +12,12 @@ import {
 } from "react-bulma-components";
 import { toast } from "react-toastify";
 import { PreventDefaultForm } from "utils/domEventHelpers";
-import { database, useLazyGetServer, useUpdate } from "utils/firebase";
+import {
+  database,
+  useLazyGetCache,
+  useLazyGetServer,
+  useUpdate,
+} from "utils/firebase";
 import { Member } from "types/db";
 import {
   lengthLimits as memberLengthLimits,
@@ -23,6 +28,7 @@ import {
   lengthLimits as libraryLengthLimits,
   getISBN,
   BookKey,
+  getDefaultDueDateString,
 } from "utils/libraryUtils";
 import {
   equalTo,
@@ -45,6 +51,7 @@ interface Props {
 
 const BorrowModal = ({ onCancel }: Props): React.ReactElement => {
   const { getServer } = useLazyGetServer();
+  const { getCache } = useLazyGetCache();
   const { update } = useUpdate("library");
   const [loading, setLoading] = useState(false);
 
@@ -60,19 +67,8 @@ const BorrowModal = ({ onCancel }: Props): React.ReactElement => {
     (LibraryBook & { id: string; seriesTitle: string }) | undefined
   >();
 
-  const defaultReturnDate = useMemo(() => {
-    const now = DateTime.now().setZone("Asia/Hong_Kong");
-    // default borrow for 3 days excluding weekend
-    switch (now.weekday) {
-      case 3:
-        return now.plus({ day: 5 }).toISODate();
-      case 4:
-        return now.plus({ day: 4 }).toISODate();
-      default:
-        return now.plus({ day: 3 }).toISODate();
-    }
-  }, []);
-  const [returnDate, setReturnDate] = useState(defaultReturnDate);
+  const defaultDueDate = useMemo(() => getDefaultDueDateString(), []);
+  const [dueDate, setDueDate] = useState(defaultDueDate);
 
   const [confirmMessage, setConfirmMessage] = useState("");
 
@@ -129,7 +125,7 @@ const BorrowModal = ({ onCancel }: Props): React.ReactElement => {
         setISBN(validatedISBN);
       }
 
-      const books = ((await getServer(
+      const books = ((await getCache(
         query(
           ref(database, "/library/books/data"),
           orderByChild("isbn"),
@@ -165,15 +161,15 @@ const BorrowModal = ({ onCancel }: Props): React.ReactElement => {
         toast.error(error.message);
       }
     }
-  }, [getServer, isbn]);
+  }, [getCache, getServer, isbn]);
 
   const onStageTwoSubmit = useCallback(() => {
-    if (!returnDate) {
-      toast.error("Return date is missing.");
+    if (!dueDate) {
+      toast.error("Due date is missing.");
       return;
     }
     setStage(3);
-  }, [returnDate]);
+  }, [dueDate]);
 
   const onStageThreeSubmit = useCallback(async () => {
     try {
@@ -199,7 +195,7 @@ const BorrowModal = ({ onCancel }: Props): React.ReactElement => {
           seriesId: bookData.seriesId,
           bookId: bookData.id,
           borrowTime: serverTimestamp(),
-          dueDate: returnDate,
+          dueDate: dueDate,
           renewCount: 0,
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
@@ -221,7 +217,7 @@ const BorrowModal = ({ onCancel }: Props): React.ReactElement => {
       setMemberData(undefined);
       setISBN("");
       setBookData(undefined);
-      setReturnDate(defaultReturnDate);
+      setDueDate(defaultDueDate);
       setConfirmMessage("");
     } catch (error) {
       console.error(error);
@@ -230,14 +226,7 @@ const BorrowModal = ({ onCancel }: Props): React.ReactElement => {
       }
     }
     setLoading(false);
-  }, [
-    confirmMessage,
-    memberData,
-    bookData,
-    returnDate,
-    update,
-    defaultReturnDate,
-  ]);
+  }, [confirmMessage, memberData, bookData, dueDate, update, defaultDueDate]);
 
   const onSubmit = useCallback(() => {
     if (stage === 0) {
@@ -331,9 +320,9 @@ const BorrowModal = ({ onCancel }: Props): React.ReactElement => {
           )}
           {stage === 2 && (
             <DateField
-              label="Return Date"
-              dateValue={returnDate}
-              setDateValue={setReturnDate}
+              label="Due Date"
+              dateValue={dueDate}
+              setDateValue={setDueDate}
               yearRange={[0, 1]}
               future
               autoFocus
@@ -341,7 +330,7 @@ const BorrowModal = ({ onCancel }: Props): React.ReactElement => {
               editable
             />
           )}
-          {stage > 2 && <div>{returnDate}</div>}
+          {stage > 2 && <div>{dueDate}</div>}
           {stage === 3 && (
             <TextField
               value={confirmMessage}

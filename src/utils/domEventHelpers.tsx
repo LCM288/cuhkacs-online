@@ -15,9 +15,15 @@ export const stopAndPrevent = (event: React.SyntheticEvent): void => {
 
 export const StopClickDiv = ({
   children,
+  style,
 }: {
   children: React.ReactNode;
-}): React.ReactElement => <div onClick={stopEvent}>{children}</div>;
+  style?: React.CSSProperties;
+}): React.ReactElement => (
+  <div onClick={stopEvent} style={style}>
+    {children}
+  </div>
+);
 
 export const PreventDefaultForm = ({
   children,

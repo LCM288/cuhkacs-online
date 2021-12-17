@@ -135,22 +135,21 @@ export const useLazyGetServer = <T = unknown>(): {
     (state: number, change: number) => state + change,
     0
   );
-  const getServer = useCallback((pathOrQuery: string | Query) => {
+  const getServer = useCallback(async (pathOrQuery: string | Query) => {
     const reference =
       typeof pathOrQuery === "string"
         ? ref(database, pathOrQuery)
         : pathOrQuery;
     dispatchLoading(1);
-    return get(reference)
-      .then((snapshot) => {
-        const value = snapshot.val();
-        dispatchLoading(-1);
-        return value;
-      })
-      .catch((err) => {
-        dispatchLoading(-1);
-        throw err;
-      });
+    try {
+      const snapshot = await get(reference);
+      const value = snapshot.val();
+      dispatchLoading(-1);
+      return value;
+    } catch (err) {
+      dispatchLoading(-1);
+      throw err;
+    }
   }, []);
   return {
     loading: loading !== 0,

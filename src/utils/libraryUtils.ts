@@ -2,6 +2,7 @@ import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { difference } from "lodash";
 import { onValue, ref } from "firebase/database";
 import { database } from "./firebase";
+import { DateTime } from "luxon";
 
 export type SeriesKey = string;
 export type LocationKey = string;
@@ -49,6 +50,14 @@ export type LibraryBorrow = {
   returnTime?: number;
   createdAt: number;
   updatedAt: number;
+};
+
+export type ExtendedBorrow = LibraryBorrow & {
+  id: string;
+  memberEngName: string | null;
+  seriesTitle: string | null;
+  bookVolume: string | null;
+  bookIsbn: string | null;
 };
 
 export type LibraryMemberBorrowing = {
@@ -210,4 +219,17 @@ export const useGetAndListenFromID = <DataType>(
     data,
     loading: Object.values(loading).some((x) => x),
   };
+};
+
+export const getDefaultDueDateString = (): string => {
+  const now = DateTime.now().setZone("Asia/Hong_Kong");
+  // default borrow for 3 days excluding weekend
+  switch (now.weekday) {
+    case 3:
+      return now.plus({ day: 5 }).toISODate();
+    case 4:
+      return now.plus({ day: 4 }).toISODate();
+    default:
+      return now.plus({ day: 3 }).toISODate();
+  }
 };

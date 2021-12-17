@@ -15,6 +15,7 @@ interface Props {
   future?: boolean;
   required?: boolean;
   autoFocus?: boolean;
+  hideLabel?: boolean;
 }
 
 const DateField = ({
@@ -26,15 +27,18 @@ const DateField = ({
   yearRange = [-30, 0],
   required = false,
   autoFocus,
+  hideLabel,
 }: Props): React.ReactElement => {
   const [calMonth, setCalMonth] = useState(new Date());
 
   return (
     <Field>
-      <Label>
-        {label}
-        {required && "*"}
-      </Label>
+      {!hideLabel && (
+        <Label>
+          {label}
+          {required && "*"}
+        </Label>
+      )}
       <Control>
         <DayPickerInput
           component={(props: unknown) => (

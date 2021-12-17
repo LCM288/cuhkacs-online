@@ -349,6 +349,7 @@
           ".validate": "newData.isNumber()"
         },
         "data": {
+          ".indexOn": ["updatedAt", "returnTime"],
           "$borrowId": {
             ".read": "auth.token.email.endsWith('@link.cuhk.edu.hk') && auth.token.email.replace('@link.cuhk.edu.hk', '') === data.child('sid').val()",
             ".validate": "newData.child('updatedAt').val() !== data.child('updatedAt').val() && newData.hasChildren(['sid', 'seriesId', 'bookId', 'borrowTime', 'dueDate', 'renewCount', 'createdAt', 'updatedAt']) && !data.child('returnTime').exists() && $borrowId.length < 40",

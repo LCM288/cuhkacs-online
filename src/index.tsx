@@ -8,6 +8,7 @@ import "static/markdown-edit.css";
 import "static/modal-overflowing.css";
 import "react-day-picker/lib/style.css";
 import "easymde/dist/easymde.min.css";
+import "static/day-picker-fix.css";
 import reportWebVitals from "reportWebVitals";
 import App from "app";
 import ConstructionSite from "pages/constructionSite";

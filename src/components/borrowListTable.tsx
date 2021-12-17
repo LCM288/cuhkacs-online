@@ -4,15 +4,10 @@ import { Loader, Level } from "react-bulma-components";
 import useResizeAware from "react-resize-aware";
 import { Link } from "react-router-dom";
 import { TableOptions, useSortBy, useTable } from "react-table";
-import { LibraryBorrow } from "utils/libraryUtils";
+import { ExtendedBorrow } from "utils/libraryUtils";
 import useHideColumn from "utils/useHideColumn";
 import Table from "components/tables/table";
-
-type ExtendedBorrow = LibraryBorrow & {
-  memberEngName: string | null;
-  seriesTitle: string | null;
-  bookVolume: string | null;
-};
+import RenewReturnCell from "components/tables/renewReturnCell";
 
 interface Props {
   loading: boolean;
@@ -111,9 +106,15 @@ const BorrowListTable = ({
               }).toISODate()
             : null,
         id: "returnTime",
-        width: 165,
-        maxWidth: 165,
-        Cell: ({ value }: { value: string | null }) => value ?? <i>No Data</i>,
+        width: 185,
+        maxWidth: 185,
+        Cell: ({
+          value,
+          row,
+        }: {
+          value: string | null;
+          row: { original: ExtendedBorrow };
+        }) => value ?? <RenewReturnCell borrowData={row.original} />,
       },
     ],
     []
@@ -152,7 +153,17 @@ const BorrowListTable = ({
     [sizes.width]
   );
 
-  const hideColumnOrder = useMemo(() => [], []);
+  const hideColumnOrder = useMemo(
+    () => [
+      ["id"],
+      ["renewCount"],
+      ["memberEngName"],
+      ["borrowTime", "dueDate"],
+      ["sid"],
+      ["returnTime"],
+    ],
+    []
+  );
 
   useHideColumn(windowWidth, hideColumnOrder, tableColumns, setHiddenColumns);
 
