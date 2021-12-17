@@ -110,10 +110,22 @@ const useGetLastestBorrows = (): {
   borrowList: LibraryBorrowWithID[];
 } => {
   const clearCallbacks = useRef<(() => void)[]>([]);
-  const [data, dispatch] = useReducer(seriesDataReducer, {});
+  const [onLoanData, dispatchOnLoan] = useReducer(seriesDataReducer, {});
+  const [unfilteredData, dispatchUnfiltered] = useReducer(
+    seriesDataReducer,
+    {}
+  );
+  const unfilteredBorrowList = useMemo(
+    () =>
+      Object.values(unfilteredData).sort((a, b) => b.updatedAt - a.updatedAt),
+    [unfilteredData]
+  );
   const borrowList = useMemo(
-    () => Object.values(data).sort((a, b) => b.updatedAt - a.updatedAt),
-    [data]
+    () =>
+      Object.values(onLoanData).concat(
+        unfilteredBorrowList.filter(({ id }) => !onLoanData[id])
+      ),
+    [onLoanData, unfilteredBorrowList]
   );
   useEffect(() => {
     const queryRef = query(
@@ -121,7 +133,7 @@ const useGetLastestBorrows = (): {
       orderByChild("returnTime"),
       equalTo(null)
     );
-    addQuery(queryRef, dispatch, clearCallbacks);
+    addQuery(queryRef, dispatchOnLoan, clearCallbacks);
   }, []);
   useEffect(() => {
     const queryRef = query(
@@ -129,7 +141,7 @@ const useGetLastestBorrows = (): {
       orderByChild("updatedAt"),
       startAfter(DateTime.now().valueOf())
     );
-    addQuery(queryRef, dispatch, clearCallbacks);
+    addQuery(queryRef, dispatchUnfiltered, clearCallbacks);
   }, []);
   const loadBorrows = useCallback(
     (count: number) => {
@@ -137,15 +149,15 @@ const useGetLastestBorrows = (): {
         ref(database, "library/borrows/data"),
         orderByChild("updatedAt"),
         endBefore(
-          borrowList.length
-            ? borrowList[borrowList.length - 1].updatedAt
+          unfilteredBorrowList.length
+            ? unfilteredBorrowList[unfilteredBorrowList.length - 1].updatedAt
             : DateTime.now().valueOf()
         ),
         limitToLast(count)
       );
-      addQuery(queryRef, dispatch, clearCallbacks);
+      addQuery(queryRef, dispatchUnfiltered, clearCallbacks);
     },
-    [borrowList]
+    [unfilteredBorrowList]
   );
   useEffect(() => {
     return () => {

@@ -26,7 +26,7 @@ const RenewReturnCell = ({ borrowData }: Props): React.ReactElement => {
       )}
       {openReturnModal && (
         <ReturnModal
-          isbn={borrowData.bookIsbn}
+          borrowData={borrowData}
           onClose={() => setOpenReturnModal(false)}
         />
       )}

@@ -26,8 +26,8 @@ const BorrowListTable = ({
         Header: "ID",
         accessor: "id",
         id: "id",
-        width: 210,
-        maxWidth: 210,
+        width: 215,
+        maxWidth: 215,
       },
       {
         Header: "SID",
@@ -69,16 +69,18 @@ const BorrowListTable = ({
         Header: "Volume",
         accessor: "bookVolume",
         id: "volume",
-        width: 105,
-        maxWidth: 105,
+        width: 110,
+        maxWidth: 110,
         Cell: ({ value }: { value: string | null }) => value ?? <i>No Data</i>,
       },
       {
         Header: "Borrowed On",
         accessor: (row: ExtendedBorrow) =>
-          DateTime.fromMillis(row.borrowTime, {
-            zone: "Asia/Hong_Kong",
-          }).toISODate(),
+          row.borrowTime
+            ? DateTime.fromMillis(row.borrowTime, {
+                zone: "Asia/Hong_Kong",
+              }).toISODate()
+            : "",
         id: "borrowTime",
         width: 165,
         maxWidth: 165,
@@ -87,8 +89,8 @@ const BorrowListTable = ({
         Header: "Renews",
         accessor: "renewCount",
         id: "renewCount",
-        width: 105,
-        maxWidth: 105,
+        width: 110,
+        maxWidth: 110,
       },
       {
         Header: "Due",
