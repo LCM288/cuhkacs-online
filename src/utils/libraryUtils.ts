@@ -46,22 +46,16 @@ export type LibraryBorrow = {
   borrowTime: number;
   dueDate: string;
   renewCount: number;
-  returnTime: number;
+  returnTime?: number;
   createdAt: number;
-  updatedAt: number;
-};
-
-export type LibraryKeyword = {
-  seriesCount: number;
-  series: Record<SeriesKey, true>;
   updatedAt: number;
 };
 
 export type LibraryMemberBorrowing = {
   borrowCount: number;
-  borrows: Record<BorrowKey, true>;
+  borrows?: Record<BorrowKey, true>;
   currentBorrowCount: number;
-  currentBorrows: Record<BorrowKey, true>;
+  currentBorrows?: Record<BorrowKey, true>;
   updatedAt: number;
 };
 
@@ -131,13 +125,14 @@ export const decodeLocation = (location: string): string => {
   return location.replaceAll("_", ".");
 };
 
-export const useGetAndListenSeriesFromID = (
-  seriesIDs: SeriesKey[]
+export const useGetAndListenFromID = <DataType>(
+  ids: string[],
+  getPathFromid: (id: string) => string
 ): {
-  data: Record<SeriesKey, LibrarySeries>;
+  data: Record<string, DataType>;
   loading: boolean;
 } => {
-  const clearCallbacks = useRef<Record<SeriesKey, () => void>>({});
+  const clearCallbacks = useRef<Record<string, () => void>>({});
   useEffect(() => {
     return () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -145,16 +140,17 @@ export const useGetAndListenSeriesFromID = (
     };
   }, []);
 
-  const [prevSeriesIDs, setPrevSeriesIDs] = useState<SeriesKey[]>([]);
+  const [prevIDs, setPrevIDs] = useState<string[]>([]);
   useEffect(() => {
-    setPrevSeriesIDs(seriesIDs);
-  }, [seriesIDs]);
+    setPrevIDs(ids);
+  }, [ids]);
+  useEffect(() => setPrevIDs([]), [getPathFromid]);
 
   const [data, dispatch] = useReducer(
     (
-      state: Record<SeriesKey, LibrarySeries>,
-      action: { key: SeriesKey; data: LibrarySeries | null }
-    ): Record<SeriesKey, LibrarySeries> => {
+      state: Record<string, DataType>,
+      action: { key: string; data: DataType | null }
+    ): Record<string, DataType> => {
       if (action.data) {
         return { ...state, [action.key]: action.data };
       } else {
@@ -181,15 +177,12 @@ export const useGetAndListenSeriesFromID = (
     {}
   );
 
-  const newIDs = useMemo(
-    () => difference(seriesIDs, prevSeriesIDs),
-    [seriesIDs, prevSeriesIDs]
-  );
+  const newIDs = useMemo(() => difference(ids, prevIDs), [ids, prevIDs]);
   useEffect(() => {
     newIDs.forEach((id) => {
       dispatchLoading({ key: id, loading: true });
       const clear = onValue(
-        ref(database, `/library/series/data/${id}`),
+        ref(database, getPathFromid(id)),
         (snapshot) => {
           dispatch({ key: id, data: snapshot.val() });
           dispatchLoading({ key: id, loading: false });
@@ -201,12 +194,9 @@ export const useGetAndListenSeriesFromID = (
       );
       clearCallbacks.current[id] = clear;
     });
-  }, [newIDs]);
+  }, [getPathFromid, newIDs]);
 
-  const removedIDs = useMemo(
-    () => difference(prevSeriesIDs, seriesIDs),
-    [seriesIDs, prevSeriesIDs]
-  );
+  const removedIDs = useMemo(() => difference(prevIDs, ids), [ids, prevIDs]);
   useEffect(() => {
     removedIDs.forEach((id) => {
       dispatchLoading({ key: id, loading: false });

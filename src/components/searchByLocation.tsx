@@ -1,10 +1,11 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { toast } from "react-toastify";
 import { useGetAndListen } from "utils/firebase";
 import {
   encodeLocation,
+  LibrarySeries,
   SeriesKey,
-  useGetAndListenSeriesFromID,
+  useGetAndListenFromID,
 } from "utils/libraryUtils";
 import SeriesListTable from "components/seriesListTable";
 
@@ -37,8 +38,12 @@ const SearchByLocation = ({ location }: Props): React.ReactElement => {
     [seriesIdData]
   );
 
+  const getPathFromId = useCallback(
+    (id: string) => `/library/series/data/${id}`,
+    []
+  );
   const { data: seriesData, loading: seriesLoading } =
-    useGetAndListenSeriesFromID(seriesIdList);
+    useGetAndListenFromID<LibrarySeries>(seriesIdList, getPathFromId);
   const seriesList = useMemo(
     () =>
       Object.keys(seriesData).map((key) => ({ ...seriesData[key], id: key })),
