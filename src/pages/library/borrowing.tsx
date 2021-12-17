@@ -1,3 +1,4 @@
+import BorrowList from "components/borrowList";
 import BorrowModal from "components/modals/borrowModal";
 import React, { useState } from "react";
 import { Button } from "react-bulma-components";
@@ -28,6 +29,7 @@ const Borrowing = (): React.ReactElement => {
       >
         Borrow
       </Button>
+      <BorrowList />
     </>
   );
 };
