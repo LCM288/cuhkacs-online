@@ -108,8 +108,8 @@ const BorrowListTable = ({
               }).toISODate()
             : null,
         id: "returnTime",
-        width: 185,
-        maxWidth: 185,
+        width: 195,
+        maxWidth: 195,
         Cell: ({
           value,
           row,
