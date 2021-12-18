@@ -2,14 +2,7 @@ import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import TextField from "components/fields/textField";
 import React, { useCallback, useMemo, useState } from "react";
-import {
-  Button,
-  Columns,
-  Form,
-  Icon,
-  Level,
-  Modal,
-} from "react-bulma-components";
+import { Button, Form, Icon, Level, Modal } from "react-bulma-components";
 import { toast } from "react-toastify";
 import { PreventDefaultForm } from "utils/domEventHelpers";
 import {

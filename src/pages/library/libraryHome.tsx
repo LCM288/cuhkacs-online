@@ -1,14 +1,7 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
-import {
-  Block,
-  Button,
-  Heading,
-  Image as BulmaImage,
-} from "react-bulma-components";
+import { Block, Heading, Image as BulmaImage } from "react-bulma-components";
 import Markdown from "components/markdown";
 import IndexWrapper from "components/indexWrapper";
-import useUserStatus from "utils/useUserStatus";
 import { useGetAndListen } from "utils/firebase";
 import { libraryName } from "utils/const";
 import { toast } from "react-toastify";
@@ -18,8 +11,6 @@ import indexLogo from "static/indexLogo.png";
 import PopularSeriesList from "components/popularSeriesList";
 
 const LibraryHome = (): React.ReactElement => {
-  const userStatus = useUserStatus();
-
   const {
     data: libraryMessage,
     error: libraryMessageError,
