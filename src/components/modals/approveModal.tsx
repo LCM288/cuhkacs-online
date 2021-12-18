@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { Modal, Button, Heading } from "react-bulma-components";
+import { Modal, Button, Heading, Form } from "react-bulma-components";
 import MemberUntilField from "components/fields/memberUntilField";
 import { PreventDefaultForm } from "utils/domEventHelpers";
+
+const { Field } = Form;
 
 interface Props {
   sid: string;
@@ -35,14 +37,16 @@ const ApproveModal = ({
             future
             editable
           />
-          <div className="is-pulled-right buttons pt-4">
-            <Button type="submit" color="primary">
-              Confirm
-            </Button>
-            <Button color="danger" onClick={onCancel}>
-              Cancel
-            </Button>
-          </div>
+          <Field kind="group" align="right">
+            <Button.Group>
+              <Button type="submit" color="primary">
+                Confirm
+              </Button>
+              <Button color="danger" onClick={onCancel}>
+                Cancel
+              </Button>
+            </Button.Group>
+          </Field>
         </PreventDefaultForm>
       </Modal.Content>
     </Modal>

@@ -8,12 +8,14 @@ import GenderField from "components/fields/genderField";
 import DateField from "components/fields/dateField";
 import MemberUntilField from "components/fields/memberUntilField";
 import MajorField from "components/fields/majorField";
-import { Modal, Button, Heading } from "react-bulma-components";
+import { Modal, Button, Heading, Form } from "react-bulma-components";
 import { PreventDefaultForm } from "utils/domEventHelpers";
 import { PartialMember } from "utils/memberUtils";
 import { DateTime } from "luxon";
 import { CollegeCode } from "static/college.json";
 import { lengthLimits, patternLimits } from "utils/memberUtils";
+
+const { Field } = Form;
 
 export type UpdatedMember = {
   sid: string;
@@ -236,17 +238,19 @@ const EditMemberModal = ({
                 />
               </>
             )}
-            <div className="is-pulled-right buttons pt-4">
-              <Button type="button" onClick={onReset} color="warning">
-                Reset
-              </Button>
-              <Button type="submit" color="primary">
-                Confirm
-              </Button>
-              <Button type="button" color="danger" onClick={onCancel}>
-                Cancel
-              </Button>
-            </div>
+            <Field kind="group" align="right">
+              <Button.Group>
+                <Button type="button" onClick={onReset} color="warning">
+                  Reset
+                </Button>
+                <Button type="submit" color="primary">
+                  Confirm
+                </Button>
+                <Button type="button" color="danger" onClick={onCancel}>
+                  Cancel
+                </Button>
+              </Button.Group>
+            </Field>
           </PreventDefaultForm>
         </Modal.Content>
         <Loading loading={loading} />

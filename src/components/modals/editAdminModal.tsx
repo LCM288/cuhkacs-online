@@ -1,11 +1,13 @@
 import React, { useCallback, useState, useMemo } from "react";
-import { Heading, Modal, Button } from "react-bulma-components";
+import { Heading, Modal, Button, Form } from "react-bulma-components";
 import Loading from "components/loading";
 import TextField from "components/fields/textField";
 import { PreventDefaultForm } from "utils/domEventHelpers";
 import { Executive } from "types/db";
 import { UpdateType } from "utils/firebase";
 import { serverTimestamp } from "firebase/database";
+
+const { Field } = Form;
 
 interface Props {
   onSave: (updatedAdmin: Partial<UpdateType<Executive, "updatedAt">>) => void;
@@ -70,17 +72,19 @@ const EditAdminModal = ({
             placeholder="Title"
             editable
           />
-          <div className="is-pulled-right buttons pt-4">
-            <Button type="button" onClick={onReset} color="warning">
-              Reset
-            </Button>
-            <Button type="submit" color="primary">
-              Confirm
-            </Button>
-            <Button type="button" color="danger" onClick={onCancel}>
-              Cancel
-            </Button>
-          </div>
+          <Field kind="group" align="right">
+            <Button.Group>
+              <Button type="button" onClick={onReset} color="warning">
+                Reset
+              </Button>
+              <Button type="submit" color="primary">
+                Confirm
+              </Button>
+              <Button type="button" color="danger" onClick={onCancel}>
+                Cancel
+              </Button>
+            </Button.Group>
+          </Field>
         </PreventDefaultForm>
       </Modal.Content>
       <Loading loading={loading} />

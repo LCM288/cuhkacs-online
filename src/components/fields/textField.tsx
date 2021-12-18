@@ -36,8 +36,8 @@ const TextField = ({
 }: Props): React.ReactElement => {
   return (
     <>
-      <Control fullwidth={fullwidth} loading={loading}>
-        <Field>
+      <Field>
+        <Control fullwidth={fullwidth} loading={loading}>
           <Label>
             {label}
             {required && "*"}
@@ -56,8 +56,8 @@ const TextField = ({
             onBlur={onBlur}
             autoFocus={autoFocus}
           />
-        </Field>
-      </Control>
+        </Control>
+      </Field>
     </>
   );
 };

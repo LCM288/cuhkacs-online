@@ -5,6 +5,7 @@ import {
   Button,
   Loader,
   Columns,
+  Form,
 } from "react-bulma-components";
 import Loading from "components/loading";
 import PromptModal from "components/modals/promptModal";
@@ -16,6 +17,8 @@ import { UpdateType, useLazyGetServer } from "utils/firebase";
 import { serverTimestamp } from "firebase/database";
 import collegeData from "static/college.json";
 import majorData from "static/major.json";
+
+const { Field } = Form;
 
 interface Props {
   onSave: (newAdmin: UpdateType<Executive, "createdAt" | "updatedAt">) => void;
@@ -133,14 +136,16 @@ const AddAdminModal = ({
             placeholder="Title"
             editable
           />
-          <div className="is-pulled-right buttons pt-4">
-            <Button color="primary" type="submit">
-              Add
-            </Button>
-            <Button color="danger" onClick={onClose}>
-              Cancel
-            </Button>
-          </div>
+          <Field kind="group" align="right">
+            <Button.Group>
+              <Button color="primary" type="submit">
+                Add
+              </Button>
+              <Button color="danger" onClick={onClose}>
+                Cancel
+              </Button>
+            </Button.Group>
+          </Field>
         </PreventDefaultForm>
       </Modal.Content>
       {openConfirmModal && (

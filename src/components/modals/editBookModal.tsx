@@ -230,14 +230,16 @@ const EditBookModal = ({
               editable
               required
             />
-            <div className="is-pulled-right buttons pt-4">
-              <Button color="primary" type="submit">
-                Update
-              </Button>
-              <Button color="danger" onClick={onClose}>
-                Cancel
-              </Button>
-            </div>
+            <Field kind="group" align="right">
+              <Button.Group>
+                <Button color="primary" type="submit">
+                  Update
+                </Button>
+                <Button color="danger" onClick={onClose}>
+                  Cancel
+                </Button>
+              </Button.Group>
+            </Field>
           </PreventDefaultForm>
         </Modal.Content>
       </Modal>

@@ -1,5 +1,8 @@
 import React from "react";
-import { Modal, Button, Heading } from "react-bulma-components";
+import { Modal, Button, Heading, Form } from "react-bulma-components";
+import { PreventDefaultForm } from "utils/domEventHelpers";
+
+const { Field } = Form;
 
 interface Props {
   message: string | React.ReactElement;
@@ -24,25 +27,24 @@ const PromptModal = ({
 }: Props): React.ReactElement => (
   <Modal show closeOnEsc onClose={onCancel}>
     <Modal.Content className="has-background-white box">
-      {(typeof message === "string" && (
-        <Heading className="has-text-centered" size={5}>
-          {message}
-        </Heading>
-      )) ||
-        message}
-      <div className="is-pulled-right buttons pt-4">
-        <Button
-          type="button"
-          color={confirmColor}
-          onClick={onConfirm}
-          disabled={disabled}
-        >
-          {confirmText}
-        </Button>
-        <Button color={cancelColor} onClick={onCancel}>
-          {cancelText}
-        </Button>
-      </div>
+      <PreventDefaultForm onSubmit={onConfirm}>
+        {(typeof message === "string" && (
+          <Heading className="has-text-centered" size={5}>
+            {message}
+          </Heading>
+        )) ||
+          message}
+        <Field kind="group" align="right">
+          <Button.Group>
+            <Button type="submit" color={confirmColor} disabled={disabled}>
+              {confirmText}
+            </Button>
+            <Button type="button" color={cancelColor} onClick={onCancel}>
+              {cancelText}
+            </Button>
+          </Button.Group>
+        </Field>
+      </PreventDefaultForm>
     </Modal.Content>
   </Modal>
 );

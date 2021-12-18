@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Heading, Modal, Button } from "react-bulma-components";
+import { Heading, Modal, Button, Form } from "react-bulma-components";
 import Loading from "components/loading";
 import PromptModal from "components/modals/promptModal";
 import DOEntryField from "components/fields/doEntryField";
@@ -13,6 +13,8 @@ import { PreventDefaultForm } from "utils/domEventHelpers";
 import useClipped from "utils/useClipped";
 import { CollegeCode } from "static/college.json";
 import { lengthLimits, patternLimits } from "utils/memberUtils";
+
+const { Field } = Form;
 
 export type NewMember = {
   sid: string | null;
@@ -140,14 +142,16 @@ const AddRegistrationModal = ({
           <MajorField majorCode={majorCode} setMajorCode={setMajorCode} />
           <DOEntryField doEntry={doEntry} setDoEntry={setDoEntry} />
           <DOGradField doGrad={doGrad} setDoGrad={setDoGrad} />
-          <div className="is-pulled-right buttons pt-4">
-            <Button color="primary" type="submit">
-              Add
-            </Button>
-            <Button color="danger" onClick={onClose}>
-              Cancel
-            </Button>
-          </div>
+          <Field kind="group" align="right">
+            <Button.Group>
+              <Button color="primary" type="submit">
+                Add
+              </Button>
+              <Button color="danger" onClick={onClose}>
+                Cancel
+              </Button>
+            </Button.Group>
+          </Field>
         </PreventDefaultForm>
       </Modal.Content>
       {openConfirmModal && (

@@ -4,7 +4,7 @@ import { Form } from "react-bulma-components";
 import DateField from "components/fields/dateField";
 import { toast } from "react-toastify";
 
-const { Checkbox } = Form;
+const { Checkbox, Field, Control } = Form;
 
 interface Props {
   label: string;
@@ -59,13 +59,17 @@ const MemberUntilField = ({
         yearRange={[-10, 10]}
         future={future}
       />
-      <Checkbox
-        onChange={onCheckboxChange}
-        checked={untilGrad}
-        disabled={!editable || !gradDate}
-      >
-        Until Gradutation
-      </Checkbox>
+      <Field>
+        <Control>
+          <Checkbox
+            onChange={onCheckboxChange}
+            checked={untilGrad}
+            disabled={!editable || !gradDate}
+          >
+            Until Gradutation
+          </Checkbox>
+        </Control>
+      </Field>
     </>
   );
 };
