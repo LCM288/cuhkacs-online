@@ -170,6 +170,13 @@ const useGetLastestBorrows = (): {
 
 const BorrowList = (): React.ReactElement => {
   const { loadBorrows, borrowList } = useGetLastestBorrows();
+  const initialLoadBorrow = useRef(false);
+  useEffect(() => {
+    if (!initialLoadBorrow.current) {
+      loadBorrows(5);
+      initialLoadBorrow.current = true;
+    }
+  }, [loadBorrows]);
   const {
     data: borrowCount,
     loading: borrowCountLoading,
