@@ -96,6 +96,9 @@ const LibraryLayout: React.FunctionComponent = () => {
                   <Link to="/library/browse" className="navbar-item">
                     Last Updated Series
                   </Link>
+                  <Link to="/library/browse/popular" className="navbar-item">
+                    Popular Series
+                  </Link>
                 </Navbar.Dropdown>
               </Navbar.Item>
 

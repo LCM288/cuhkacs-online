@@ -26,7 +26,7 @@ type LibrarySeriesWithID = WithID<LibrarySeries>;
 const { Checkbox, Field, Control } = Form;
 
 interface Props {
-  loading: boolean;
+  loading?: boolean;
   seriesList: LibrarySeriesWithID[];
   editable?: boolean;
 }

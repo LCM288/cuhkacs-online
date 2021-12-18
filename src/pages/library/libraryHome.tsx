@@ -1,6 +1,11 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Button, Heading, Image as BulmaImage } from "react-bulma-components";
+import {
+  Block,
+  Button,
+  Heading,
+  Image as BulmaImage,
+} from "react-bulma-components";
 import Markdown from "components/markdown";
 import IndexWrapper from "components/indexWrapper";
 import useUserStatus from "utils/useUserStatus";
@@ -10,6 +15,7 @@ import { toast } from "react-toastify";
 import { useSetTitle } from "utils/miscHooks";
 import { Message } from "types/db";
 import indexLogo from "static/indexLogo.png";
+import PopularSeriesList from "components/popularSeriesList";
 
 const LibraryHome = (): React.ReactElement => {
   const userStatus = useUserStatus();
@@ -31,34 +37,24 @@ const LibraryHome = (): React.ReactElement => {
 
   return (
     <IndexWrapper>
-      {libraryMessageLoading ? (
+      <BulmaImage
+        src={indexLogo}
+        style={{
+          maxWidth: "50%",
+          margin: "auto",
+        }}
+      />
+      <Block className="has-text-left">
+        <PopularSeriesList />
+      </Block>
+      {libraryMessageLoading && (
         <Heading className="p-5 mb-0">Loading...</Heading>
-      ) : (
-        <BulmaImage
-          src={indexLogo}
-          style={{
-            maxWidth: "50%",
-            margin: "auto",
-          }}
-        />
       )}
       {libraryMessage && (
         <div className="mb-5">
           <Markdown>{libraryMessage.message}</Markdown>
         </div>
       )}
-      <Button.Group className="is-justify-content-center">
-        {userStatus && (
-          <Link to="/member" className="button is-warning">
-            Member Page
-          </Link>
-        )}
-        {userStatus?.executive && (
-          <Link to="/admin" className="button is-info">
-            Admin Portal
-          </Link>
-        )}
-      </Button.Group>
     </IndexWrapper>
   );
 };

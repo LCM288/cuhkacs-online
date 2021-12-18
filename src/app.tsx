@@ -26,6 +26,7 @@ import NewSeries from "pages/library/edit/series/newSeries";
 import EditSeries from "pages/library/edit/series/book/editSeries";
 import EditSeriesHome from "pages/library/edit/series/editSeriesHome";
 import BrowseSeries from "pages/library/browse/browseSeries";
+import PopularSeries from "pages/library/browse/popularSeries";
 import BrowseBooks from "pages/library/browse/books/browseBooks";
 import SearchMode from "pages/library/search/searchMode";
 import SearchBy from "pages/library/search/searchBy";
@@ -189,6 +190,7 @@ const App = (): React.ReactElement => {
                     </Route>
                     <Route path="browse" element={<Outlet />}>
                       <Route index element={<BrowseSeries />} />
+                      <Route path="popular" element={<PopularSeries />} />
                       <Route path="books" element={<Outlet />}>
                         <Route index element={<NotFound />} />
                         <Route path=":seriesId" element={<BrowseBooks />} />
