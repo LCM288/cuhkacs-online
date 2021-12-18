@@ -37,7 +37,7 @@ const SelectField = <
     <Field>
       <Label>
         {label}
-        {required && "*"}
+        {required && " *"}
       </Label>
       <div>
         <ReactSelect

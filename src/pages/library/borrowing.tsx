@@ -22,12 +22,8 @@ const Borrowing = (): React.ReactElement => {
       {openBorrowModal && (
         <BorrowModal onCancel={() => setOpenBorrowModal(false)} />
       )}
-      <Button
-        color="link"
-        className="is-light"
-        onClick={() => setOpenBorrowModal(true)}
-      >
-        Borrow
+      <Button color="link" onClick={() => setOpenBorrowModal(true)}>
+        New Borrow
       </Button>
       <BorrowList />
     </>

@@ -36,7 +36,7 @@ const DateField = ({
       {!hideLabel && (
         <Label>
           {label}
-          {required && "*"}
+          {required && " *"}
         </Label>
       )}
       <Control>

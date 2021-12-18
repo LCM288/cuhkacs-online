@@ -40,7 +40,7 @@ const TextField = ({
         <Control fullwidth={fullwidth} loading={loading}>
           <Label>
             {label}
-            {required && "*"}
+            {required && " *"}
           </Label>
           <Input
             placeholder={placeholder}

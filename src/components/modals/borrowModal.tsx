@@ -43,7 +43,7 @@ import DateField from "components/fields/dateField";
 import { DateTime } from "luxon";
 import Loading from "components/loading";
 
-const { Input } = Form;
+const { Input, Control, Field, Label } = Form;
 
 interface Props {
   onCancel: () => void;
@@ -255,12 +255,7 @@ const BorrowModal = ({ onCancel }: Props): React.ReactElement => {
   }, [stage, onCancel]);
 
   return (
-    <Modal
-      show
-      closeOnEsc={false}
-      onClose={onCancel}
-      className="modal-ovrflowing"
-    >
+    <Modal show closeOnEsc={false} onClose={onCancel}>
       <Modal.Content
         className="has-background-white box"
         onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -286,15 +281,35 @@ const BorrowModal = ({ onCancel }: Props): React.ReactElement => {
             />
           )}
           {stage > 0 && (
-            <Columns className="has-text-centered">
-              <Columns.Column>Member</Columns.Column>
-              <Columns.Column>{memberData?.sid}</Columns.Column>
-              <Columns.Column>
-                <div>{memberData?.name.eng}</div>
-                <div>{memberData?.name.chi}</div>
-              </Columns.Column>
-              <Columns.Column>{memberData?.currentBorrowCount}</Columns.Column>
-            </Columns>
+            <>
+              <Field>
+                <Field kind="group">
+                  <Field>
+                    <Label>SID</Label>
+                    <Control>
+                      <Input value={memberData?.sid} isStatic />
+                    </Control>
+                  </Field>
+                  <Field>
+                    <Label>Current borrow count</Label>
+                    <Control>
+                      <Input value={memberData?.currentBorrowCount} isStatic />
+                    </Control>
+                  </Field>
+                </Field>
+                <Field>
+                  <Label>Name</Label>
+                  <Field kind="group">
+                    <Control>
+                      <Input value={memberData?.name.eng} isStatic />
+                    </Control>
+                    <Control>
+                      <Input value={memberData?.name.chi} isStatic />
+                    </Control>
+                  </Field>
+                </Field>
+              </Field>
+            </>
           )}
           {stage === 1 && (
             <TextField
@@ -311,12 +326,28 @@ const BorrowModal = ({ onCancel }: Props): React.ReactElement => {
             />
           )}
           {stage > 1 && (
-            <Columns className="has-text-centered">
-              <Columns.Column>Book</Columns.Column>
-              <Columns.Column>{bookData?.isbn}</Columns.Column>
-              <Columns.Column>{bookData?.seriesTitle}</Columns.Column>
-              <Columns.Column>{bookData?.volume}</Columns.Column>
-            </Columns>
+            <>
+              <Field kind="group">
+                <Field>
+                  <Label>Series</Label>
+                  <Control>
+                    <Input value={bookData?.seriesTitle} isStatic />
+                  </Control>
+                </Field>
+                <Field>
+                  <Label>Volume</Label>
+                  <Control>
+                    <Input value={bookData?.volume} isStatic />
+                  </Control>
+                </Field>
+                <Field>
+                  <Label>ISBN</Label>
+                  <Control>
+                    <Input value={bookData?.isbn} isStatic />
+                  </Control>
+                </Field>
+              </Field>
+            </>
           )}
           {stage === 2 && (
             <DateField
@@ -330,7 +361,14 @@ const BorrowModal = ({ onCancel }: Props): React.ReactElement => {
               editable
             />
           )}
-          {stage > 2 && <div>{dueDate}</div>}
+          {stage > 2 && (
+            <Field>
+              <Label>Due Date</Label>
+              <Control>
+                <Input value={dueDate} isStatic />
+              </Control>
+            </Field>
+          )}
           {stage === 3 && (
             <TextField
               value={confirmMessage}
