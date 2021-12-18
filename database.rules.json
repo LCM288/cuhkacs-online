@@ -186,7 +186,7 @@
           ".validate": "newData.isNumber()"
         },
         "data": {
-          ".indexOn": "updatedAt",
+          ".indexOn": ["updatedAt", "borrowCount"],
           "$seriesId": {
             ".validate": "newData.child('updatedAt').val() !== data.child('updatedAt').val() && newData.hasChildren(['title', 'author', 'bookCount', 'borrowCount', 'keywordCount', 'createdAt', 'updatedAt']) && (newData.child('bookCount').val() === 0 || newData.hasChildren(['locations'])) && $seriesId.length < 40",
             "title": {
