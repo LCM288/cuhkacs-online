@@ -51,8 +51,10 @@ const AdminLayout: React.FunctionComponent = () => {
           color="info"
           fixed="top"
           active={isActive}
-          onClick={() => {
-            if (isActive) setActive(false);
+          onClick={(event: React.MouseEvent<HTMLDivElement>) => {
+            if ((event.target as HTMLElement).tagName === "A") {
+              setActive(false);
+            }
           }}
         >
           <Navbar.Brand>

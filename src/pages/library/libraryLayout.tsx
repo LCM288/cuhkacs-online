@@ -67,8 +67,10 @@ const LibraryLayout: React.FunctionComponent = () => {
           color="light"
           fixed="top"
           active={isActive}
-          onClick={() => {
-            if (isActive) setActive(false);
+          onClick={(event: React.MouseEvent<HTMLDivElement>) => {
+            if ((event.target as HTMLElement).tagName === "A") {
+              setActive(false);
+            }
           }}
         >
           <Navbar.Brand>
@@ -99,7 +101,7 @@ const LibraryLayout: React.FunctionComponent = () => {
 
               {userStatus?.executive && (
                 <Navbar.Item hoverable role="menu" tabIndex={0}>
-                  <Navbar.Link>Library Admin</Navbar.Link>
+                  <Navbar.Link renderAs="div">Library Admin</Navbar.Link>
                   <Navbar.Dropdown>
                     <Link to="/library/borrowing" className="navbar-item">
                       Borrow &amp; Return
@@ -113,7 +115,7 @@ const LibraryLayout: React.FunctionComponent = () => {
                   </Navbar.Dropdown>
                 </Navbar.Item>
               )}
-              <Navbar.Item className="is-expanded">
+              <Navbar.Item className="is-expanded" renderAs="div">
                 <PreventDefaultForm
                   onSubmit={() => {
                     if (searchInput) {
@@ -121,6 +123,7 @@ const LibraryLayout: React.FunctionComponent = () => {
                     } else {
                       navigate(`/library/browse`);
                     }
+                    setActive(false);
                   }}
                   style={{ width: "100%" }}
                 >
