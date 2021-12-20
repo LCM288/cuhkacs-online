@@ -128,10 +128,14 @@ export const getISBN = (str: string): string | null => {
 };
 
 export const encodeLocation = (location: string): string => {
+  if (!location) {
+    return "99_9";
+  }
   return location.replaceAll(".", "_");
 };
+
 export const encodeKeyword = (keyword: string): string => {
-  return `_${keyword.replaceAll(".", "_")}`;
+  return `_${keyword.replaceAll(/\$|#|\[|\]|\/|\./g, "_")}`;
 };
 
 export const decodeLocation = (location: string): string => {
