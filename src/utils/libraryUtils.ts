@@ -91,7 +91,11 @@ export const getISBN = (str: string): string | null => {
     {
       let checkSum10 = 0;
       for (let i = 0; i < 10; i++) {
-        checkSum10 += (i + 1) * parseInt(str[i]);
+        if (i == 9 && str[i] == "X") {
+          checkSum10 += (i + 1) * 10;
+        } else {
+          checkSum10 += (i + 1) * parseInt(str[i]);
+        }
       }
       if (checkSum10 % 11 !== 0) {
         return null;

@@ -26,7 +26,7 @@ module.exports = {
     sourceType: "module",
     project: "./tsconfig.json",
   },
-  ignorePatterns: ["**/*.generated.ts"],
+  ignorePatterns: ["**/*.generated.ts", "migration"],
   rules: {
     "linebreak-style": "off",
     "prettier/prettier": [
