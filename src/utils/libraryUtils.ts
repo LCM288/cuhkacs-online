@@ -54,7 +54,7 @@ export type LibraryBorrow = {
 
 export type ExtendedBorrow = LibraryBorrow & {
   id: string;
-  memberEngName: string | null;
+  memberNames: string | null;
   seriesTitle: string | null;
   bookVolume: string | null;
   bookIsbn: string | null;

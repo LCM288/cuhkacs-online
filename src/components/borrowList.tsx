@@ -194,12 +194,15 @@ const BorrowList = (): React.ReactElement => {
     () => uniq(borrowList.map(({ sid }) => sid)),
     [borrowList]
   );
-  const getMemberEngNamePathFromId = useCallback(
-    (sid: string) => `/members/${sid}/name/eng`,
+  const getMemberNamesPathFromId = useCallback(
+    (sid: string) => `/members/${sid}/name`,
     []
   );
-  const { data: memberEngNameData, loading: memberEngNameLoading } =
-    useGetAndListenFromID<string>(sidList, getMemberEngNamePathFromId);
+  const { data: memberNamesData, loading: memberNamesLoading } =
+    useGetAndListenFromID<{ eng: string; chi?: string }>(
+      sidList,
+      getMemberNamesPathFromId
+    );
 
   const seriesIdList = useMemo(
     () => uniq(borrowList.map(({ seriesId }) => seriesId)),
@@ -233,18 +236,16 @@ const BorrowList = (): React.ReactElement => {
     () =>
       borrowList.map((borrow) => ({
         ...borrow,
-        memberEngName: memberEngNameData[borrow.sid] || null,
+        memberNames: memberNamesData[borrow.sid]
+          ? `${memberNamesData[borrow.sid].eng} ${
+              memberNamesData[borrow.sid].chi
+            }`
+          : null,
         seriesTitle: seriesTitleData[borrow.seriesId] || null,
         bookVolume: bookVolumeData[borrow.bookId] || null,
         bookIsbn: bookIsbnData[borrow.bookId] || null,
       })),
-    [
-      bookIsbnData,
-      bookVolumeData,
-      borrowList,
-      memberEngNameData,
-      seriesTitleData,
-    ]
+    [bookIsbnData, bookVolumeData, borrowList, memberNamesData, seriesTitleData]
   );
 
   return (
@@ -253,7 +254,7 @@ const BorrowList = (): React.ReactElement => {
         extendedBorrowList={extendedBorrowList}
         loading={
           borrowCountLoading ||
-          memberEngNameLoading ||
+          memberNamesLoading ||
           seriesTitleLoading ||
           bookVolumeLoading ||
           bookIsbnLoading

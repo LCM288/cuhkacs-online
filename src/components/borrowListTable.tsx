@@ -38,8 +38,8 @@ const BorrowListTable = ({
       },
       {
         Header: "Name",
-        accessor: "memberEngName",
-        id: "memberEngName",
+        accessor: "memberNames",
+        id: "memberNames",
         width: 300,
         maxWidth: 300,
         Cell: ({ value }: { value: string | null }) => value ?? <i>No Data</i>,
@@ -159,7 +159,7 @@ const BorrowListTable = ({
     () => [
       ["id"],
       ["renewCount"],
-      ["memberEngName"],
+      ["memberNames"],
       ["borrowTime", "dueDate"],
       ["sid"],
       ["returnTime"],
