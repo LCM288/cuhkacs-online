@@ -13,6 +13,12 @@ import reportWebVitals from "reportWebVitals";
 import App from "app";
 import ConstructionSite from "pages/constructionSite";
 
+const allowedHosts = ["localhost:3000", "localhost:5000", "cuacs.org"];
+
+if (!allowedHosts.includes(window.location.host)) {
+  window.location.href = "https://cuacs.org";
+}
+
 if (window.location.host === "cuacs.org") {
   ReactDOM.render(
     <React.StrictMode>
