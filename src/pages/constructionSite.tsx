@@ -13,12 +13,10 @@ const ConstructionSite = (): React.ReactElement => {
     <Hero size="fullheight" color="warning">
       <Hero.Body>
         <Heading style={{ margin: "auto" }}>
-          <div className="icon-text">
-            This site is under construction
-            <Icon className="ml-2" onClick={increase}>
-              <FontAwesomeIcon icon={faWrench} />
-            </Icon>
-          </div>
+          This site is under construction{" "}
+          <Icon onClick={increase}>
+            <FontAwesomeIcon icon={faWrench} />
+          </Icon>
         </Heading>
       </Hero.Body>
     </Hero>
