@@ -75,7 +75,14 @@ const BrowseBooks = (): React.ReactElement => {
             <div>
               <Heading size={2}>{seriesTitle ?? "Unknown title"}</Heading>
               <Heading size={4} subtitle>
-                by {seriesAuthor ?? "Unknown author"}
+                by{" "}
+                {seriesAuthor ? (
+                  <Link to={`/library/search/keyword/${seriesAuthor}`}>
+                    {seriesAuthor}
+                  </Link>
+                ) : (
+                  "Unknown author"
+                )}
               </Heading>
             </div>
           </Level.Side>
