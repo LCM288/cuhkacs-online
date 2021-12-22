@@ -52,7 +52,7 @@ const AdminLayout: React.FunctionComponent = () => {
           fixed="top"
           active={isActive}
           onClick={(event: React.MouseEvent<HTMLDivElement>) => {
-            if ((event.target as HTMLElement).tagName === "A") {
+            if ((event.target as HTMLElement).tagName === "A" && isActive) {
               setActive(false);
             }
           }}
