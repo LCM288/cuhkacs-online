@@ -32,6 +32,7 @@ const LibraryHome = (): React.ReactElement => {
         src={indexLogo}
         style={{
           maxWidth: "50%",
+          height: "auto",
           margin: "auto",
         }}
       />

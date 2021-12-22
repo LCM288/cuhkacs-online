@@ -75,7 +75,10 @@ const LibraryLayout: React.FunctionComponent = () => {
         >
           <Navbar.Brand>
             <Link to="/library" className="navbar-item">
-              <BulmaImage src={indexLogo} />
+              <BulmaImage
+                style={{ width: "60px", height: "auto" }}
+                src={indexLogo}
+              />
             </Link>
             <Navbar.Burger
               onClick={toggleActive}
