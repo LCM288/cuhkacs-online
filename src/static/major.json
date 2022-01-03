@@ -515,12 +515,6 @@
       "englishName": "Mathematics and Information Engineering",
       "chineseName": "數學與信息工程學",
       "faculties": ["IDM", "ENF", "SCF"]
-    },
-    {
-      "code": "OTHER",
-      "englishName": "Other Programmes",
-      "chineseName": "其他課程",
-      "faculties":[]
     }
   ]
 }

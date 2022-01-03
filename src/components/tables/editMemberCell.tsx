@@ -81,7 +81,7 @@ const EditMemberCell = ({ member, type }: Props): React.ReactElement => {
           const newUntil = DateTime.fromISO(newData.memberStatus.until, {
             zone: "Asia/Hong_Kong",
           }).valueOf();
-          updateMember({
+          const newMember = {
             ...newData,
             studentStatus: {
               college: newData.studentStatus.college,
@@ -96,7 +96,8 @@ const EditMemberCell = ({ member, type }: Props): React.ReactElement => {
               until: newUntil,
             },
             updatedAt: serverTimestamp(),
-          })
+          };
+          updateMember(newMember)
             .then(() => {
               toast.success("Member updated.");
               setOpenModal(false);

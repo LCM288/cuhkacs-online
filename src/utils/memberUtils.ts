@@ -51,7 +51,7 @@ export const lengthLimits = {
   email: 323,
   phone: 63,
   studentStatus: {
-    major: 255,
+    major: 127,
   },
 };
 
@@ -62,6 +62,6 @@ export const patternLimits = {
   phone: /^\+?\d+(-\d+)*$/,
   studentStatus: {
     college: /^(CC|NA|UC|SC|WYS|WS|SH|MC|CW|NO)$/,
-    major: /^(\w| )+$/,
+    major: /^.+$/,
   },
 };

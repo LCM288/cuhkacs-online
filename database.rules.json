@@ -43,7 +43,7 @@
             ".validate": "newData.isString() && newData.val().matches(/^(CC|NA|UC|SC|WYS|WS|SH|MC|CW|NO)$/)"
           },
           "major": {
-            ".validate": "newData.isString() && newData.val().matches(/^(\\w| )+$/) && newData.val().length < 256"
+            ".validate": "newData.isString() && newData.val().matches(/^.+$/) && newData.val().length < 128"
           },
           "entryDate": {
             ".validate": "newData.isString() && newData.val().matches(/^\\d{4}-\\d{2}-\\d{2}$/)"

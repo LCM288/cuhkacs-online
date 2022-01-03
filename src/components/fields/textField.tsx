@@ -38,10 +38,12 @@ const TextField = ({
     <>
       <Field>
         <Control fullwidth={fullwidth} loading={loading}>
-          <Label>
-            {label}
-            {required && " *"}
-          </Label>
+          {label && (
+            <Label>
+              {label}
+              {required && " *"}
+            </Label>
+          )}
           <Input
             placeholder={placeholder}
             value={value}

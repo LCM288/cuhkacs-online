@@ -1,57 +1,75 @@
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback, useState, useEffect } from "react";
 import { Tag, Level } from "react-bulma-components";
 import majorData, { Major } from "static/major.json";
 import facultyData, { Faculty } from "static/faculty.json";
 import SelectField from "components/fields/selectField";
+import TextField from "components/fields/textField";
+import { lengthLimits } from "utils/memberUtils";
 
 interface Props {
   majorCode: string | null;
   setMajorCode: (value: string | null) => void;
 }
 
-const MajorField = ({ majorCode, setMajorCode }: Props): React.ReactElement => {
-  interface MajorOption {
-    value: string;
-    chineseLabel: string;
-    englishLabel: string;
-    faculties: { value: string; chineseLabel: string; englishLabel: string }[];
-  }
+interface MajorOption {
+  value: string;
+  chineseLabel: string;
+  englishLabel: string;
+  faculties: { value: string; chineseLabel: string; englishLabel: string }[];
+}
 
+const othersOption: MajorOption = {
+  value: "OTHER",
+  englishLabel: "Other Programmes (Please sepecify)",
+  chineseLabel: "其他課程（請註明）",
+  faculties: [],
+};
+
+const MajorField = ({ majorCode, setMajorCode }: Props): React.ReactElement => {
   const majorOptions: MajorOption[] = useMemo(
     () =>
-      majorData.majors.map((majorProgram: Major) => ({
-        value: majorProgram.code,
-        chineseLabel: majorProgram.chineseName,
-        englishLabel: majorProgram.englishName,
-        faculties: majorProgram.faculties.flatMap((facultyCode: string) => {
-          const faculty = facultyData.faculties.find(
-            ({ code }: Faculty) => code === facultyCode
-          );
-          return faculty
-            ? [
-                {
-                  value: faculty.code,
-                  chineseLabel: faculty.chineseName,
-                  englishLabel: faculty.englishName,
-                },
-              ]
-            : [];
-        }),
-      })) ?? [],
+      (
+        majorData.majors.map((majorProgram: Major) => ({
+          value: majorProgram.code,
+          chineseLabel: majorProgram.chineseName,
+          englishLabel: majorProgram.englishName,
+          faculties: majorProgram.faculties.flatMap((facultyCode: string) => {
+            const faculty = facultyData.faculties.find(
+              ({ code }: Faculty) => code === facultyCode
+            );
+            return faculty
+              ? [
+                  {
+                    value: faculty.code,
+                    chineseLabel: faculty.chineseName,
+                    englishLabel: faculty.englishName,
+                  },
+                ]
+              : [];
+          }),
+        })) ?? []
+      ).concat([othersOption]),
     []
   );
 
+  const [isOthers, setIsOthers] = useState(false);
+  const [localMajorCode, setLocalMajorCode] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (localMajorCode !== majorCode) {
+      setLocalMajorCode(majorCode);
+      setIsOthers(!majorOptions.find(({ value }) => value === majorCode));
+    }
+  }, [localMajorCode, majorCode, majorOptions]);
+
   const selectedMajor: MajorOption | null = useMemo(
     () =>
-      majorCode
-        ? majorOptions.find(({ value }) => value === majorCode) ?? {
-            value: majorCode,
-            chineseLabel: "",
-            englishLabel: majorCode,
-            faculties: [],
-          }
+      isOthers
+        ? othersOption
+        : typeof majorCode === "string"
+        ? majorOptions.find(({ value }) => value === majorCode) ?? othersOption
         : null,
-    [majorOptions, majorCode]
+    [majorOptions, majorCode, isOthers]
   );
 
   const facultyColors = useMemo<{
@@ -135,21 +153,45 @@ const MajorField = ({ majorCode, setMajorCode }: Props): React.ReactElement => {
   );
 
   const onChange = useCallback(
-    (input: MajorOption | null) => setMajorCode(input?.value ?? null),
+    (input: MajorOption | null) => {
+      if (input === othersOption) {
+        setMajorCode("");
+        setLocalMajorCode("");
+        setIsOthers(true);
+      } else {
+        setMajorCode(input?.value ?? null);
+        setLocalMajorCode(input?.value ?? null);
+        setIsOthers(false);
+      }
+    },
     [setMajorCode]
   );
 
   return (
-    <SelectField
-      label="Major"
-      selectedOption={selectedMajor}
-      options={majorOptions}
-      inputValue={majorCode}
-      onChange={onChange}
-      filterOption={filterOption}
-      formatOptionLabel={formatMajorOptionLabel}
-      required
-    />
+    <>
+      <SelectField
+        label="Major"
+        selectedOption={selectedMajor}
+        options={majorOptions}
+        inputValue={
+          typeof majorCode === "string" ? (majorCode ? majorCode : " ") : null
+        }
+        onChange={onChange}
+        filterOption={filterOption}
+        formatOptionLabel={formatMajorOptionLabel}
+        required
+      />
+      {isOthers && (
+        <TextField
+          label=""
+          value={majorCode ?? ""}
+          setValue={setMajorCode}
+          maxLength={lengthLimits.studentStatus.major}
+          editable
+          required
+        />
+      )}
+    </>
   );
 };
 
