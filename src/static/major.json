@@ -110,14 +110,14 @@
     },
     {
       "code": "IBBAB",
-      "englishName": "Integrated BBA Programme",
-      "chineseName": "工商管理學士綜合課程",
+      "englishName": "Integrated BBA Programme (IBBAB)",
+      "chineseName": "工商管理學士綜合課程（IBBAB）",
       "faculties": ["BAF"]
     },
     {
       "code": "IBBAC",
-      "englishName": "Integrated BBA Programme",
-      "chineseName": "工商管理學士綜合課程",
+      "englishName": "Integrated BBA Programme (IBBAC)",
+      "chineseName": "工商管理學士綜合課程（IBBAC）",
       "faculties": ["BAF"]
     },
     {
