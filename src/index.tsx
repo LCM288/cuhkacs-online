@@ -19,21 +19,12 @@ if (!allowedHosts.includes(window.location.host)) {
   window.location.href = "https://cuacs.org";
 }
 
-if (window.location.host === "cuacs.org") {
-  ReactDOM.render(
-    <React.StrictMode>
-      <ConstructionSite />
-    </React.StrictMode>,
-    document.getElementById("root")
-  );
-} else {
-  ReactDOM.render(
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>,
-    document.getElementById("root")
-  );
-}
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById("root")
+);
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
