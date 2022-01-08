@@ -11,7 +11,6 @@ import "easymde/dist/easymde.min.css";
 import "static/day-picker-fix.css";
 import reportWebVitals from "reportWebVitals";
 import App from "app";
-import ConstructionSite from "pages/constructionSite";
 
 const allowedHosts = ["localhost:3000", "localhost:5000", "cuacs.org"];
 
