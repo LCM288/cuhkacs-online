@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Button } from "react-bulma-components";
 import { StopClickDiv } from "utils/domEventHelpers";
 import { ExtendedBorrow } from "utils/libraryUtils";
+import useClipped from "utils/useClipped";
 
 interface Props {
   borrowData: ExtendedBorrow;
@@ -12,6 +13,7 @@ interface Props {
 const RenewReturnCell = ({ borrowData }: Props): React.ReactElement => {
   const [openRenewModal, setOpenRenewModal] = useState(false);
   const [openReturnModal, setOpenReturnModal] = useState(false);
+  useClipped(openReturnModal || openRenewModal);
   if (!borrowData.bookIsbn) {
     return <div>Error ISBN Not found</div>;
   }

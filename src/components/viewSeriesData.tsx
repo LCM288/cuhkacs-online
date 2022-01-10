@@ -27,6 +27,7 @@ import { increment, serverTimestamp } from "firebase/database";
 import Loading from "components/loading";
 import EditBookModal from "components/modals/editBookModal";
 import { Link } from "react-router-dom";
+import useClipped from "utils/useClipped";
 
 const { Checkbox } = Form;
 
@@ -62,7 +63,9 @@ const ViewSeriesData = ({
     []
   );
 
+  const [modalOpen, setModalOpen] = useState(false);
   const [promptContent, setPromptContent] = useState(<></>);
+  useClipped(modalOpen);
 
   const deleteBook = useCallback(
     (bookData: LibraryBook & { id: string }) => {
@@ -85,6 +88,7 @@ const ViewSeriesData = ({
         .then(() => {
           toast.info(`Volume ${bookData.volume} has been deleted.`);
           setPromptContent(<></>);
+          setModalOpen(false);
         })
         .catch((err) => {
           console.error(err);
@@ -119,6 +123,8 @@ const ViewSeriesData = ({
       : [];
   }, [data]);
 
+  // TODO: refactor the prompts.
+
   const promptDelete = useCallback(
     (id: string) => {
       const bookData = tableData.find((book) => book.id === id);
@@ -130,13 +136,17 @@ const ViewSeriesData = ({
         <PromptModal
           message={`Are you sure you want to delete volume ${bookData.volume}?`}
           onConfirm={() => deleteBook(bookData)}
-          onCancel={() => setPromptContent(<></>)}
+          onCancel={() => {
+            setPromptContent(<></>);
+            setModalOpen(false);
+          }}
           confirmText="Remove"
           cancelText="Back"
           confirmColor="danger"
           cancelColor="info"
         />
       );
+      setModalOpen(true);
     },
     [deleteBook, tableData]
   );
@@ -153,9 +163,13 @@ const ViewSeriesData = ({
           update={update}
           bookData={bookData}
           locations={locations}
-          onClose={() => setPromptContent(<></>)}
+          onClose={() => {
+            setPromptContent(<></>);
+            setModalOpen(false);
+          }}
         />
       );
+      setModalOpen(true);
     },
     [locations, tableData, update]
   );

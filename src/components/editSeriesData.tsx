@@ -8,6 +8,8 @@ import TextField from "components/fields/textField";
 import { serverTimestamp } from "firebase/database";
 import { useNavigate } from "react-router-dom";
 
+const { Control } = Form;
+
 interface Props {
   seriesId: string;
   data: LibrarySeries | null | undefined;
@@ -139,28 +141,32 @@ const EditSeriesData = ({
       onSubmit={() => onSeriesEditSubmit({ id: seriesId, title, author })}
     >
       <Form.Field kind="group" multiline>
-        <TextField
-          value={title}
-          setValue={setTitle}
-          label="Title"
-          placeholder="Title"
-          fullwidth
-          maxLength={lengthLimits.series.title}
-          editable={isEditingHeader}
-          loading={loading}
-          required
-        />
-        <TextField
-          value={author}
-          setValue={setAuthor}
-          label="Author"
-          placeholder="Author"
-          fullwidth
-          maxLength={lengthLimits.series.author}
-          editable={isEditingHeader}
-          loading={loading}
-          required
-        />
+        <Control>
+          <TextField
+            value={title}
+            setValue={setTitle}
+            label="Title"
+            placeholder="Title"
+            fullwidth
+            maxLength={lengthLimits.series.title}
+            editable={isEditingHeader}
+            loading={loading}
+            required
+          />
+        </Control>
+        <Control>
+          <TextField
+            value={author}
+            setValue={setAuthor}
+            label="Author"
+            placeholder="Author"
+            fullwidth
+            maxLength={lengthLimits.series.author}
+            editable={isEditingHeader}
+            loading={loading}
+            required
+          />
+        </Control>
         <Button.Group
           className="is-align-self-flex-end mb-1"
           style={{ minWidth: "10.5rem" }}

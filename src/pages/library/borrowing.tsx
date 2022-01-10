@@ -4,12 +4,14 @@ import React, { useState } from "react";
 import { Button } from "react-bulma-components";
 import { Navigate } from "react-router-dom";
 import { useSetTitle } from "utils/miscHooks";
+import useClipped from "utils/useClipped";
 import useUserStatus from "utils/useUserStatus";
 
 const Borrowing = (): React.ReactElement => {
   const userStatus = useUserStatus();
 
   const [openBorrowModal, setOpenBorrowModal] = useState(false);
+  useClipped(openBorrowModal);
 
   useSetTitle("Borrow & Return Services");
 
