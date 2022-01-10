@@ -20,7 +20,8 @@ const useUserStatus = (): UserStatus | null => {
     return null;
   }
   const sid = user.sid;
-  const displayName = user.displayName;
+  const displayName =
+    user.displayName ?? user.executive?.displayName ?? user.member?.name.eng;
   const executive = user.executive;
   const member = user.member;
   const now = new Date().valueOf();

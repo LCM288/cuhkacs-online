@@ -17,7 +17,7 @@ const AdminHome = (): React.ReactElement => {
     const splitEvening = 17; // 24hr time to split the evening
     const currentHour = DateTime.local().hour;
 
-    const userName = userStatus?.member?.name.eng ?? "";
+    const userName = userStatus?.displayName ?? "user";
 
     if (splitAfternoon <= currentHour && currentHour <= splitEvening) {
       return `Good afternoon, ${userName}`;
