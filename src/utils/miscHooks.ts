@@ -1,4 +1,4 @@
-import { OAuthProvider, signInWithPopup, signOut } from "firebase/auth";
+import { OAuthProvider, signInWithRedirect, signOut } from "firebase/auth";
 import {
   useEffect,
   useReducer,
@@ -36,7 +36,7 @@ export const useSignInCallback = (): (() => void) => {
     return newProvider;
   }, []);
   return useCallback(() => {
-    signInWithPopup(auth, provider).catch((error) => console.error(error));
+    signInWithRedirect(auth, provider).catch((error) => console.error(error));
   }, [provider]);
 };
 
