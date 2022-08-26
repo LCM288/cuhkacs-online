@@ -439,6 +439,13 @@
       "faculties": ["SSF"]
     },
     {
+      "code": "GLBSN",
+      "englishName": "Global Studies (2-year programme)",
+      "chineseName": "全球研究（兩年制課程）",
+      "faculties": ["SSF"],
+      "inactive": true
+    },
+    {
       "code": "GLSDN",
       "englishName": "Global Studies",
       "chineseName": "全球研究",

@@ -16,6 +16,7 @@ interface MajorOption {
   chineseLabel: string;
   englishLabel: string;
   faculties: { value: string; chineseLabel: string; englishLabel: string }[];
+  inactive?: boolean;
 }
 
 const othersOption: MajorOption = {
@@ -39,12 +40,12 @@ const MajorField = ({ majorCode, setMajorCode }: Props): React.ReactElement => {
             );
             return faculty
               ? [
-                  {
-                    value: faculty.code,
-                    chineseLabel: faculty.chineseName,
-                    englishLabel: faculty.englishName,
-                  },
-                ]
+                {
+                  value: faculty.code,
+                  chineseLabel: faculty.chineseName,
+                  englishLabel: faculty.englishName,
+                },
+              ]
               : [];
           }),
         })) ?? []
@@ -67,8 +68,8 @@ const MajorField = ({ majorCode, setMajorCode }: Props): React.ReactElement => {
       isOthers
         ? othersOption
         : typeof majorCode === "string"
-        ? majorOptions.find(({ value }) => value === majorCode) ?? othersOption
-        : null,
+          ? majorOptions.find(({ value }) => value === majorCode) ?? othersOption
+          : null,
     [majorOptions, majorCode, isOthers]
   );
 
@@ -113,9 +114,8 @@ const MajorField = ({ majorCode, setMajorCode }: Props): React.ReactElement => {
               style={{ width: "100%" }}
             >
               <Tag
-                className={`ml-2 has-text-weight-medium py-1 ${
-                  facultyColors[faculty.value].isLight ? "is-light" : ""
-                }`}
+                className={`ml-2 has-text-weight-medium py-1 ${facultyColors[faculty.value].isLight ? "is-light" : ""
+                  }`}
                 color={facultyColors[faculty.value].color}
                 style={{
                   flexWrap: "wrap",
