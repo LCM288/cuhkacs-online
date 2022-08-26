@@ -17,7 +17,7 @@ interface MajorOption {
   englishLabel: string;
   faculties: { value: string; chineseLabel: string; englishLabel: string }[];
   // True for programmes no longer in RES list
-  // TODO: handling inactive programme: https://github.com/LCM288/cuhkacs-online/issues/3
+  // TODO: handling inactive programmes: https://github.com/LCM288/cuhkacs-online/issues/3
   inactive?: boolean;
 }
 
