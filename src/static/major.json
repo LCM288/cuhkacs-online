@@ -181,6 +181,12 @@
       "faculties": ["ENF"]
     },
     {
+      "code": "BCSEN",
+      "englishName": "Computer Science and Engineering",
+      "chineseName": "計算機科學與工程",
+      "faculties": ["ENF"]
+    },
+    {
       "code": "BERGN",
       "englishName": "Engineering",
       "chineseName": "工程學",
@@ -260,8 +266,14 @@
     },
     {
       "code": "BSCGN",
-      "englishName": "Gerontology (2-year programme)",
-      "chineseName": "老年學（兩年制課程）",
+      "englishName": "Gerontology (2-year programme) (BSCGN)",
+      "chineseName": "老年學（兩年制課程）（BSCGN）",
+      "faculties": ["MED"]
+    },
+    {
+      "code": "BSCGB",
+      "englishName": "Gerontology (2-year programme) (BSCGB)",
+      "chineseName": "老年學（兩年制課程）（BSCGB）",
       "faculties": ["MED"]
     },
     {
@@ -322,6 +334,12 @@
       "code": "CHEMN",
       "englishName": "Chemistry",
       "chineseName": "化學",
+      "faculties": ["SCF"]
+    },
+    {
+      "code": "EESCN",
+      "englishName": "Earth and Environmental Sciences",
+      "chineseName": "地球與環境科學",
       "faculties": ["SCF"]
     },
     {
@@ -421,12 +439,6 @@
       "faculties": ["SSF"]
     },
     {
-      "code": "GLBSN",
-      "englishName": "Global Studies (2-year programme)",
-      "chineseName": "全球研究（兩年制課程）",
-      "faculties": ["SSF"]
-    },
-    {
       "code": "GLSDN",
       "englishName": "Global Studies",
       "chineseName": "全球研究",
@@ -487,16 +499,10 @@
       "faculties": ["DDP", "EDU"]
     },
     {
-      "code": "GLEFN",
-      "englishName": "Global Economics and Finance",
-      "chineseName": "環球經濟與金融",
-      "faculties": ["IDM", "BAF", "SSF"]
-    },
-    {
-      "code": "QFRMN",
-      "englishName": "Quantitative Finance and Risk Management Science",
-      "chineseName": "計量金融學及風險管理科學",
-      "faculties": ["IDM", "BAF", "SCF"]
+      "code": "BEHMN",
+      "englishName": "Biotechnology, Entrepreneurship and Healthcare Management",
+      "chineseName": "生物科技、創業與醫療管理",
+      "faculties": ["IDM", "SCF", "BAF", "MED"]
     },
     {
       "code": "CCSSSN",
@@ -511,10 +517,34 @@
       "faculties": ["IDM", "ART"]
     },
     {
+      "code": "CDASN",
+      "englishName": "Computational Data Science",
+      "chineseName": "計算數據科學",
+      "faculties": ["IDM", "ENF", "SCF"]
+    },
+    {
+      "code": "GLEFN",
+      "englishName": "Global Economics and Finance",
+      "chineseName": "環球經濟與金融",
+      "faculties": ["IDM", "BAF", "SSF"]
+    },
+    {
+      "code": "LDTEN",
+      "englishName": "Learning Design and Technology",
+      "chineseName": "學習設計與科技",
+      "faculties": ["IDM", "EDU", "ENF", "SCF"]
+    },
+    {
       "code": "MIEGN",
       "englishName": "Mathematics and Information Engineering",
       "chineseName": "數學與信息工程學",
       "faculties": ["IDM", "ENF", "SCF"]
+    },
+    {
+      "code": "QFRMN",
+      "englishName": "Quantitative Finance and Risk Management Science",
+      "chineseName": "計量金融學及風險管理科學",
+      "faculties": ["IDM", "BAF", "SCF"]
     }
   ]
 }
