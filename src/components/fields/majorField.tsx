@@ -28,6 +28,8 @@ const othersOption: MajorOption = {
   faculties: [],
 };
 
+// TODO: Move faculty label logic to display
+// TODO: fetch (potential) new admission/programmes from CUHK Admission
 const MajorField = ({ majorCode, setMajorCode }: Props): React.ReactElement => {
   const majorOptions: MajorOption[] = useMemo(
     () =>
@@ -74,6 +76,7 @@ const MajorField = ({ majorCode, setMajorCode }: Props): React.ReactElement => {
     [majorOptions, majorCode, isOthers]
   );
 
+  //TODO: move styling to JSON
   const facultyColors = useMemo<{
     [index: string]: { color: string; isLight: boolean };
   }>(
