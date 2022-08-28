@@ -1,7 +1,7 @@
 import React, { useMemo, useCallback, useState, useEffect } from "react";
 import { Tag, Level } from "react-bulma-components";
 import majorData, { Major } from "static/major.json";
-import facultyData, { Faculty, I18nString } from "static/faculty.json";
+import facultyData, { Faculty } from "static/faculty.json";
 import SelectField from "components/fields/selectField";
 import TextField from "components/fields/textField";
 import { lengthLimits } from "utils/memberUtils";
@@ -15,7 +15,7 @@ interface MajorOption {
   value: string;
   chineseLabel: string;
   englishLabel: string;
-  faculties: { value: string; labels: I18nString[] }[];
+  faculties: string[];
   // True for programmes no longer in RES list
   // TODO: handling inactive programmes: https://github.com/LCM288/cuhkacs-online/issues/3
   inactive?: boolean;
@@ -28,7 +28,6 @@ const othersOption: MajorOption = {
   faculties: [],
 };
 
-// TODO: Move faculty label logic to display
 // TODO: fetch (potential) new admission/programmes from CUHK Admission
 const MajorField = ({ majorCode, setMajorCode }: Props): React.ReactElement => {
   const majorOptions: MajorOption[] = useMemo(
@@ -38,19 +37,7 @@ const MajorField = ({ majorCode, setMajorCode }: Props): React.ReactElement => {
           value: majorProgram.code,
           chineseLabel: majorProgram.chineseName,
           englishLabel: majorProgram.englishName,
-          faculties: majorProgram.faculties.flatMap((facultyCode: string) => {
-            const faculty = facultyData.faculties.find(
-              ({ code }: Faculty) => code === facultyCode
-            );
-            return faculty
-              ? [
-                  {
-                    value: faculty.code,
-                    labels: faculty.labels,
-                  },
-                ]
-              : [];
-          }),
+          faculties: majorProgram.faculties,
         })) ?? []
       ).concat([othersOption]),
     []
@@ -76,24 +63,33 @@ const MajorField = ({ majorCode, setMajorCode }: Props): React.ReactElement => {
     [majorOptions, majorCode, isOthers]
   );
 
-  //TODO: move styling to JSON
-  const facultyColors = useMemo<{
-    [index: string]: { color: string; isLight: boolean };
-  }>(
-    () => ({
-      ART: { color: "dark", isLight: false },
-      BAF: { color: "info", isLight: false },
-      EDU: { color: "danger", isLight: false },
-      ENF: { color: "primary", isLight: false },
-      SLAW: { color: "light", isLight: false },
-      MED: { color: "success", isLight: false },
-      SCF: { color: "warning", isLight: false },
-      SSF: { color: "link", isLight: false },
-      DDP: { color: "danger", isLight: true },
-      IDM: { color: "primary", isLight: true },
-    }),
-    []
-  );
+  const formatFacultyLabel = useCallback((faculty: string) => {
+    const detail = facultyData.faculties.find(
+      ({ code }: Faculty) => code === faculty
+    );
+    return (
+      <Level.Item
+        key={faculty}
+        className="is-flex-shrink-1 is-flex-grow-0 has-tag mr-0"
+      >
+        {
+          <Tag
+            className={`ml-2 has-text-weight-medium py-1 ${
+              detail?.display.isLight ? "is-light" : ""
+            }`}
+            color={detail?.display.color}
+            style={{
+              gap: "0.25rem",
+            }}
+          >
+            {Object.values(detail?.labels || {}).map((label) => (
+              <span>{label}</span>
+            ))}
+          </Tag>
+        }
+      </Level.Item>
+    );
+  }, []);
 
   const formatMajorOptionLabel = useCallback(
     ({ chineseLabel, englishLabel, faculties }: MajorOption) => (
@@ -111,30 +107,11 @@ const MajorField = ({ majorCode, setMajorCode }: Props): React.ReactElement => {
           className="is-flex-wrap-wrap is-flex-shrink-1"
           style={{ marginLeft: "auto", width: "max-content" }}
         >
-          {faculties.map((faculty) => (
-            <Level.Item
-              key={faculty.value}
-              className="is-flex-shrink-1 is-flex-grow-0 has-tag mr-0"
-            >
-              <Tag
-                className={`ml-2 has-text-weight-medium py-1 ${
-                  facultyColors[faculty.value].isLight ? "is-light" : ""
-                }`}
-                color={facultyColors[faculty.value].color}
-                style={{
-                  gap: "0.25rem",
-                }}
-              >
-                {Object.values(faculty.labels).map((label) => (
-                  <span>{label}</span>
-                ))}
-              </Tag>
-            </Level.Item>
-          ))}
+          {faculties.map((faculty) => formatFacultyLabel(faculty))}
         </Level.Side>
       </Level>
     ),
-    [facultyColors]
+    [formatFacultyLabel]
   );
 
   const filterOption = useCallback(

@@ -3,7 +3,8 @@
     {
       "code": "ART",
       "names": { "eng": "Faculty of Arts", "chi": "文學院" },
-      "labels": { "eng": "Arts", "chi": "文學" }
+      "labels": { "eng": "Arts", "chi": "文學" },
+      "display": { "color": "dark", "isLight": false }
     },
     {
       "code": "BAF",
@@ -14,42 +15,50 @@
       "labels": {
         "eng": "Business Administration",
         "chi": "工商管理"
-      }
+      },
+      "display": { "color": "info", "isLight": false }
     },
     {
       "code": "EDU",
       "names": { "eng": "Faculty of Education", "chi": "教育學院" },
-      "labels": { "eng": "Education", "chi": "教育" }
+      "labels": { "eng": "Education", "chi": "教育" },
+      "display": { "color": "danger", "isLight": false }
     },
     {
       "code": "ENF",
       "names": { "eng": "Faculty of Engineering", "chi": "工程學院" },
-      "labels": { "eng": "Engineering", "chi": "工程" }
+      "labels": { "eng": "Engineering", "chi": "工程" },
+      "display": { "color": "primary", "isLight": false }
     },
     {
       "code": "SLAW",
       "names": { "eng": "Faculty of Law", "chi": "法律學院" },
-      "labels": { "eng": "Law", "chi": "法律" }
+      "labels": { "eng": "Law", "chi": "法律" },
+      "display": { "color": "light", "isLight": false }
     },
     {
       "code": "MED",
       "names": { "eng": "Faculty of Medicine", "chi": "醫學院" },
-      "labels": { "eng": "Medicine", "chi": "醫學" }
+      "labels": { "eng": "Medicine", "chi": "醫學" },
+      "display": { "color": "success", "isLight": false }
     },
     {
       "code": "SCF",
       "names": { "eng": "Faculty of Science", "chi": "理學院" },
-      "labels": { "eng": "Science", "chi": "理學" }
+      "labels": { "eng": "Science", "chi": "理學" },
+      "display": { "color": "warning", "isLight": false }
     },
     {
       "code": "SSF",
       "names": { "eng": "Faculty of Social Science", "chi": "社會科學院" },
-      "labels": { "eng": "Social Science", "chi": "社會科學" }
+      "labels": { "eng": "Social Science", "chi": "社會科學" },
+      "display": { "color": "link", "isLight": false }
     },
     {
       "code": "DDP",
       "names": { "eng": "Double Degree Programmes", "chi": "雙學位課程" },
-      "labels": { "eng": "Double Degree", "chi": "雙學位" }
+      "labels": { "eng": "Double Degree", "chi": "雙學位" },
+      "display": { "color": "danger", "isLight": true }
     },
     {
       "code": "IDM",
@@ -60,7 +69,8 @@
       "labels": {
         "eng": "Interdisciplinary Major",
         "chi": "跨學科主修"
-      }
+      },
+      "display": { "color": "primary", "isLight": true }
     }
   ]
 }
