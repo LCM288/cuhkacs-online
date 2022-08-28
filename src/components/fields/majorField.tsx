@@ -1,7 +1,7 @@
 import React, { useMemo, useCallback, useState, useEffect } from "react";
 import { Tag, Level } from "react-bulma-components";
 import majorData, { Major } from "static/major.json";
-import facultyData, { Faculty } from "static/faculty.json";
+import facultyData, { Faculty, I18nString } from "static/faculty.json";
 import SelectField from "components/fields/selectField";
 import TextField from "components/fields/textField";
 import { lengthLimits } from "utils/memberUtils";
@@ -15,7 +15,7 @@ interface MajorOption {
   value: string;
   chineseLabel: string;
   englishLabel: string;
-  faculties: { value: string; chineseLabel: string; englishLabel: string }[];
+  faculties: { value: string; labels: I18nString[] }[];
   // True for programmes no longer in RES list
   // TODO: handling inactive programmes: https://github.com/LCM288/cuhkacs-online/issues/3
   inactive?: boolean;
@@ -44,8 +44,7 @@ const MajorField = ({ majorCode, setMajorCode }: Props): React.ReactElement => {
               ? [
                   {
                     value: faculty.code,
-                    chineseLabel: faculty.chineseName,
-                    englishLabel: faculty.englishName,
+                    labels: faculty.labels,
                   },
                 ]
               : [];
@@ -113,7 +112,6 @@ const MajorField = ({ majorCode, setMajorCode }: Props): React.ReactElement => {
             <Level.Item
               key={faculty.value}
               className="is-flex-shrink-1 is-flex-grow-0 has-tag mr-0"
-              style={{ width: "100%" }}
             >
               <Tag
                 className={`ml-2 has-text-weight-medium py-1 ${
@@ -121,14 +119,12 @@ const MajorField = ({ majorCode, setMajorCode }: Props): React.ReactElement => {
                 }`}
                 color={facultyColors[faculty.value].color}
                 style={{
-                  flexWrap: "wrap",
-                  height: "unset",
-                  minHeight: "2em",
-                  width: "100%",
+                  gap: "0.25rem",
                 }}
               >
-                <span className="mr-1">{faculty.chineseLabel}</span>
-                <span>{faculty.englishLabel}</span>
+                {Object.values(faculty.labels).map((label) => (
+                  <span>{label}</span>
+                ))}
               </Tag>
             </Level.Item>
           ))}

@@ -2,53 +2,65 @@
   "faculties": [
     {
       "code": "ART",
-      "englishName": "Faculty of Arts",
-      "chineseName": "文學院"
+      "names": { "eng": "Faculty of Arts", "chi": "文學院" },
+      "labels": { "eng": "Arts", "chi": "文學" }
     },
     {
       "code": "BAF",
-      "englishName": "Faculty of Business Administration",
-      "chineseName": "工商管理學院"
+      "names": {
+        "eng": "Faculty of Business Administration",
+        "chi": "工商管理學院"
+      },
+      "labels": {
+        "eng": "Business Administration",
+        "chi": "工商管理"
+      }
     },
     {
       "code": "EDU",
-      "englishName": "Faculty of Education",
-      "chineseName": "教育學院"
+      "names": { "eng": "Faculty of Education", "chi": "教育學院" },
+      "labels": { "eng": "Education", "chi": "教育" }
     },
     {
       "code": "ENF",
-      "englishName": "Faculty of Engineering",
-      "chineseName": "工程學院"
+      "names": { "eng": "Faculty of Engineering", "chi": "工程學院" },
+      "labels": { "eng": "Engineering", "chi": "工程" }
     },
     {
       "code": "SLAW",
-      "englishName": "Faculty of Law",
-      "chineseName": "法律學院"
+      "names": { "eng": "Faculty of Law", "chi": "法律學院" },
+      "labels": { "eng": "Law", "chi": "法律" }
     },
     {
       "code": "MED",
-      "englishName": "Faculty of Medicine",
-      "chineseName": "醫學院"
+      "names": { "eng": "Faculty of Medicine", "chi": "醫學院" },
+      "labels": { "eng": "Medicine", "chi": "醫學" }
     },
     {
       "code": "SCF",
-      "englishName": "Faculty of Science",
-      "chineseName": "理學院"
+      "names": { "eng": "Faculty of Science", "chi": "理學院" },
+      "labels": { "eng": "Science", "chi": "理學" }
     },
     {
       "code": "SSF",
-      "englishName": "Faculty of Social Science",
-      "chineseName": "社會科學院"
+      "names": { "eng": "Faculty of Social Science", "chi": "社會科學院" },
+      "labels": { "eng": "Social Science", "chi": "社會科學" }
     },
     {
       "code": "DDP",
-      "englishName": "Double Degree Programmes",
-      "chineseName": "雙學位課程"
+      "names": { "eng": "Double Degree Programmes", "chi": "雙學位課程" },
+      "labels": { "eng": "Double Degree", "chi": "雙學位" }
     },
     {
       "code": "IDM",
-      "englishName": "Interdisciplinary Major Programmes",
-      "chineseName": "跨學科主修課程"
+      "names": {
+        "eng": "Interdisciplinary Major Programmes",
+        "chi": "跨學科主修課程"
+      },
+      "labels": {
+        "eng": "Interdisciplinary Major",
+        "chi": "跨學科主修"
+      }
     }
   ]
 }
