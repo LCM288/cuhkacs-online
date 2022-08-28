@@ -23,7 +23,7 @@ interface MajorOption {
 
 const othersOption: MajorOption = {
   value: "OTHER",
-  englishLabel: "Other Programmes (Please sepecify)",
+  englishLabel: "Other Programmes (Please specify)",
   chineseLabel: "其他課程（請註明）",
   faculties: [],
 };
