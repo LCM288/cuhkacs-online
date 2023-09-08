@@ -545,6 +545,66 @@
       "englishName": "Quantitative Finance and Risk Management Science",
       "chineseName": "計量金融學及風險管理科學",
       "faculties": ["IDM", "BAF", "SCF"]
+    },
+    {
+      "code": "INDAN",
+      "englishName": "Interdisciplinary Data Analytics and X Double Major Programme (IDADM)",
+      "ChineseName": "跨學科數據分析及X 雙主修課程 (IDADM)",
+      "faculties": ["BAF", "ENF", "SCF"]
+    },
+    {
+      "code": "CSCTU",
+      "englishName": "Computer Science (Dual Degree Programme with Tsinghua University)",
+      "ChineseName": "計算機科學（與清華大學合辦雙學位課程）",
+      "faculties": ["ENF"]
+    },
+    {
+      "code": "ECOTU",
+      "englishName": "Economics (Dual Degree Programme with Tsinghua University)",
+      "ChineseName": "經濟學（ 與清華大學合辦雙學位課程）",
+      "faculties": ["SSF"]
+    },
+    {
+      "code": "IBBAC-GBS",
+      "englishName": "Global Business Studies",
+      "ChineseName": "環球商業學",
+      "faculties": ["BAF"]
+    },
+    {
+      "code": "GLBSN",
+      "englishName": "Global Studies (2-year)",
+      "ChineseName": "全球研究（兩年制）",
+      "faculties": ["SSF"]
+    },
+    {
+      "code": "MATHN-ERM",
+      "englishName": "Enrichment Mathematics",
+      "ChineseName": "數學精研",
+      "faculties": ["SCF"]
+    },
+    {
+      "code": "MATTU",
+      "englishName": "Mathematics (Dual Degree Programme with Tsinghua University)",
+      "ChineseName": "數學（與清華大學合辦雙學位課程）",
+      "faculties": ["SCF"]
+    },
+    {
+      "code": "PHYSN-ERP",
+      "englishName": "Enrichment Stream in Theoretical Physics",
+      "ChineseName": "理論物理精研",
+      "faculties": ["SCF"]
+    },
+    {
+      "code": "HISTN-PUH",
+      "englishName": "Public History",
+      "ChineseName": "公眾史學",
+      "faculties": ["ART"]
+    },
+    {
+      "code": "SOCIN-SSD",
+      "englishName": "Society and Sustainable Development",
+      "ChineseName": "社會與可持續發展",
+      "faculties": ["SSF"]
     }
   ]
 }
