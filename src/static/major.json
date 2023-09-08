@@ -97,6 +97,12 @@
       "faculties": ["ART"]
     },
     {
+      "code": "HISTN-PUH",
+      "englishName": "Public History",
+      "chineseName": "公眾史學",
+      "faculties": ["ART"]
+    },
+    {
       "code": "HTMGN",
       "englishName": "Hotel and Tourism Management",
       "chineseName": "酒店及旅遊管理學",
@@ -136,6 +142,12 @@
       "code": "QFINN",
       "englishName": "Quantitative Finance",
       "chineseName": "計量金融學",
+      "faculties": ["BAF"]
+    },
+    {
+      "code": "IBBAC-GBS",
+      "englishName": "Global Business Studies",
+      "chineseName": "環球商業學",
       "faculties": ["BAF"]
     },
     {
@@ -244,6 +256,12 @@
       "code": "SEEMN",
       "englishName": "Systems Engineering and Engineering Management",
       "chineseName": "系統工程與工程管理學",
+      "faculties": ["ENF"]
+    },
+    {
+      "code": "CSCTU",
+      "englishName": "Computer Science (Dual Degree Programme with Tsinghua University)",
+      "chineseName": "計算機科學（與清華大學合辦雙學位課程）",
       "faculties": ["ENF"]
     },
     {
@@ -397,6 +415,24 @@
       "faculties": ["SCF"]
     },
     {
+      "code": "MATHN-ERM",
+      "englishName": "Enrichment Mathematics",
+      "chineseName": "數學精研",
+      "faculties": ["SCF"]
+    },
+    {
+      "code": "MATTU",
+      "englishName": "Mathematics (Dual Degree Programme with Tsinghua University)",
+      "chineseName": "數學（與清華大學合辦雙學位課程）",
+      "faculties": ["SCF"]
+    },
+    {
+      "code": "PHYSN-ERP",
+      "englishName": "Enrichment Stream in Theoretical Physics",
+      "chineseName": "理論物理精研",
+      "faculties": ["SCF"]
+    },
+    {
       "code": "ARCHN",
       "englishName": "Architectural Studies",
       "chineseName": "建築學",
@@ -481,6 +517,24 @@
       "faculties": ["SSF"]
     },
     {
+      "code": "ECOTU",
+      "englishName": "Economics (Dual Degree Programme with Tsinghua University)",
+      "chineseName": "經濟學（與清華大學合辦雙學位課程）",
+      "faculties": ["SSF"]
+    },
+    {
+      "code": "GLBSN",
+      "englishName": "Global Studies (2-year)",
+      "chineseName": "全球研究（兩年制）",
+      "faculties": ["SSF"]
+    },
+    {
+      "code": "SOCIN-SSD",
+      "englishName": "Society and Sustainable Development",
+      "chineseName": "社會與可持續發展",
+      "faculties": ["SSF"]
+    },
+    {
       "code": "BAJDN",
       "englishName": "Double Degree Programme of Bachelor of Business Administration (Integrated BBA Programme) and Juris Doctor",
       "chineseName": "工商管理學士（工商管理學士綜合課程）及法律博士雙學位",
@@ -549,62 +603,8 @@
     {
       "code": "INDAN",
       "englishName": "Interdisciplinary Data Analytics and X Double Major Programme (IDADM)",
-      "ChineseName": "跨學科數據分析及X 雙主修課程 (IDADM)",
-      "faculties": ["BAF", "ENF", "SCF"]
-    },
-    {
-      "code": "CSCTU",
-      "englishName": "Computer Science (Dual Degree Programme with Tsinghua University)",
-      "ChineseName": "計算機科學（與清華大學合辦雙學位課程）",
-      "faculties": ["ENF"]
-    },
-    {
-      "code": "ECOTU",
-      "englishName": "Economics (Dual Degree Programme with Tsinghua University)",
-      "ChineseName": "經濟學（ 與清華大學合辦雙學位課程）",
-      "faculties": ["SSF"]
-    },
-    {
-      "code": "IBBAC-GBS",
-      "englishName": "Global Business Studies",
-      "ChineseName": "環球商業學",
-      "faculties": ["BAF"]
-    },
-    {
-      "code": "GLBSN",
-      "englishName": "Global Studies (2-year)",
-      "ChineseName": "全球研究（兩年制）",
-      "faculties": ["SSF"]
-    },
-    {
-      "code": "MATHN-ERM",
-      "englishName": "Enrichment Mathematics",
-      "ChineseName": "數學精研",
-      "faculties": ["SCF"]
-    },
-    {
-      "code": "MATTU",
-      "englishName": "Mathematics (Dual Degree Programme with Tsinghua University)",
-      "ChineseName": "數學（與清華大學合辦雙學位課程）",
-      "faculties": ["SCF"]
-    },
-    {
-      "code": "PHYSN-ERP",
-      "englishName": "Enrichment Stream in Theoretical Physics",
-      "ChineseName": "理論物理精研",
-      "faculties": ["SCF"]
-    },
-    {
-      "code": "HISTN-PUH",
-      "englishName": "Public History",
-      "ChineseName": "公眾史學",
-      "faculties": ["ART"]
-    },
-    {
-      "code": "SOCIN-SSD",
-      "englishName": "Society and Sustainable Development",
-      "ChineseName": "社會與可持續發展",
-      "faculties": ["SSF"]
+      "chineseName": "跨學科數據分析及X 雙主修課程 (IDADM)",
+      "faculties": ["IDM", "BAF", "ENF", "SCF"]
     }
   ]
 }
