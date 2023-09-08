@@ -91,9 +91,17 @@ const MajorField = ({ majorCode, setMajorCode }: Props): React.ReactElement => {
   );
 
   const formatMajorOptionLabel = useCallback(
-    ({ chineseLabel, englishLabel, faculties }: MajorOption) => (
+    ({ value, chineseLabel, englishLabel, faculties }: MajorOption) => (
       <Level className="is-mobile is-flex-wrap-wrap">
         <Level.Side align="left" className="is-flex-wrap-wrap is-flex-shrink-1">
+          <Level.Item className="is-flex-shrink-1 is-flex-grow-0">
+            <Tag
+              className="has-text-weight-bold is-family-monospace"
+              color={"black"}
+            >
+              {value}
+            </Tag>
+          </Level.Item>
           <Level.Item className="is-flex-shrink-1 is-flex-grow-0">
             {englishLabel}
           </Level.Item>
@@ -104,24 +112,21 @@ const MajorField = ({ majorCode, setMajorCode }: Props): React.ReactElement => {
         <Level.Side
           align="right"
           className="is-flex-wrap-wrap is-flex-shrink-1"
-          style={{ marginLeft: "auto", width: "max-content" }}
+          style={{ marginLeft: "auto" }}
         >
           {faculties.map((faculty) => (
             <Level.Item
               key={faculty.value}
-              className="is-flex-shrink-1 is-flex-grow-0 has-tag mr-0"
-              style={{ width: "100%" }}
+              className="is-flex-shrink-1 is-flex-grow-0 has-tag ml-1 mr-0"
             >
               <Tag
-                className={`ml-2 has-text-weight-medium py-1 ${
+                className={`has-text-weight-medium py-1 ${
                   facultyColors[faculty.value].isLight ? "is-light" : ""
                 }`}
                 color={facultyColors[faculty.value].color}
                 style={{
                   flexWrap: "wrap",
                   height: "unset",
-                  minHeight: "2em",
-                  width: "100%",
                 }}
               >
                 <span className="mr-1">{faculty.chineseLabel}</span>
