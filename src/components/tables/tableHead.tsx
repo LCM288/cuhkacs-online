@@ -8,8 +8,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Icon } from "react-bulma-components";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type SortableHeaderGroup = HeaderGroup & UseSortByColumnProps<any>;
+type SortableHeaderGroup = HeaderGroup &
+  UseSortByColumnProps<Record<string, unknown>>;
 
 type UnsortableHeaderGroup = HeaderGroup;
 
