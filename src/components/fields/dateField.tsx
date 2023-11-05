@@ -41,7 +41,7 @@ const DateField = ({
       )}
       <Control>
         <DayPickerInput
-          component={(props: unknown) => (
+          component={(props: Record<string, unknown>) => (
             <Input
               {...props}
               disabled={!editable}
