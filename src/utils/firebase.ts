@@ -27,7 +27,7 @@ import { useForceRerender } from "utils/miscHooks";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCh9I9xgFFoXhdfRz9XF-Bq-OceWPe3xD0",
-  authDomain: "outstanding-ion-332805.firebaseapp.com",
+  authDomain: "cuacs.org",
   databaseURL:
     "https://outstanding-ion-332805-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "outstanding-ion-332805",
